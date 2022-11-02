@@ -19,8 +19,7 @@ import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { Stack } from "@mui/system";
 import Banner from "../components/Banner";
-import Category from "../components/Category";
-import TrendingProduct from "../components/TrendingProduct";
+
 const pages = ["Menu", "Blog", "About", "Contact"];
 
 function MainHeader() {
@@ -87,8 +86,8 @@ function MainHeader() {
                   display: { xs: "block", md: "none" },
                 }}
               >
-                {pages.map((page) => (
-                  <MenuItem key={page} onClick={handleCloseNavMenu}>
+                {pages.map((page, i) => (
+                  <MenuItem key={i} onClick={handleCloseNavMenu}>
                     <Typography
                       textAlign="center"
                       onClick={() => navigate(`/${page}`)}
@@ -108,8 +107,8 @@ function MainHeader() {
                 px: 5,
               }}
             >
-              {pages.map((page) => (
-                <Link to={`/${page.toLowerCase()}`}>
+              {pages.map((page, i) => (
+                <Link to={`/${page.toLowerCase()}`} key={i}>
                   <Button
                     key={page}
                     onClick={handleCloseNavMenu}
@@ -216,8 +215,6 @@ function MainHeader() {
           </Grid>
         </Grid>
       </Container>
-      <Category />
-      <TrendingProduct />
     </>
   );
 }

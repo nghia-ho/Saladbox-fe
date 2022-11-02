@@ -1,7 +1,17 @@
 import React from "react";
-
+import Category from "../components/Category";
+import TrendingProduct from "../components/TrendingProduct";
+import HoverCard from "../components/HoverCard";
+import NewArrival from "../components/NewArrival/NewArrival";
 const HomePage = () => {
-  return <div>HomePage</div>;
+  return (
+    <>
+      <Category />
+      <TrendingProduct />
+      <HoverCard />
+      <NewArrival />
+    </>
+  );
 };
 
 export default HomePage;

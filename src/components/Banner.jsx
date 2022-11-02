@@ -10,8 +10,9 @@ const BannerRoot = styled("section")(({ theme }) => ({
   position: "relative",
   display: "flex",
   alignItems: "center",
+
   minWidth: "100%",
-  height: "50.4vh",
+  height: "50vh",
 }));
 
 const Background = styled(Box)({
@@ -45,7 +46,7 @@ function Banner({ sxBackground, children, sx }) {
             top: 0,
             bottom: 0,
             backgroundColor: "common.black",
-            opacity: 0.2,
+            opacity: 0.3,
             zIndex: -1,
           }}
         />

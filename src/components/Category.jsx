@@ -46,7 +46,6 @@ const Category = () => {
     },
     {
       name: "Món ăn thêm",
-
       icon: <ChairAltIcon />,
     },
     // {

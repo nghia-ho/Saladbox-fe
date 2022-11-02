@@ -1,9 +1,8 @@
-import React from "react";
-import Typography from "@mui/material/Typography";
 import { Container, Grid } from "@mui/material";
-import ProductCard from "./ProductCard";
+import React from "react";
+import ProductCard from "../ProductCard";
 
-const TrendingProduct = () => {
+const Salad = () => {
   const category = [
     {
       name: "Lorem ipsum dolor sit amet",
@@ -38,13 +37,10 @@ const TrendingProduct = () => {
   ];
   return (
     <Container maxWidth="xl">
-      <Typography variant="h5" sx={{ my: 5 }}>
-        Best Sellers
-      </Typography>
       <Grid container spacing={3}>
         {category.map((e, i) => (
           <Grid item xs={6} sm={6} md={3} lg={3} key={i}>
-            <ProductCard product={e} height="300" />
+            <ProductCard product={e} height="200" />
           </Grid>
         ))}
       </Grid>
@@ -52,4 +48,4 @@ const TrendingProduct = () => {
   );
 };
 
-export default TrendingProduct;
+export default Salad;
