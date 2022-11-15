@@ -1,4 +1,5 @@
 import {
+  Box,
   Card,
   CardActionArea,
   CardActions,
@@ -13,10 +14,14 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 import { Stack } from "@mui/system";
 import React, { useState } from "react";
+import apiService from "../app/apiService";
+import { useDispatch, useSelector } from "react-redux";
+import { getProductById } from "../features/product/productSlice";
+import { Link as RouterLink } from "react-router-dom";
 
 const ProductCard = ({ product, height }) => {
   const [count, setCount] = useState(0);
-
+  const dispatch = useDispatch();
   if (count < 0) {
     setCount(0);
   }
@@ -24,23 +29,28 @@ const ProductCard = ({ product, height }) => {
   return (
     <Paper variant="elevation" elevation={2}>
       <Card>
-        <CardActionArea>
-          <CardMedia
-            component="img"
-            height={height}
-            image={product.url}
-            alt={product.name}
-          />
-        </CardActionArea>
+        <Box sx={{ p: 2 }}>
+          <CardActionArea component={RouterLink} to={`/product/${product._id}`}>
+            <CardMedia
+              sx={{ borderRadius: 2 }}
+              component="img"
+              height={height}
+              image={`http://localhost:8000${product?.image}`}
+              alt={product.name}
+            />
+          </CardActionArea>
+        </Box>
         <CardContent>
           <Stack>
             <Typography variant="subtitle2" sx={{ fontWeight: "600" }}>
               {product.name}
             </Typography>
             <Stack direction="row">
-              <Typography variant="caption">{product.type}</Typography>
+              <Typography variant="caption">
+                {product.decription?.slice(0, 80)}
+              </Typography>
               <Typography variant="caption" ml={2}>
-                {product.cal}cal
+                {product.calo}cal
               </Typography>
             </Stack>
             <Typography variant="subtitle1" sx={{ fontWeight: "600" }}>

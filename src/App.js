@@ -1,9 +1,8 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider } from "./contexts/AuthContext";
 import Router from "./routes";
-import CssBaseline from "@mui/material/CssBaseline";
-import ThemeProvider from "./context/ThemeProvider";
+import ThemeProvider from "./contexts/ThemeProvider";
 
 const App = () => {
   return (

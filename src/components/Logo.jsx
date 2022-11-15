@@ -1,11 +1,12 @@
 import { Box } from "@mui/system";
-import React from "react";
-import LocalDiningIcon from "@mui/icons-material/LocalDining";
 import { Link as RouterLink } from "react-router-dom";
+
+import logoImg from "../logo.png";
+
 const Logo = ({ disableLink = false, sx }) => {
   const logo = (
     <Box sx={{ width: 40, height: 40, ...sx }}>
-      <LocalDiningIcon fontSize="large" color="primary" />
+      <img src={logoImg} alt="logo" width="100%" />
     </Box>
   );
 

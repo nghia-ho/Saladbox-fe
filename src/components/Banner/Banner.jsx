@@ -9,8 +9,8 @@ const BannerRoot = styled("section")(({ theme }) => ({
   color: theme.palette.common.white,
   position: "relative",
   display: "flex",
-  alignItems: "center",
-
+  alignItems: "end",
+  justifyContent: "center",
   minWidth: "100%",
   height: "50vh",
 }));
@@ -31,10 +31,10 @@ function Banner({ sxBackground, children, sx }) {
     <BannerRoot sx={{ ...sx }}>
       <Container
         sx={{
-          mt: 3,
-          mb: 14,
           display: "flex",
           flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
         {children}

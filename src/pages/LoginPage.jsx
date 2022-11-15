@@ -5,14 +5,25 @@ import Typography from "@mui/material/Typography";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { Container } from "@mui/system";
-import { Grid, IconButton, InputAdornment, Stack } from "@mui/material";
+import { Alert, IconButton, InputAdornment, Link, Stack } from "@mui/material";
 
 import { FormProvider, FTextField } from "../components/form";
 import { useForm } from "react-hook-form";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link as RouterLink } from "react-router-dom";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
 
 import useAuth from "../hooks/useAuth";
-import Logo from "../components/Logo";
+
+const LoginSchema = Yup.object().shape({
+  email: Yup.string().email("Invalid Email").required("Email is required"),
+  password: Yup.string().required("Password is required"),
+});
+
+const defaultValues = {
+  email: "",
+  password: "",
+};
 
 const LoginPage = () => {
   const location = useLocation();
@@ -20,69 +31,75 @@ const LoginPage = () => {
   const auth = useAuth();
   const [showPassword, setShowPassword] = useState(false);
 
-  const defaultValues = {
-    username: "",
-    password: "",
-  };
-  const methods = useForm({ defaultValues });
-  const { handleSubmit } = methods;
-  const onSubmit = (data) => {
-    const { username, password } = data;
-    const from = location?.state?.form.pathname || "/";
-    auth.login(username, password, () => navigate(from, { replace: true }));
+  const methods = useForm({
+    resolver: yupResolver(LoginSchema),
+    defaultValues,
+  });
+  const {
+    handleSubmit,
+    reset,
+    setError,
+    formState: { errors, isSubmitting },
+  } = methods;
+  const onSubmit = async (data) => {
+    const { email, password } = data;
+    const from = location?.state?.from.pathname || "/";
+
+    try {
+      await auth.login({ email, password }, () =>
+        navigate(from, { replace: true })
+      );
+    } catch (error) {
+      reset();
+      setError("responseError", error);
+    }
   };
 
   return (
-    // <Grid container spacing={3}>
-    //   <Grid item xs={12} md={4}>
-    //     <Box sx={{ overflow: "hidden" }}>
-    //       <img
-    //         src="https://images.unsplash.com/photo-1579113800032-c38bd7635818?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
-    //         alt=""
-    //         style={{
-    //           top: 0,
-    //           left: 0,
-    //           maxWidth: "100%",
-    //           height: "100%",
-    //           objectFit: "cover",
-    //           position: "fixed",
-    //         }}
-    //       />
-    //     </Box>
-    //   </Grid>
-    //   <Grid item xs={12} md={8}>
     <Container maxWidth="xs">
-      <Stack alignItems="center">
-        <Logo />
-      </Stack>
       <Typography component="h1" variant="h5">
         Log in
       </Typography>
       <Box sx={{ mt: 1 }}>
         <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-          <FTextField
-            name="username"
-            label="User name"
-            style={{ marginBottom: "1rem" }}
-          />
-          <FTextField
-            name="password"
-            label="Password"
-            type={showPassword ? " text" : "password"}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={() => setShowPassword(!showPassword)}
-                    edge="end"
-                  >
-                    {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
+          <Stack spacing={2}>
+            {!!errors.responseError && (
+              <Alert severity="error">{errors.responseError.messagge}</Alert>
+            )}
+            <Alert severity="info">
+              Don't have an account ?{"   "}
+              <Link variant="subtitle2" component={RouterLink} to="/register">
+                Get started
+              </Link>
+            </Alert>
+            <FTextField
+              name="email"
+              label="Email"
+              style={{ marginBottom: "1rem" }}
+            />
+            <FTextField
+              name="password"
+              label="Password"
+              type={showPassword ? " text" : "password"}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => setShowPassword(!showPassword)}
+                      edge="end"
+                    >
+                      {showPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Stack>
 
           <Button
             type="submit"
@@ -95,8 +112,6 @@ const LoginPage = () => {
         </FormProvider>
       </Box>
     </Container>
-    //   </Grid>
-    // </Grid>
   );
 };
 export default LoginPage;

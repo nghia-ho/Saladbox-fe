@@ -40,8 +40,17 @@ function ThemeProvider({ children }) {
     typography: {
       button: {
         // Here is where you can customise the button
-        fontSize: 14,
+        fontSize: 15,
+        textTransform: "none",
         fontWeight: 700,
+      },
+    },
+    components: {
+      // Name of the component
+      MuiLink: {
+        defaultProps: {
+          underline: "hover",
+        },
       },
     },
   };

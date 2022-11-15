@@ -1,5 +1,4 @@
 import axios from "axios";
-
 import { BASE_URL } from "./config";
 
 const apiService = axios.create({
@@ -12,7 +11,7 @@ apiService.interceptors.request.use(
     return request;
   },
   function (error) {
-    console.log("REQUEST ERROR", { error });
+    console.log("REQUEST ERROR", error);
     return Promise.reject(error);
   }
 );
@@ -23,7 +22,10 @@ apiService.interceptors.response.use(
     return response;
   },
   function (error) {
-    console.log("REQUEST ERROR", { error });
-    return Promise.reject(error);
+    console.log("RESPONSE ERROR", error);
+    const messagge = error.response?.data?.errors?.message || "UnKnown Error";
+    return Promise.reject({ messagge });
   }
 );
+
+export default apiService;

@@ -7,14 +7,30 @@ import AccountPage from "../pages/AccountPage";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import NotFoundPage from "../pages/NotFoundPage";
+import DetailPage from "../pages/DetailPage";
+import AuthRequire from "./AuthRequire";
+import MenuPage from "../pages/MenuPage";
 const Router = () => {
   return (
     <Routes>
       <Route path="/" element={<MainLayout />}>
         <Route index element={<HomePage />} />
-        <Route path="account" element={<AccountPage />} />
+        <Route path="menu" element={<MenuPage />} />
+        <Route path="product/:id" element={<DetailPage />} />
+      </Route>
+
+      <Route
+        path="/"
+        element={
+          <AuthRequire>
+            <MainLayout />
+          </AuthRequire>
+        }
+      >
+        <Route path="/account" element={<AccountPage />} />
+        {/* <Route path="order" element={<OrderPage />} /> */}
+        {/* <Route path="cart" element={<CartPage />} /> */}
         {/* <Route path="admin" element={<AdminPage />} /> */}
-        {/* <Route path="product/:productId" element={<ProductPage />} /> */}
       </Route>
 
       <Route element={<BlankLayout />}>

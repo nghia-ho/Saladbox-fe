@@ -11,16 +11,15 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import Logo from "../components/Logo";
-import { Badge, Grid } from "@mui/material";
+import { Badge, Divider } from "@mui/material";
 import ShoppingBagTwoToneIcon from "@mui/icons-material/ShoppingBagTwoTone";
 import Face5OutlinedIcon from "@mui/icons-material/Face5Outlined";
 import FavoriteTwoToneIcon from "@mui/icons-material/FavoriteTwoTone";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { Stack } from "@mui/system";
-import Banner from "../components/Banner";
 
-const pages = ["Menu", "Blog", "About", "Contact"];
+const pages = ["home", "menu", "about", "contact"];
 
 function MainHeader() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -40,17 +39,102 @@ function MainHeader() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
   const navigate = useNavigate();
   const auth = useAuth();
+  console.log(auth);
 
-  const url =
-    "https://images.unsplash.com/photo-1561043433-aaf687c4cf04?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80";
-  const url2 =
-    "https://plus.unsplash.com/premium_photo-1661507186274-da9111b2abb3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1469&q=80";
-  const url3 =
-    "https://images.unsplash.com/photo-1572449043416-55f4685c9bb7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80";
+  const menuProfile = auth.user ? (
+    <Box sx={{ flexGrow: 0 }}>
+      <Tooltip title="Open settings">
+        <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+          <Face5OutlinedIcon />
+        </IconButton>
+      </Tooltip>
+      <Menu
+        sx={{ mt: 2 }}
+        id="menu-appbar"
+        anchorEl={anchorElUser}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        keepMounted
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "center",
+        }}
+        open={Boolean(anchorElUser)}
+        onClose={handleCloseUserMenu}
+      >
+        <Box sx={{ my: 1.5, px: 2.5 }}>
+          <Typography>Hi {auth?.user.user}</Typography>
+        </Box>
+
+        <Divider sx={{ bodertyle: "dashed" }} />
+        <MenuItem to="/" component={Link} sx={{ mx: 1 }}>
+          My Profile
+        </MenuItem>
+        <MenuItem to="/account" component={Link} sx={{ mx: 1 }}>
+          Account setting
+        </MenuItem>
+        <Divider sx={{ bodertyle: "dashed" }} />
+        <MenuItem
+          sx={{ mx: 1 }}
+          onClick={() =>
+            auth.logout(() => {
+              navigate("/");
+            })
+          }
+        >
+          Log out
+        </MenuItem>
+      </Menu>
+    </Box>
+  ) : (
+    <Box sx={{ flexGrow: 0 }} onClick={() => navigate("/login")}>
+      <Tooltip title="Open settings">
+        <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+          <Face5OutlinedIcon />
+        </IconButton>
+      </Tooltip>
+    </Box>
+  );
+
+  const menuPad = (
+    <Menu
+      id="menu-appbar"
+      anchorEl={anchorElNav}
+      anchorOrigin={{
+        vertical: "bottom",
+        horizontal: "left",
+      }}
+      keepMounted
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "left",
+      }}
+      open={Boolean(anchorElNav)}
+      onClose={handleCloseNavMenu}
+      sx={{
+        display: { xs: "block", md: "none" },
+      }}
+    >
+      {pages.map((page, i) => (
+        <MenuItem key={i} onClick={handleCloseNavMenu}>
+          <Typography
+            textAlign="center"
+            onClick={() => navigate(`/${page === "home" ? "" : page}`)}
+          >
+            {page.charAt(0).toUpperCase() + page.slice(1)}
+          </Typography>
+        </MenuItem>
+      ))}
+    </Menu>
+  );
+
   return (
-    <>
+    <Box>
       <AppBar position="static" color="transparent">
         <Container maxWidth="xl" sx={{ p: 1.5 }}>
           {/* {logo} */}
@@ -68,37 +152,8 @@ function MainHeader() {
               >
                 <MenuIcon />
               </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorElNav}
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "left",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "left",
-                }}
-                open={Boolean(anchorElNav)}
-                onClose={handleCloseNavMenu}
-                sx={{
-                  display: { xs: "block", md: "none" },
-                }}
-              >
-                {pages.map((page, i) => (
-                  <MenuItem key={i} onClick={handleCloseNavMenu}>
-                    <Typography
-                      textAlign="center"
-                      onClick={() => navigate(`/${page}`)}
-                    >
-                      {page}
-                    </Typography>
-                  </MenuItem>
-                ))}
-              </Menu>
             </Box>
-
+            {menuPad}
             <Box
               sx={{
                 flexGrow: 1,
@@ -108,114 +163,40 @@ function MainHeader() {
               }}
             >
               {pages.map((page, i) => (
-                <Link to={`/${page.toLowerCase()}`} key={i}>
-                  <Button
-                    key={page}
-                    onClick={handleCloseNavMenu}
-                    sx={{ my: 2, color: "#085946", display: "block", px: 3 }}
-                  >
-                    {page}
-                  </Button>
-                </Link>
+                <Button
+                  key={i}
+                  onClick={
+                    (handleCloseNavMenu,
+                    () => navigate(`${page === "home" ? "" : page}`))
+                  }
+                  sx={{ my: 2, color: "#085946", display: "block", px: 3 }}
+                >
+                  {page.charAt(0).toUpperCase() + page.slice(1)}
+                </Button>
               ))}
             </Box>
 
-            <Stack direction="row" width="10%" justifyContent="space-between">
-              <Badge badgeContent={4} color="success">
+            <Stack direction="row" width="10%" justifyContent="space-around">
+              <Badge
+                badgeContent={4}
+                color="success"
+                sx={{ display: { xs: "none", md: "inline" } }}
+              >
                 <ShoppingBagTwoToneIcon color="action" align="center" />
               </Badge>
-              <Badge badgeContent={4} color="success">
+              <Badge
+                badgeContent={4}
+                color="success"
+                sx={{ display: { xs: "none", md: "inline" } }}
+              >
                 <FavoriteTwoToneIcon color="action" />
               </Badge>
-              <Box sx={{ flexGrow: 0 }}>
-                <Tooltip title="Open settings">
-                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Face5OutlinedIcon />
-                    {/* {auth?.user && (
-                  <Typography textAlign="center">{` welcome ${auth.user}`}</Typography>
-                )} */}
-                  </IconButton>
-                </Tooltip>
-                <Menu
-                  sx={{ mt: "45px" }}
-                  id="menu-appbar"
-                  anchorEl={anchorElUser}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  open={Boolean(anchorElUser)}
-                  onClose={handleCloseUserMenu}
-                >
-                  <MenuItem onClick={handleCloseUserMenu}>
-                    {auth.user ? (
-                      <Typography
-                        textAlign="center"
-                        onClick={() => auth.logout()}
-                      >
-                        logout
-                      </Typography>
-                    ) : (
-                      <Typography
-                        textAlign="center"
-                        onClick={() => navigate("/login")}
-                      >
-                        login
-                      </Typography>
-                    )}
-                  </MenuItem>
-                </Menu>
-              </Box>
+              {menuProfile}
             </Stack>
           </Toolbar>
         </Container>
       </AppBar>
-
-      <Container sx={{ mt: 5 }} maxWidth="xl">
-        <Grid item xs={12}>
-          <Grid container spacing={3}>
-            <Grid item lg={8} md={12} sm={12} xs={12}>
-              <Banner
-                sxBackground={{
-                  backgroundImage: `url(${url})`,
-                  backgroundColor: "#7fc7d9", // Average color of the background image.
-                  backgroundPosition: "center",
-                }}
-              />
-            </Grid>
-            <Grid item lg={4} md={12} sm={12} xs={12}>
-              <Grid container spacing={3}>
-                <Grid item sm={6} xs={6} md={6} lg={12}>
-                  <Banner
-                    sxBackground={{
-                      backgroundImage: `url(${url2})`,
-                      backgroundColor: "#7fc7d9", // Average color of the background image.
-                      backgroundPosition: "center",
-                    }}
-                    sx={{ height: "24vh" }}
-                  />
-                </Grid>
-                <Grid item sm={6} xs={6} md={6} lg={12}>
-                  <Banner
-                    sxBackground={{
-                      backgroundImage: `url(${url3})`,
-                      backgroundColor: "#7fc7d9", // Average color of the background image.
-                      backgroundPosition: "center",
-                    }}
-                    sx={{ height: "24vh" }}
-                  />
-                </Grid>
-              </Grid>
-            </Grid>
-          </Grid>
-        </Grid>
-      </Container>
-    </>
+    </Box>
   );
 }
 export default MainHeader;

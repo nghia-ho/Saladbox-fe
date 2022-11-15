@@ -10,6 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import { alpha, styled } from "@mui/material/styles";
+import { Link, useNavigate } from "react-router-dom";
 
 const StyledIcon = styled("div")(({ theme }) => ({
   margin: "auto",
@@ -25,44 +26,94 @@ const StyledIcon = styled("div")(({ theme }) => ({
 const Category = () => {
   const category = [
     {
-      name: "Salad cao cấp",
+      name: "Salad",
       icon: <ChairAltIcon />,
     },
     {
-      name: "Salad hằng ngày",
+      name: "Juice",
       icon: <ChairAltIcon />,
     },
     {
-      name: "Salad đặc trưng",
+      name: "Juice",
       icon: <ChairAltIcon />,
     },
     {
-      name: "Sinh tố xanh",
+      name: "All",
       icon: <ChairAltIcon />,
     },
     {
-      name: "Nước ép",
+      name: "Special Weekly Meal",
       icon: <ChairAltIcon />,
     },
     {
-      name: "Món ăn thêm",
+      name: "Custom Your Salad",
       icon: <ChairAltIcon />,
     },
-    // {
-    //   name: "Đồ uống khác",
-    //   icon: <ChairAltIcon />,
-    // },
   ];
+  const navigate = useNavigate();
+  console.log(
+    category.map((e) => {
+      const x = e.name.trim().toLowerCase();
+      return x;
+    })
+  );
   return (
     <Container maxWidth="xl">
       <Typography variant="h5" sx={{ my: 5 }}>
         Category
       </Typography>
       <Grid container spacing={3}>
-        {category.map((e, i) => (
-          <Grid item xs={4} sm={6} md={2} key={i}>
+        {category.slice(0, 4).map((e, i) => (
+          <Grid item xs={6} sm={3} md={3} key={i}>
             <Paper variant="outlined">
               <Card
+                onClick={() =>
+                  navigate(
+                    `/menu/${e.name === "All" ? "" : e.name.toLowerCase()}`
+                  )
+                }
+                sx={{
+                  py: 4,
+                  boxShadow: 0,
+                  textAlign: "center",
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    pl: 1,
+                    pb: 1,
+                    justifyContent: "center",
+                  }}
+                >
+                  <IconButton>
+                    <ChairAltIcon />
+                  </IconButton>
+                </Box>
+                <Box sx={{ display: "flex", flexDirection: "column" }}>
+                  <CardContent sx={{ flex: "1 0 auto" }}>
+                    <Typography component="div" variant="subtitle">
+                      {e.name}
+                    </Typography>
+                  </CardContent>
+                </Box>
+              </Card>
+            </Paper>
+          </Grid>
+        ))}
+      </Grid>
+      <Typography variant="h5" sx={{ my: 5 }}>
+        Our Service
+      </Typography>
+      <Grid container spacing={3}>
+        {category.slice(4, 6).map((e, i) => (
+          <Grid item xs={12} sm={6} md={6} key={i}>
+            <Paper variant="outlined">
+              <Card
+                onClick={() =>
+                  navigate(`/menu/${e.name.toLowerCase().replace(/ /g, "")}`)
+                }
                 sx={{
                   py: 4,
                   boxShadow: 0,
