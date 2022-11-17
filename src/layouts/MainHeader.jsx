@@ -72,7 +72,7 @@ function MainHeader() {
         </Box>
 
         <Divider sx={{ bodertyle: "dashed" }} />
-        <MenuItem to="/" component={Link} sx={{ mx: 1 }}>
+        <MenuItem to="/account" component={Link} sx={{ mx: 1 }}>
           My Profile
         </MenuItem>
         <MenuItem to="/account" component={Link} sx={{ mx: 1 }}>

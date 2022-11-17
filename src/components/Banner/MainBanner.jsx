@@ -12,7 +12,7 @@ const url3 =
 
 const MainBanner = () => {
   return (
-    <Container sx={{ mt: 5 }} maxWidth="xl">
+    <Container sx={{ mt: 5 }} maxWidth="lg">
       <Grid item xs={12}>
         <Grid container spacing={0.5}>
           <Grid item lg={6} md={6} sm={12} xs={12}>

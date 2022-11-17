@@ -14,9 +14,8 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 import { Stack } from "@mui/system";
 import React, { useState } from "react";
-import apiService from "../app/apiService";
 import { useDispatch, useSelector } from "react-redux";
-import { getProductById } from "../features/product/productSlice";
+import { getProductById } from "./productSlice";
 import { Link as RouterLink } from "react-router-dom";
 
 const ProductCard = ({ product, height }) => {
