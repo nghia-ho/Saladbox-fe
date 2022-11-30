@@ -36,6 +36,11 @@ function ThemeProvider({ children }) {
       secondary: SECONDARY,
       success: SUCCESS,
     },
+    text: {
+      primary: PRIMARY,
+      secondary: SECONDARY,
+      success: SUCCESS,
+    },
     shape: { borderRadius: 8 },
     typography: {
       button: {
@@ -51,6 +56,12 @@ function ThemeProvider({ children }) {
         defaultProps: {
           underline: "hover",
         },
+      },
+    },
+    MuiToggleButton: {
+      defaultProps: {
+        color: "#000000",
+        backgroundColor: "#fefefe",
       },
     },
   };

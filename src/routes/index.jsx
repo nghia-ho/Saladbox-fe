@@ -10,6 +10,11 @@ import NotFoundPage from "../pages/NotFoundPage";
 import DetailPage from "../pages/DetailPage";
 import AuthRequire from "./AuthRequire";
 import MenuPage from "../pages/MenuPage";
+import CartPage from "../pages/CartPage";
+import ShippingAddress from "../components/ShippingAddress";
+import Payment from "../components/Payment";
+import PlaceOrder from "../components/PlaceOrder";
+import OrderPage from "../pages/OrderPage";
 const Router = () => {
   return (
     <Routes>
@@ -17,6 +22,7 @@ const Router = () => {
         <Route index element={<HomePage />} />
         <Route path="menu" element={<MenuPage />} />
         <Route path="product/:id" element={<DetailPage />} />
+        <Route path="cart" element={<CartPage />} />
       </Route>
 
       <Route
@@ -27,9 +33,11 @@ const Router = () => {
           </AuthRequire>
         }
       >
-        <Route path="/account" element={<AccountPage />} />
-        {/* <Route path="order" element={<OrderPage />} /> */}
-        {/* <Route path="cart" element={<CartPage />} /> */}
+        <Route path="account" element={<AccountPage />} />
+        <Route path="shipping" element={<ShippingAddress />} />
+        <Route path="payment" element={<Payment />} />
+        <Route path="placeorder" element={<PlaceOrder />} />
+        <Route path="order/:id" element={<OrderPage />} />
         {/* <Route path="admin" element={<AdminPage />} /> */}
       </Route>
 

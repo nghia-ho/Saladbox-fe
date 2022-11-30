@@ -46,7 +46,7 @@ const RegisterPage = () => {
     handleSubmit,
     reset,
     setError,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = methods;
 
   const onSubmit = async (data) => {

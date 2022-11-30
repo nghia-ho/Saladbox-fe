@@ -15,15 +15,34 @@ import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 import { Stack } from "@mui/system";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getProductById } from "./productSlice";
+import { createfavoriteProduct, removefavoriteProduct } from "./productSlice";
 import { Link as RouterLink } from "react-router-dom";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import useAuth from "../../hooks/useAuth";
 
-const ProductCard = ({ product, height }) => {
+const ProductCard = ({ product }) => {
   const [count, setCount] = useState(0);
   const dispatch = useDispatch();
+  const auth = useAuth();
   if (count < 0) {
     setCount(0);
   }
+  const { favorite } = useSelector((state) => state.products);
+  const a = favorite?.favorite.filter((e) => e.product?._id === product?._id);
+  const wishList = !auth.user ? (
+    <IconButton to="/login" component={RouterLink}>
+      <FavoriteBorderIcon fontSize="small" color="primary" />
+    </IconButton>
+  ) : a[0]?.product?._id ? (
+    <IconButton onClick={() => dispatch(removefavoriteProduct(product._id))}>
+      <FavoriteIcon fontSize="small" color="primary" />
+    </IconButton>
+  ) : (
+    <IconButton onClick={() => dispatch(createfavoriteProduct(product._id))}>
+      <FavoriteBorderIcon fontSize="small" color="primary" />
+    </IconButton>
+  );
 
   return (
     <Paper variant="elevation" elevation={2}>
@@ -33,7 +52,6 @@ const ProductCard = ({ product, height }) => {
             <CardMedia
               sx={{ borderRadius: 2 }}
               component="img"
-              height={height}
               image={`http://localhost:8000${product?.image}`}
               alt={product.name}
             />
@@ -41,20 +59,28 @@ const ProductCard = ({ product, height }) => {
         </Box>
         <CardContent>
           <Stack>
-            <Typography variant="subtitle2" sx={{ fontWeight: "600" }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: "600" }} noWrap>
               {product.name}
             </Typography>
             <Stack direction="row">
-              <Typography variant="caption">
-                {product.decription?.slice(0, 80)}
+              <Typography variant="caption" noWrap>
+                {product.decription}
               </Typography>
               <Typography variant="caption" ml={2}>
                 {product.calo}cal
               </Typography>
             </Stack>
-            <Typography variant="subtitle1" sx={{ fontWeight: "600" }}>
-              {product.price}$
-            </Typography>
+            <Stack
+              direction="row"
+              spacing={2}
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Typography variant="subtitle1" sx={{ fontWeight: "600" }}>
+                {product.price}$
+              </Typography>
+              {wishList}
+            </Stack>
           </Stack>
         </CardContent>
         <CardActions sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -80,7 +106,11 @@ const ProductCard = ({ product, height }) => {
               <RemoveIcon />
             </IconButton>
           </Stack>
-          <IconButton size="large" color="primary">
+          <IconButton
+            size="large"
+            color="primary"
+            onClick={() => auth.addToCard(product)}
+          >
             <ShoppingBasketIcon style={{ verticalAlign: "middle" }} />
           </IconButton>
         </CardActions>

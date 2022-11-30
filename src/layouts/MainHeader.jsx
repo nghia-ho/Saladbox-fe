@@ -42,7 +42,6 @@ function MainHeader() {
 
   const navigate = useNavigate();
   const auth = useAuth();
-  console.log(auth);
 
   const menuProfile = auth.user ? (
     <Box sx={{ flexGrow: 0 }}>
@@ -83,7 +82,7 @@ function MainHeader() {
           sx={{ mx: 1 }}
           onClick={() =>
             auth.logout(() => {
-              navigate("/");
+              navigate(-1);
             })
           }
         >
@@ -178,9 +177,11 @@ function MainHeader() {
 
             <Stack direction="row" width="10%" justifyContent="space-around">
               <Badge
-                badgeContent={4}
+                badgeContent={auth.cart.length}
                 color="success"
                 sx={{ display: { xs: "none", md: "inline" } }}
+                to="/cart"
+                component={Link}
               >
                 <ShoppingBagTwoToneIcon color="action" align="center" />
               </Badge>
