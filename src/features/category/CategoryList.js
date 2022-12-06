@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Box, Divider, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { categoryProduct } from "../product/productSlice";
@@ -12,7 +12,7 @@ const CategoryList = () => {
   const [selectValue, setSelectValue] = useState("");
 
   const dispatch = useDispatch();
-  const { categories, isLoading } = useSelector((state) => state.category);
+  const { categories } = useSelector((state) => state.category);
   useEffect(() => {
     dispatch(getCategory());
   }, [dispatch]);
@@ -29,12 +29,10 @@ const CategoryList = () => {
   const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
     "& .MuiToggleButtonGroup-grouped": {
       border: 0,
-      color: "#000000",
       "&.Mui-disabled": {
+        border: 0,
         color: "#000000",
-        border: "1px solid black",
       },
-
       "&:not(:first-of-type)": {
         borderRadius: theme.shape.borderRadius,
       },
@@ -42,43 +40,59 @@ const CategoryList = () => {
         borderRadius: theme.shape.borderRadius,
       },
       "&.Mui-selected": {
-        color: "#E6E5A3",
-        backgroundColor: "#557153",
+        color: "#A4BE7B",
+        backgroundColor: "#815B5B",
       },
       "&:hover": {
-        color: "#000000",
-        backgroundColor: "#7C9473",
+        color: "#A4BE7B",
+        backgroundColor: "white",
       },
     },
   }));
 
   return (
-    <Box>
-      <StyledToggleButtonGroup
-        value={selectValue}
-        color="primary"
-        exclusive
-        onChange={handleAlignment}
-        aria-label="text alignment"
-      >
-        <ToggleButton sx={{ p: 3 }} value="all" aria-label="all">
-          All
-        </ToggleButton>
-        <ToggleButton sx={{ p: 3 }} value="new" aria-label="new">
-          New arrvival
-        </ToggleButton>
-        {categories.map((e) => (
-          <ToggleButton
-            key={e._id}
-            sx={{ p: 3 }}
-            value={e.name}
-            aria-label={e.name}
-            onClick={() => handleCate(e._id, e.name)}
-          >
-            {e.name}
-          </ToggleButton>
-        ))}
-      </StyledToggleButtonGroup>
+    <Box sx={{ mt: 3, mr: 2, width: 1 }}>
+      <Paper elevation={2} sx={{ p: 1 }}>
+        <Typography align="center" sx={{ py: 1.5, fontWeight: 600 }}>
+          Categories
+        </Typography>
+        <Divider variant="middle" />
+        <StyledToggleButtonGroup
+          value={selectValue}
+          color="primary"
+          exclusive
+          onChange={handleAlignment}
+          aria-label="text alignment"
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-around",
+            alignItems: "end",
+            p: 1,
+          }}
+        >
+          {categories.map((e) => (
+            <ToggleButton
+              key={e._id}
+              sx={{
+                my: 0.4,
+                p: 1,
+                color: "black",
+                width: 1,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "start",
+              }}
+              value={e.name}
+              aria-label={e.name}
+              onClick={() => handleCate(e._id, e.name)}
+              fullWidth
+            >
+              {e.name}
+            </ToggleButton>
+          ))}
+        </StyledToggleButtonGroup>
+      </Paper>
     </Box>
   );
 };

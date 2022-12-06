@@ -1,19 +1,21 @@
-import { Button, Grid, Typography } from "@mui/material";
-import { Box, Container, Stack } from "@mui/system";
+import { Button, Grid, Paper, Typography } from "@mui/material";
+import { Box, Stack } from "@mui/system";
 import React, { useEffect } from "react";
 import { FormProvider } from "../../components/form";
 import FTextField from "../../components/form/FTextField";
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { getUser } from "./userSlice";
+import useAuth from "../../hooks/useAuth";
 
 function ProfileInfomation() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getUser());
   }, [dispatch]);
-  const { user } = useSelector((state) => state.user);
-  console.log(user?.name);
+
+  const { user } = useAuth();
+
   const defaultValues = {
     name: user?.name || "",
     email: user?.email || "",
@@ -24,37 +26,55 @@ function ProfileInfomation() {
     defaultValues,
   });
   return (
-    <Container>
-      <Grid container spacing={4}>
-        <Grid item xs={3}>
-          <Box
-            sx={{
-              borderRadius: "50%",
-              backgroundColor: "grey",
-              width: "120px",
-              height: "120px",
-            }}
-          />
-        </Grid>
-        <Grid item xs={8}>
-          Hi Nghia
-        </Grid>
-        <Box sx={{ m: 4, width: "75%" }}>
-          <Typography>Thông tin cá nhân</Typography>
+    <Paper elevation={2} sx={{ p: 3 }}>
+      <Grid container spacing={1}>
+        <Stack
+          direction="row"
+          sx={{ width: 1, display: { xs: "block", md: "flex" } }}
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Grid item xs={12} md={6}>
+            <Stack alignItems="center" my={2}>
+              <Box
+                sx={{
+                  borderRadius: "50%",
+                  backgroundColor: "grey",
+                  width: "150px",
+                  height: "150px",
+                }}
+              />
+            </Stack>
+          </Grid>
+          <Grid item xs={12} md={12}>
+            <Typography variant="h4" sx={{ fontWeight: 600 }} align="center">
+              Hi {user.name ? user.name : ""} !
+            </Typography>
+          </Grid>
+        </Stack>
+        <Box sx={{ my: 3, width: 1 }}>
+          <Typography variant="h6" sx={{ fontWeight: 600 }}>
+            Personal Information{" "}
+          </Typography>
           <Box sx={{ mt: 4 }}>
             <FormProvider methods={methods}>
-              <Stack spacing={2}>
-                <FTextField name="name" label="Your Name" size="small" />
-                <FTextField name="email" label="Email" size="small" />
-                <FTextField name="address" label="Address" size="small" />
-                <FTextField name="phone" label="Phone" size="small" />
-                <Button variant="contained"> Save </Button>
+              <Stack spacing={2} alignItems="end">
+                <FTextField name="name" label="Your Name" size="large" />
+                <FTextField name="email" label="Email" size="large" />
+                <FTextField name="address" label="Address" size="large" />
+                <FTextField name="phone" label="Phone" size="large" />
+                <Button
+                  variant="contained"
+                  sx={{ width: 1 / 3, backgroundColor: "primary.darker" }}
+                >
+                  Save
+                </Button>
               </Stack>
             </FormProvider>
           </Box>
         </Box>
       </Grid>
-    </Container>
+    </Paper>
   );
 }
 

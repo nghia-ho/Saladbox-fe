@@ -29,17 +29,20 @@ const ProductCard = ({ product }) => {
     setCount(0);
   }
   const { favorite } = useSelector((state) => state.products);
-  const a = favorite?.favorite.filter((e) => e.product?._id === product?._id);
+  const a = favorite?.favorite?.find((e) => e.product?._id === product?._id);
+  const id = product._id;
   const wishList = !auth.user ? (
     <IconButton to="/login" component={RouterLink}>
       <FavoriteBorderIcon fontSize="small" color="primary" />
     </IconButton>
-  ) : a[0]?.product?._id ? (
+  ) : a ? (
     <IconButton onClick={() => dispatch(removefavoriteProduct(product._id))}>
       <FavoriteIcon fontSize="small" color="primary" />
     </IconButton>
   ) : (
-    <IconButton onClick={() => dispatch(createfavoriteProduct(product._id))}>
+    <IconButton
+      onClick={() => dispatch(createfavoriteProduct({ id, type: "avaiable" }))}
+    >
       <FavoriteBorderIcon fontSize="small" color="primary" />
     </IconButton>
   );
@@ -52,7 +55,9 @@ const ProductCard = ({ product }) => {
             <CardMedia
               sx={{ borderRadius: 2 }}
               component="img"
-              image={`http://localhost:8000${product?.image}`}
+              image={`http://localhost:8000${
+                product?.image || "/salads/1.png"
+              }`}
               alt={product.name}
             />
           </CardActionArea>
@@ -77,7 +82,7 @@ const ProductCard = ({ product }) => {
               alignItems="center"
             >
               <Typography variant="subtitle1" sx={{ fontWeight: "600" }}>
-                {product.price}$
+                {product.price} vnd
               </Typography>
               {wishList}
             </Stack>
@@ -108,7 +113,7 @@ const ProductCard = ({ product }) => {
           </Stack>
           <IconButton
             size="large"
-            color="primary"
+            color="success"
             onClick={() => auth.addToCard(product)}
           >
             <ShoppingBasketIcon style={{ verticalAlign: "middle" }} />

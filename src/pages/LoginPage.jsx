@@ -43,7 +43,8 @@ const LoginPage = () => {
   } = methods;
   const onSubmit = async (data) => {
     const { email, password } = data;
-    const from = location?.state?.from.pathname || "/";
+    // replace "/" to -1
+    const from = location?.state?.from.pathname || -1;
     try {
       await auth.login({ email, password }, () =>
         navigate(from, { replace: true })

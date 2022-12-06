@@ -15,6 +15,7 @@ import ShippingAddress from "../components/ShippingAddress";
 import Payment from "../components/Payment";
 import PlaceOrder from "../components/PlaceOrder";
 import OrderPage from "../pages/OrderPage";
+import CustomMealPage from "../pages/CustomMealPage";
 const Router = () => {
   return (
     <Routes>
@@ -23,6 +24,7 @@ const Router = () => {
         <Route path="menu" element={<MenuPage />} />
         <Route path="product/:id" element={<DetailPage />} />
         <Route path="cart" element={<CartPage />} />
+        <Route path="custom" element={<CustomMealPage />} />
       </Route>
 
       <Route

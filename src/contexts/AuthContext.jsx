@@ -102,12 +102,13 @@ const AuthProvider = ({ children }) => {
     const initialize = async () => {
       try {
         const accessToken = window.localStorage.getItem("accessToken");
-        const user = window.localStorage.getItem("username");
         let cart = window.localStorage.getItem("cart");
         cart = JSON.parse(localStorage.getItem("cart")) || [];
 
         if (accessToken && isValidToken(accessToken)) {
           setSession(accessToken);
+          const response = await apiService.get("/users/me");
+          const user = response.data.data;
           dispatch({
             type: INITIALIZE,
             payload: { isAuthenticated: true, user, cart },

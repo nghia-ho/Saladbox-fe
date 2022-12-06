@@ -3,9 +3,10 @@ import apiService from "../../app/apiService";
 
 export const getProducts = createAsyncThunk(
   "product/getProducts",
-  async ({ page = 1, name, sortBy }) => {
+  async ({ page = 1, name, price, sortBy }) => {
     let url = `/product?page=${page}&limit=${12}`;
     if (name) url += `&name=${name}`;
+    if (price) url += `&price=${price}`;
     if (sortBy) url += `&sortBy=${sortBy}`;
     const response = await apiService.get(url);
     return response.data.data;
@@ -50,10 +51,10 @@ export const getfavoriteProduct = createAsyncThunk(
 );
 export const createfavoriteProduct = createAsyncThunk(
   "favorite/createFavorites",
-  async (id) => {
+  async ({ id, type }) => {
     try {
       let url = `/favorite`;
-      const response = await apiService.post(url, { productId: id });
+      const response = await apiService.post(url, { productId: id, type });
       return response.data.data;
     } catch (error) {
       console.log(error);
@@ -66,6 +67,19 @@ export const removefavoriteProduct = createAsyncThunk(
     try {
       let url = `/favorite/${id}`;
       const response = await apiService.delete(url);
+      return response.data.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+export const customProduct = createAsyncThunk(
+  "product/custom",
+  async ({ name, ingredients, price, calo, type }) => {
+    try {
+      const data = { name, ingredients, price, calo, type };
+      let url = `/product/custom`;
+      const response = await apiService.post(url, data);
       return response.data.data;
     } catch (error) {
       console.log(error);
@@ -184,6 +198,22 @@ const productSlice = createSlice({
       state.favorite = action.payload;
     },
     [removefavoriteProduct.rejected]: (state, action) => {
+      state.isLoading = false;
+      if (action.payload) {
+        state.errorMessage = action.payload.message;
+      } else {
+        state.errorMessage = action.error.message;
+      }
+    },
+    [customProduct.pending]: (state, action) => {
+      state.isLoading = true;
+      state.errorMessage = "";
+    },
+    [customProduct.fulfilled]: (state, action) => {
+      state.isLoading = false;
+      state.product = action.payload;
+    },
+    [customProduct.rejected]: (state, action) => {
       state.isLoading = false;
       if (action.payload) {
         state.errorMessage = action.payload.message;

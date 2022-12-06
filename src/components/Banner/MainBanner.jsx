@@ -1,4 +1,4 @@
-import { Container, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import React from "react";
 
 import Banner from "./Banner";
@@ -12,45 +12,43 @@ const url3 =
 
 const MainBanner = () => {
   return (
-    <Container sx={{ mt: 5 }} maxWidth="lg">
-      <Grid item xs={12}>
-        <Grid container spacing={0.5}>
-          <Grid item lg={6} md={6} sm={12} xs={12}>
-            <Banner
-              sxBackground={{
-                backgroundImage: `url(${url1})`,
-                backgroundColor: "#7fc7d9", // Average color of the background image.
-                backgroundPosition: "center",
-              }}
-            />
-          </Grid>
-          <Grid item lg={6} md={6} sm={12} xs={12}>
-            <Grid container spacing={0.5}>
-              <Grid item sm={6} xs={6} md={12} lg={12}>
-                <Banner
-                  sxBackground={{
-                    backgroundImage: `url(${url2})`,
-                    backgroundColor: "#7fc7d9", // Average color of the background image.
-                    backgroundPosition: "center",
-                  }}
-                  sx={{ height: `${50 / 2 - 0.5}vh` }}
-                />
-              </Grid>
-              <Grid item sm={6} xs={6} md={12} lg={12}>
-                <Banner
-                  sxBackground={{
-                    backgroundImage: `url(${url3})`,
-                    backgroundColor: "#7fc7d9", // Average color of the background image.
-                    backgroundPosition: "center",
-                  }}
-                  sx={{ height: "25vh" }}
-                />
-              </Grid>
+    <>
+      <Grid container spacing={0.5}>
+        <Grid item lg={6} md={6} sm={12} xs={12}>
+          <Banner
+            sxBackground={{
+              backgroundImage: `url(${url1})`,
+              backgroundColor: "#7fc7d9", // Average color of the background image.
+              backgroundPosition: "center",
+            }}
+          />
+        </Grid>
+        <Grid item lg={6} md={6} sm={12} xs={12}>
+          <Grid container spacing={0.5}>
+            <Grid item sm={6} xs={6} md={12} lg={12}>
+              <Banner
+                sxBackground={{
+                  backgroundImage: `url(${url2})`,
+                  backgroundColor: "#7fc7d9", // Average color of the background image.
+                  backgroundPosition: "center",
+                }}
+                sx={{ height: { xs: `25vh`, md: `${25 - 0.5}vh` } }}
+              />
+            </Grid>
+            <Grid item sm={6} xs={6} md={12} lg={12}>
+              <Banner
+                sxBackground={{
+                  backgroundImage: `url(${url3})`,
+                  backgroundColor: "#7fc7d9", // Average color of the background image.
+                  backgroundPosition: "center",
+                }}
+                sx={{ height: "25vh" }}
+              />
             </Grid>
           </Grid>
         </Grid>
       </Grid>
-    </Container>
+    </>
   );
 };
 

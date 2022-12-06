@@ -8,18 +8,17 @@ import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import Logo from "../components/Logo";
 import { Badge, Divider } from "@mui/material";
 import ShoppingBagTwoToneIcon from "@mui/icons-material/ShoppingBagTwoTone";
-import Face5OutlinedIcon from "@mui/icons-material/Face5Outlined";
+import AccountCircleTwoToneIcon from "@mui/icons-material/AccountCircleTwoTone";
 import FavoriteTwoToneIcon from "@mui/icons-material/FavoriteTwoTone";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { Stack } from "@mui/system";
 
-const pages = ["home", "menu", "about", "contact"];
+const pages = ["home", "menu", "custom", "contact"];
 
 function MainHeader() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -39,17 +38,15 @@ function MainHeader() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-
+  // const location = useLocation();
   const navigate = useNavigate();
   const auth = useAuth();
 
   const menuProfile = auth.user ? (
     <Box sx={{ flexGrow: 0 }}>
-      <Tooltip title="Open settings">
-        <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-          <Face5OutlinedIcon />
-        </IconButton>
-      </Tooltip>
+      <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+        <AccountCircleTwoToneIcon color="success" />
+      </IconButton>
       <Menu
         sx={{ mt: 2 }}
         id="menu-appbar"
@@ -82,7 +79,7 @@ function MainHeader() {
           sx={{ mx: 1 }}
           onClick={() =>
             auth.logout(() => {
-              navigate(-1);
+              navigate("/", { replace: true });
             })
           }
         >
@@ -91,12 +88,13 @@ function MainHeader() {
       </Menu>
     </Box>
   ) : (
-    <Box sx={{ flexGrow: 0 }} onClick={() => navigate("/login")}>
-      <Tooltip title="Open settings">
-        <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-          <Face5OutlinedIcon />
-        </IconButton>
-      </Tooltip>
+    <Box
+      sx={{ flexGrow: 0, fontSize: "small", color: "primary" }}
+      onClick={() => navigate("/login")}
+    >
+      <IconButton onClick={handleOpenUserMenu} fontSize="small" color="primary">
+        <AccountCircleTwoToneIcon fontSize="small" color="primary" />
+      </IconButton>
     </Box>
   );
 
@@ -133,71 +131,78 @@ function MainHeader() {
   );
 
   return (
-    <Box>
-      <AppBar position="static" color="transparent">
-        <Container maxWidth="xl" sx={{ p: 1.5 }}>
-          {/* {logo} */}
-          <Toolbar disableGutters>
+    <AppBar
+      position="static"
+      color="inherit"
+      sx={{
+        boxShadow: "0",
+      }}
+    >
+      <Container maxWidth="lg" sx={{ p: 1 }}>
+        <Toolbar disableGutters>
+          <Stack direction="row" alignItems="end">
             <Logo />
-
-            <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleOpenNavMenu}
-                color="inherit"
-              >
-                <MenuIcon />
-              </IconButton>
-            </Box>
-            {menuPad}
-            <Box
-              sx={{
-                flexGrow: 1,
-                display: { xs: "none", md: "flex" },
-                justifyContent: "center",
-                px: 5,
-              }}
+            <Typography sx={{ fontWeight: 600, ml: 1 }} variant="body2">
+              SaladBox
+            </Typography>
+          </Stack>
+          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+              color="inherit"
             >
-              {pages.map((page, i) => (
-                <Button
-                  key={i}
-                  onClick={
-                    (handleCloseNavMenu,
-                    () => navigate(`${page === "home" ? "" : page}`))
-                  }
-                  sx={{ my: 2, color: "#085946", display: "block", px: 3 }}
-                >
-                  {page.charAt(0).toUpperCase() + page.slice(1)}
-                </Button>
-              ))}
-            </Box>
+              <MenuIcon />
+            </IconButton>
+          </Box>
+          {menuPad}
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: { xs: "none", md: "flex" },
+              justifyContent: "center",
+              px: 5,
+            }}
+          >
+            {pages.map((page, i) => (
+              <Button
+                key={i}
+                onClick={
+                  (handleCloseNavMenu,
+                  () => navigate(`${page === "home" ? "" : page}`))
+                }
+                sx={{ my: 2, color: "primary.darker", display: "block", px: 3 }}
+              >
+                {page.charAt(0).toUpperCase() + page.slice(1)}
+              </Button>
+            ))}
+          </Box>
 
-            <Stack direction="row" width="10%" justifyContent="space-around">
-              <Badge
-                badgeContent={auth.cart.length}
-                color="success"
-                sx={{ display: { xs: "none", md: "inline" } }}
-                to="/cart"
-                component={Link}
-              >
-                <ShoppingBagTwoToneIcon color="action" align="center" />
-              </Badge>
-              <Badge
-                badgeContent={4}
-                color="success"
-                sx={{ display: { xs: "none", md: "inline" } }}
-              >
-                <FavoriteTwoToneIcon color="action" />
-              </Badge>
-              {menuProfile}
-            </Stack>
-          </Toolbar>
-        </Container>
-      </AppBar>
-    </Box>
+          <Stack direction="row" width="10%" justifyContent="space-around">
+            <Badge
+              badgeContent={auth.cart.length}
+              color="success"
+              sx={{ display: { xs: "none", md: "inline" } }}
+              to="/cart"
+              component={Link}
+            >
+              <ShoppingBagTwoToneIcon color="success" align="center" />
+            </Badge>
+            <Badge
+              badgeContent={0}
+              color="success"
+              sx={{ display: { xs: "none", md: "inline" } }}
+            >
+              <FavoriteTwoToneIcon color="success" />
+            </Badge>
+            {menuProfile}
+          </Stack>
+        </Toolbar>
+      </Container>
+    </AppBar>
   );
 }
 export default MainHeader;

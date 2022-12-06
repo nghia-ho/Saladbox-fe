@@ -7,6 +7,7 @@ const initialState = {
   order: {},
   orderDetail: {},
   orderPay: {},
+  ordersList: [],
 };
 
 const orderSlice = createSlice({
@@ -31,6 +32,10 @@ const orderSlice = createSlice({
     payOrderSuccess: (state, action) => {
       state.orderPay = action.payload;
       state.orderDetail = action.payload;
+      state.isLoading = false;
+    },
+    getOrdersSuccess: (state, action) => {
+      state.ordersList = action.payload;
       state.isLoading = false;
     },
   },
@@ -71,6 +76,15 @@ export const payOrder = (id, paymetResult) => async (dispatch) => {
     const response = await apiService.put(`/order/${id}/pay`, paymetResult);
     console.log(response);
     dispatch(orderSlice.actions.payOrderSuccess(response.data.data));
+  } catch (error) {
+    dispatch(orderSlice.actions.hasError(error));
+  }
+};
+export const getOrders = () => async (dispatch) => {
+  dispatch(orderSlice.actions.startLoading());
+  try {
+    const response = await apiService.get(`/order`);
+    dispatch(orderSlice.actions.getOrdersSuccess(response.data.data));
   } catch (error) {
     dispatch(orderSlice.actions.hasError(error));
   }

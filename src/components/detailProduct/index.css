@@ -1,0 +1,24 @@
+.container {
+  position: relative;
+  transition: transform 0.3s;
+}
+.container:hover .overlay {
+  opacity: 1;
+  background-color: "black";
+}
+
+.overlay {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  transition: 0.5s ease;
+  opacity: 0;
+  bottom: 0;
+  font-size: 1em;
+  font-weight: 900;
+  text-align: center;
+  color: aliceblue;
+  vertical-align: center;
+  border-radius: 10px;
+}

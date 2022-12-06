@@ -120,7 +120,7 @@ function PlaceOrder() {
                   <Stack justifyContent="center">
                     <Typography sx={{ fontWeight: 700 }}>Customer</Typography>
 
-                    <Typography>{user}</Typography>
+                    <Typography>{user.name}</Typography>
                   </Stack>
                 </Stack>
               </Item>

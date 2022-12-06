@@ -1,35 +1,23 @@
 import React from "react";
-import {
-  Card,
-  CardContent,
-  CardMedia,
-  Grid,
-  Typography,
-  Box,
-} from "@mui/material";
+import { Box } from "@mui/system";
+import { Card, CardContent, CardMedia, Grid, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-const Category = () => {
+const Service = () => {
   const category = [
     {
-      name: "Salad",
-      icon: "/salad.png",
-      path: "menu",
+      name: "Custom Your Salad",
+      icon: "/custom2.png",
+      path: "custom",
+      caption:
+        " Based on a basic salad component including 3 parts,greens - veggie & protein & topping - sauce. Choose your favorite ingredients and create your own salad recipes",
     },
     {
-      name: "Juice",
-      icon: "/juice.png",
-      path: "menu",
-    },
-    {
-      name: "Smoothie",
-      icon: "/smoothie.png",
-      path: "menu",
-    },
-    {
-      name: "All",
-      icon: "/salad-all.png",
-      path: "menu",
+      name: "Special Weekly Meal",
+      icon: "/custom.png",
+      path: "customeweaklysalad",
+      caption:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus consectetur porro molestiae vero ea in maxime delectus esse, nihil eligendi.",
     },
   ];
   const navigate = useNavigate();
@@ -39,18 +27,22 @@ const Category = () => {
       sx={{
         width: 1,
         height: 1,
-        bgcolor: "secondary.light",
+        bgcolor: "success.light",
         p: 5,
         mt: 3,
         borderRadius: 2,
       }}
     >
-      <Typography variant="h4" sx={{ mb: 5, fontWeight: 600 }} align="center">
-        Category
+      <Typography
+        variant="h4"
+        sx={{ mb: 5, fontWeight: 600, color: "success.contrastText" }}
+        align="center"
+      >
+        Our Service
       </Typography>
       <Grid container spacing={3}>
         {category.map((e, i) => (
-          <Grid item xs={6} sm={3} md={3} key={i}>
+          <Grid item xs={12} sm={6} key={i}>
             <Card
               onClick={() => navigate(`/${e.path}`)}
               sx={{
@@ -58,7 +50,8 @@ const Category = () => {
                 boxShadow: 0,
                 textAlign: "center",
                 cursor: "pointer",
-                bgcolor: "secondary.dark",
+                bgcolor: "success.dark",
+                height: 1,
               }}
             >
               <Box
@@ -80,8 +73,17 @@ const Category = () => {
                     component="div"
                     variant="subtitle"
                     sx={{ fontWeight: 600 }}
+                    color="success.contrastText"
                   >
                     {e.name}
+                    <Typography
+                      component="div"
+                      variant="caption"
+                      align="justify"
+                      mt={2}
+                    >
+                      {e.caption}
+                    </Typography>
                   </Typography>
                 </CardContent>
               </Box>
@@ -93,4 +95,4 @@ const Category = () => {
   );
 };
 
-export default Category;
+export default Service;

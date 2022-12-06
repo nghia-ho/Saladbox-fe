@@ -1,87 +1,67 @@
-import { Box, Button, Menu, MenuItem, Stack, Typography } from "@mui/material";
-import { FMultiCheckbox, FRadioGroup } from "../../components/form";
-import ClearAllIcon from "@mui/icons-material/ClearAll";
+import { Box, Button, Divider, Paper, Stack, Typography } from "@mui/material";
+import Slider from "@mui/material/Slider";
+import { useState } from "react";
 
-export const FILTER_GREENS_OPTIONS = ["Kohlrabi Greens", "Bok Choy", "Spinach"];
+function valuetext(value) {
+  return value;
+}
 
-export const FILTER_VEGGIE_OPTIONS = ["beans ", "lentils ", "okra ", "peanut"];
+function ProductFilter({ setPrice }) {
+  const [value, setValue] = useState([0, 100000]);
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
-export const FILTER_PROTEINS_OPTIONS = ["All", "Chicken", "Meat", "Pork"];
+  const handleViewPrice = (value) => {
+    let x;
+    for (let index = 0; index < value.length; index++) {
+      x = `${value[index - 1]?.toLocaleString()} - ${value[
+        index
+      ]?.toLocaleString()}`;
+    }
+    return x;
+  };
 
-export const FILTER_SAUCE_OPTIONS = ["All", "huweg", "iowe", "jiowef"];
-
-export const FILTER_CHEESE_OPTIONS = [
-  { value: "below", label: "Below $25" },
-  { value: "between", label: "Between $25 - $75" },
-  { value: "above", label: "Above $75" },
-];
-
-function ProductFilter({ resetFilter }) {
+  const handlePrice = () => {
+    setPrice(value);
+  };
   return (
-    <Stack spacing={3} sx={{ p: 3, width: 250 }}>
-      <Stack spacing={1}>
-        <Typography variant="h6" sx={{ fontWeight: 600 }}>
-          Greens
+    <Stack spacing={3} sx={{ mt: 3, width: 1 }}>
+      <Paper elevation={2} sx={{ p: 1, height: 1 }}>
+        <Typography align="center" sx={{ py: 1, fontWeight: 600 }}>
+          Pricing Filter
         </Typography>
-        <FMultiCheckbox
-          name="greens"
-          options={FILTER_GREENS_OPTIONS}
-          sx={{ width: 1 }}
-        />
-      </Stack>
+        <Divider variant="middle" />
 
-      <Stack spacing={1}>
-        <Typography variant="h6" sx={{ fontWeight: 600 }}>
-          Proteins
-        </Typography>
-        <FRadioGroup
-          name="Proteins"
-          options={FILTER_PROTEINS_OPTIONS}
-          row={false}
-        />
-      </Stack>
-
-      <Stack spacing={1}>
-        <Typography variant="h6" sx={{ fontWeight: 600 }}>
-          Sauce
-        </Typography>
-        <FRadioGroup name="Sauce" options={FILTER_SAUCE_OPTIONS} row={false} />
-      </Stack>
-
-      {/* <Stack spacing={1}>
-        <Typography variant="h6" sx={{ fontWeight: 600 }}>
-          Veggies
-        </Typography>
-        <FRadioGroup
-          name="Veggie"
-          options={FILTER_VEGGIE_OPTIONS}
-          row={false}
-        />
-      </Stack>
-
-      <Stack spacing={1}>
-        <Typography variant="h6" sx={{ fontWeight: 600 }}>
-          Cheese
-        </Typography>
-        <FRadioGroup
-          name="Cheese"
-          options={FILTER_CHEESE_OPTIONS.map((item) => item.value)}
-          getOptionLabel={FILTER_CHEESE_OPTIONS.map((item) => item.label)}
-        />
-      </Stack> */}
-
-      <Box>
-        <Button
-          size="large"
-          type="submit"
-          color="inherit"
-          variant="outlined"
-          onClick={resetFilter}
-          startIcon={<ClearAllIcon />}
-        >
-          Clear All
-        </Button>
-      </Box>
+        <Box sx={{ width: 1, p: 1 }}>
+          <Slider
+            getAriaLabel={() => "Temperature range"}
+            value={value}
+            onChange={handleChange}
+            valueLabelDisplay="auto"
+            getAriaValueText={valuetext}
+            size="small"
+            min={0}
+            max={150000}
+          />
+          <Typography variant="caption" sx={{ fontWeight: 600 }}>
+            Price:{" "}
+            <Typography variant="caption">{handleViewPrice(value)}</Typography>
+          </Typography>
+          <Button
+            onClick={handlePrice}
+            sx={{
+              fontWeight: 600,
+              bgcolor: "success.main",
+              display: "flex",
+              justifyContent: "center",
+              width: 1,
+            }}
+          >
+            Filter
+          </Button>
+        </Box>
+      </Paper>
     </Stack>
   );
 }

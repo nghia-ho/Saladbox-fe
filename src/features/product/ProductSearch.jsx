@@ -5,21 +5,15 @@ import { FTextField } from "../../components/form";
 
 function ProductSearch() {
   return (
-    <Stack
-      spacing={2}
-      direction={{ xs: "column", sm: "row" }}
-      alignItems={{ sm: "center" }}
-      justifyContent="center"
-      my={2}
-    >
+    <Stack spacing={1} direction={{ xs: "column", sm: "column" }}>
       <FTextField
         name="nameQuery"
-        sx={{ width: 300 }}
+        sx={{ width: 1 }}
         size="small"
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <SearchIcon />
+              <SearchIcon size="small" />
             </InputAdornment>
           ),
         }}

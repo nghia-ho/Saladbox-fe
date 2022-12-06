@@ -3,8 +3,8 @@ import { Stack } from "@mui/material";
 import { Button } from "@mui/material";
 import { Typography } from "@mui/material";
 import { Container } from "@mui/material";
-import React, { useContext } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -42,7 +42,7 @@ function subtotal(items) {
 function CartPage() {
   const { cart, addToCard, subtractToCart, deleteFromCart } = useAuth();
   const navigate = useNavigate();
-  const Row = (param) => {
+  const row = (param) => {
     const cart = param.map((cartItem) => {
       return createRow(
         cartItem.name,
@@ -54,7 +54,7 @@ function CartPage() {
     });
     return cart;
   };
-  let rows = Row(cart);
+  let rows = row(cart);
 
   const invoiceSubtotal = subtotal(rows);
   const invoiceTaxes = TAX_RATE * invoiceSubtotal;
@@ -104,7 +104,7 @@ function CartPage() {
                           >
                             <CardActionArea
                               component={Link}
-                              to={`/product/${row.id}`}
+                              to={`/product/${row._id}`}
                             >
                               <CardMedia
                                 sx={{ borderRadius: 2 }}
