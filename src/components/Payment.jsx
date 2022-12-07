@@ -7,9 +7,7 @@ import { Paper, Stack } from "@mui/material";
 
 import { FormProvider, FRadioGroup } from "../components/form";
 import { useForm } from "react-hook-form";
-import { useNavigate, Link as RouterLink } from "react-router-dom";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as Yup from "yup";
+import { useNavigate } from "react-router-dom";
 
 import useAuth from "../hooks/useAuth";
 
@@ -17,7 +15,7 @@ const ShippingAddress = () => {
   const navigate = useNavigate();
   const { savePaymentMethod, shippingAdress } = useAuth();
   if (!shippingAdress) navigate("/shipping");
-  const [payment, setPayment] = useState(["COD", "Paypal"]);
+  const [payment] = useState(["COD", "Paypal"]);
 
   const defaultValues = {
     payment: "",
@@ -26,12 +24,7 @@ const ShippingAddress = () => {
   const methods = useForm({
     defaultValues,
   });
-  const {
-    handleSubmit,
-    reset,
-    setError,
-    formState: { errors, isSubmitting },
-  } = methods;
+  const { handleSubmit, reset, setError } = methods;
 
   const onSubmit = async (data) => {
     const { payment } = data;

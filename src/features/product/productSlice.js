@@ -3,11 +3,12 @@ import apiService from "../../app/apiService";
 
 export const getProducts = createAsyncThunk(
   "product/getProducts",
-  async ({ page = 1, name, price, sortBy }) => {
+  async ({ page = 1, name, price, sortBy, category }) => {
     let url = `/product?page=${page}&limit=${12}`;
     if (name) url += `&name=${name}`;
     if (price) url += `&price=${price}`;
     if (sortBy) url += `&sortBy=${sortBy}`;
+    if (category) url += `&category=${category}`;
     const response = await apiService.get(url);
     return response.data.data;
   }
@@ -25,18 +26,6 @@ export const getProductById = createAsyncThunk(
   }
 );
 
-export const categoryProduct = createAsyncThunk(
-  "category/catories",
-  async (id) => {
-    try {
-      let url = `/category/${id}`;
-      const response = await apiService.get(url);
-      return response.data.data.product;
-    } catch (error) {
-      console.log(error);
-    }
-  }
-);
 export const getfavoriteProduct = createAsyncThunk(
   "favorite/favorites",
   async () => {
@@ -141,22 +130,7 @@ const productSlice = createSlice({
         state.errorMessage = action.error.message;
       }
     },
-    [categoryProduct.pending]: (state, action) => {
-      state.isLoading = true;
-      state.errorMessage = "";
-    },
-    [categoryProduct.fulfilled]: (state, action) => {
-      state.isLoading = false;
-      state.products = action.payload;
-    },
-    [categoryProduct.rejected]: (state, action) => {
-      state.isLoading = false;
-      if (action.payload) {
-        state.errorMessage = action.payload.message;
-      } else {
-        state.errorMessage = action.error.message;
-      }
-    },
+
     [getfavoriteProduct.pending]: (state, action) => {
       state.isLoading = true;
       state.errorMessage = "";

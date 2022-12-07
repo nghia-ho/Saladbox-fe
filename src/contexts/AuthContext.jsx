@@ -201,6 +201,8 @@ const AuthProvider = ({ children }) => {
         ? { ...cartItem, quantity: cartItem.quantity - 1 }
         : cartItem
     );
+    cart = cart.filter((cartItem) => cartItem.quantity !== 0);
+
     localStorage.setItem("cart", JSON.stringify(cart));
 
     dispatch({ type: ADDTOCART, payload: { cart } });

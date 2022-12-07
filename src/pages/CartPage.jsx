@@ -20,8 +20,6 @@ import { IconButton } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 
-const TAX_RATE = 0.07;
-
 function ccyFormat(num) {
   return `${num.toFixed(0)}`;
 }
@@ -57,8 +55,7 @@ function CartPage() {
   let rows = row(cart);
 
   const invoiceSubtotal = subtotal(rows);
-  const invoiceTaxes = TAX_RATE * invoiceSubtotal;
-  const invoiceTotal = invoiceTaxes + invoiceSubtotal;
+  const invoiceTotal = invoiceSubtotal;
 
   const handleCheckout = () => {
     navigate("/shipping");
@@ -177,15 +174,7 @@ function CartPage() {
                       {ccyFormat(invoiceSubtotal)}
                     </TableCell>
                   </TableRow>
-                  <TableRow>
-                    <TableCell colSpan={1}>Tax</TableCell>
-                    <TableCell align="center">{`${(TAX_RATE * 100).toFixed(
-                      0
-                    )} %`}</TableCell>
-                    <TableCell align="center">
-                      {ccyFormat(invoiceTaxes)}
-                    </TableCell>
-                  </TableRow>
+
                   <TableRow>
                     <TableCell colSpan={2}>Total</TableCell>
                     <TableCell align="center">

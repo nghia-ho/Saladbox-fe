@@ -315,7 +315,7 @@ function OrderPage() {
                   </TableRow>
                   <TableRow>
                     <TableCell colSpan={4}>
-                      {!orderDetail.isPaid ? (
+                      {orderDetail === "paypal" && !orderDetail.isPaid ? (
                         <Box>
                           {isLoading && <LoadingScreen />}
                           {!sdkReady ? (
@@ -330,7 +330,7 @@ function OrderPage() {
                       ) : (
                         <Box>
                           <Button variant="outlined" disableTouchRipple>
-                            Completed Payment
+                            Completed
                           </Button>
                         </Box>
                       )}

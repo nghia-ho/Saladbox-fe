@@ -92,8 +92,8 @@ function MainHeader() {
       sx={{ flexGrow: 0, fontSize: "small", color: "primary" }}
       onClick={() => navigate("/login")}
     >
-      <IconButton onClick={handleOpenUserMenu} fontSize="small" color="primary">
-        <AccountCircleTwoToneIcon fontSize="small" color="primary" />
+      <IconButton onClick={handleOpenUserMenu} color="primary" sx={{ p: 0 }}>
+        <AccountCircleTwoToneIcon color="success" />
       </IconButton>
     </Box>
   );

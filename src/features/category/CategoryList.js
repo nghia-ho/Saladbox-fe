@@ -1,16 +1,13 @@
 import { Box, Divider, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { categoryProduct } from "../product/productSlice";
 import { getCategory } from "./categorySlice";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import ToggleButton from "@mui/material/ToggleButton";
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 
-const CategoryList = () => {
-  const [selectValue, setSelectValue] = useState("");
-
+const CategoryList = ({ selectValue, setSelectValue, setPage }) => {
   const dispatch = useDispatch();
   const { categories } = useSelector((state) => state.category);
   useEffect(() => {
@@ -22,8 +19,8 @@ const CategoryList = () => {
   };
 
   const handleCate = (id, name) => {
-    dispatch(categoryProduct(id));
-    setSelectValue(name);
+    setSelectValue(id);
+    setPage(1);
   };
 
   const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
@@ -83,7 +80,7 @@ const CategoryList = () => {
                 flexDirection: "column",
                 alignItems: "start",
               }}
-              value={e.name}
+              value={e._id}
               aria-label={e.name}
               onClick={() => handleCate(e._id, e.name)}
               fullWidth

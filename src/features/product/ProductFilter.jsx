@@ -1,30 +1,29 @@
 import { Box, Button, Divider, Paper, Stack, Typography } from "@mui/material";
 import Slider from "@mui/material/Slider";
-import { useState } from "react";
 
 function valuetext(value) {
   return value;
 }
 
-function ProductFilter({ setPrice }) {
-  const [value, setValue] = useState([0, 100000]);
+function ProductFilter({ setPrice, price, value, setValue }) {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
   const handleViewPrice = (value) => {
-    let x;
+    let price;
     for (let index = 0; index < value.length; index++) {
-      x = `${value[index - 1]?.toLocaleString()} - ${value[
+      price = `${value[index - 1]?.toLocaleString()} - ${value[
         index
       ]?.toLocaleString()}`;
     }
-    return x;
+    return price;
   };
 
   const handlePrice = () => {
     setPrice(value);
   };
+
   return (
     <Stack spacing={3} sx={{ mt: 3, width: 1 }}>
       <Paper elevation={2} sx={{ p: 1, height: 1 }}>
@@ -36,7 +35,7 @@ function ProductFilter({ setPrice }) {
         <Box sx={{ width: 1, p: 1 }}>
           <Slider
             getAriaLabel={() => "Temperature range"}
-            value={value}
+            value={[...value]}
             onChange={handleChange}
             valueLabelDisplay="auto"
             getAriaValueText={valuetext}

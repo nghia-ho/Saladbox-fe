@@ -5,7 +5,6 @@ import {
   CardActionArea,
   CardMedia,
   Divider,
-  getFormLabelUtilityClasses,
   IconButton,
   List,
   Typography,
@@ -13,7 +12,7 @@ import {
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { Stack } from "@mui/system";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -65,7 +64,7 @@ function CustomBoard({ setModal, setModalAdd }) {
   const map = (
     <Box my={1} sx={{ width: 1 }}>
       {ingredientsCustom.map((ingredientItem) => (
-        <Stack direction="row" sx={{ p: 1 }}>
+        <Stack direction="row" sx={{ p: 1 }} key={ingredientItem._id}>
           <Card>
             <CardActionArea sx={{ display: "flex", p: 0.5 }}>
               <CardMedia

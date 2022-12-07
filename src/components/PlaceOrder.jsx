@@ -3,8 +3,8 @@ import { Stack } from "@mui/material";
 import { Button } from "@mui/material";
 import { Typography } from "@mui/material";
 import { Container } from "@mui/material";
-import React, { useContext, useEffect } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -15,16 +15,12 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { CardActionArea } from "@mui/material";
 import { CardMedia } from "@mui/material";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import { IconButton } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
 import PersonIcon from "@mui/icons-material/Person";
 import { styled } from "@mui/material/styles";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import PlaceIcon from "@mui/icons-material/Place";
-import { useDispatch, useSelector } from "react-redux";
-import { createOrder1, resetIsLoading } from "../features/order/orderSlice";
+import { useDispatch } from "react-redux";
+import { createOrder1 } from "../features/order/orderSlice";
 const TAX_RATE = 0.07;
 
 function ccyFormat(num) {
@@ -51,14 +47,9 @@ const Item = styled(Box)(({ theme }) => ({
 }));
 function PlaceOrder() {
   const { cart, payment, shippingAdress, user, clearCart } = useAuth();
-  const { order, isLoading } = useSelector((state) => state.order);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  useEffect(() => {
-    if (!isLoading) {
-      navigate(`/order/${order._id}`);
-    }
-  }, [isLoading, order._id, navigate]);
+
   const Row = (param) => {
     const cart = param.map((cartItem) => {
       return createRow(
@@ -77,9 +68,9 @@ function PlaceOrder() {
   const invoiceTaxes = TAX_RATE * invoiceSubtotal;
   const invoiceTotal = invoiceTaxes + invoiceSubtotal;
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
     try {
-      dispatch(
+      const order = await dispatch(
         createOrder1({
           orderItems: rows,
           shippingAddress: shippingAdress,
@@ -88,6 +79,7 @@ function PlaceOrder() {
           totalPrice: invoiceTotal,
         })
       );
+      navigate(`/order/${order._id}`);
       clearCart();
     } catch (error) {
       console.log(error);
