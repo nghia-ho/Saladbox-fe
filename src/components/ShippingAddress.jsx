@@ -12,6 +12,7 @@ import * as Yup from "yup";
 
 import useAuth from "../hooks/useAuth";
 
+//validator input
 const ShippingSchema = Yup.object().shape({
   address: Yup.string().required("Address is required"),
   district: Yup.string().required("District is required"),
@@ -20,9 +21,8 @@ const ShippingSchema = Yup.object().shape({
 });
 
 const ShippingAddress = () => {
-  const navigate = useNavigate();
+  // info input shipping from user's info
   const { saveShippingAddress, shippingAdress } = useAuth();
-
   const defaultValues = {
     address: shippingAdress.address || "",
     district: shippingAdress.district || "",
@@ -36,6 +36,8 @@ const ShippingAddress = () => {
   });
   const { handleSubmit, reset, setError } = methods;
 
+  // submit and navigato to payment page
+  const navigate = useNavigate();
   const onSubmit = async (data) => {
     const { address, district, city, phone } = data;
     try {
