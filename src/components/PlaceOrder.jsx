@@ -79,6 +79,7 @@ function PlaceOrder() {
           totalPrice: invoiceTotal,
         })
       );
+      console.log(order);
       navigate(`/order/${order._id}`);
       clearCart();
     } catch (error) {
