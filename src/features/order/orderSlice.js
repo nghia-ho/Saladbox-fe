@@ -55,6 +55,7 @@ export const createOrder1 =
       };
       const response = await apiService.post("/order", data);
       dispatch(orderSlice.actions.createOrderSuccess(response.data.data));
+      return response.data.data;
     } catch (error) {
       dispatch(orderSlice.actions.hasError(error));
     }

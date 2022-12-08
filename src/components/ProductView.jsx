@@ -5,7 +5,7 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import { styled } from "@mui/material/styles";
 
-export default function ProductView({ view, setView, handleChange }) {
+export default function ProductView({ view, handleChange }) {
   const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
     "& .MuiToggleButtonGroup-grouped": {
       border: 0,

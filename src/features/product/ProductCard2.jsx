@@ -29,7 +29,7 @@ const ProductCard2 = ({ product }) => {
   }
   const { favorite } = useSelector((state) => state.products);
   const a = favorite?.favorite?.find((e) => e.product?._id === product?._id);
-  const id = product._id;
+  const id = product?._id;
   const wishList = !auth.user ? (
     <IconButton to="/login" component={RouterLink}>
       <FavoriteBorderIcon fontSize="inherit" color="primary" />
@@ -80,7 +80,7 @@ const ProductCard2 = ({ product }) => {
                 >
                   <CardActionArea
                     component={RouterLink}
-                    to={`/product/${product._id}`}
+                    to={`/product/${product?._id}`}
                     sx={{ display: "flex" }}
                   >
                     <CardMedia
@@ -89,7 +89,7 @@ const ProductCard2 = ({ product }) => {
                       image={`http://localhost:8000${
                         product?.image || "/salads/1.png"
                       }`}
-                      alt={product.name}
+                      alt={product?.name}
                     />
                   </CardActionArea>
                 </Stack>
@@ -103,11 +103,11 @@ const ProductCard2 = ({ product }) => {
                       sx={{ fontWeight: "600" }}
                       noWrap
                     >
-                      {product.name}
+                      {product?.name}
                     </Typography>
                     <Stack>
                       <Typography variant="caption" align="justify">
-                        {product.decription}
+                        {product?.decription}
                       </Typography>
                     </Stack>
                   </Box>
@@ -118,10 +118,12 @@ const ProductCard2 = ({ product }) => {
                     alignItems="center"
                   >
                     <Typography variant="subtitle1" sx={{ fontWeight: "600" }}>
-                      {product.price} vnd
+                      {product?.price} vnd
                     </Typography>
 
-                    <Typography variant="caption">{product.calo}cal</Typography>
+                    <Typography variant="caption">
+                      {product?.calo}cal
+                    </Typography>
                     {wishList}
                   </Stack>
                   <Box

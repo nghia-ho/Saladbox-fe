@@ -1,4 +1,4 @@
-import { Box, Container } from "@mui/system";
+import { Box } from "@mui/system";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getOrders } from "./orderSlice";
@@ -37,8 +37,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function createData(orderId, date, product, price, status) {
-  return { orderId, date, product, price, status };
+function createData(orderId, date, product, price, status, isDeliverd) {
+  return { orderId, date, product, price, status, isDeliverd };
 }
 
 const OrderList = () => {
@@ -57,7 +57,8 @@ const OrderList = () => {
         orderItem.createdAt,
         orderItem.orderItems,
         orderItem.totalPrice,
-        orderItem.isPaid
+        orderItem.isPaid,
+        orderItem.isDeliverd
       );
     });
     return order;
@@ -89,7 +90,8 @@ const OrderList = () => {
               <StyledTableCell>Date</StyledTableCell>
               <StyledTableCell>Product</StyledTableCell>
               <StyledTableCell align="right">Amount</StyledTableCell>
-              <StyledTableCell align="right">Status</StyledTableCell>
+              <StyledTableCell align="right">Paid Status</StyledTableCell>
+              <StyledTableCell align="right">Delievery Status</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -111,6 +113,9 @@ const OrderList = () => {
                 <StyledTableCell align="right">{row.price}</StyledTableCell>
                 <StyledTableCell align="right">
                   {row.status ? "Complete" : "Unpaid"}
+                </StyledTableCell>
+                <StyledTableCell align="right">
+                  {row.isDeliverd ? "Complete" : "Not yet"}
                 </StyledTableCell>
               </StyledTableRow>
             ))}

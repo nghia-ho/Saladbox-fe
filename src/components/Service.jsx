@@ -7,7 +7,7 @@ const Service = () => {
   const category = [
     {
       name: "Custom Your Salad",
-      icon: "/custom2.png",
+      icon: "/custom1.png",
       path: "custom",
       caption:
         " Based on a basic salad component including 3 parts,greens - veggie & protein & topping - sauce. Choose your favorite ingredients and create your own salad recipes",

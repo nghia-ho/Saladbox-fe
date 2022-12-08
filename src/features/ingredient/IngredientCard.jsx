@@ -3,20 +3,11 @@ import {
   Button,
   Card,
   CardActionArea,
-  CardActions,
-  CardContent,
   CardMedia,
-  IconButton,
-  Paper,
   Typography,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
-import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 import { Stack } from "@mui/system";
-import React, { useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
-import useAuth from "../../hooks/useAuth";
+import React from "react";
 import { useDispatch } from "react-redux";
 import { addIngredientsCustom } from "./ingredientSlice";
 

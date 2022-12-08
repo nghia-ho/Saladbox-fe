@@ -25,19 +25,25 @@ import { FormProvider } from "../components/form";
 import ProductFilter from "../features/product/ProductFilter";
 import useAuth from "../hooks/useAuth";
 import ProductView from "../components/ProductView";
+import LoadingScreen from "../components/LoadingScreen";
 
 const MenuPage = () => {
+  // const { state } = useLocation();
+  // const va = state?.cate || "salad";
+
   const [page, setPage] = useState(1);
   const [filterName, setFilterName] = useState("");
   const [sort, setSort] = useState("");
-  const [price, setPrice] = useState(null);
   const [view, setView] = React.useState("list");
-
+  const arrayFilter = [0, 1500000];
+  const [price, setPrice] = useState(arrayFilter);
+  const [value, setValue] = useState(price);
+  const [selectValue, setSelectValue] = useState("");
   const handleChange = (event, nextView) => {
     setView(nextView);
   };
   const defaultValues = {
-    nameQuery: "",
+    nameQuery: filterName,
   };
   const methods = useForm({
     defaultValues,
@@ -46,7 +52,7 @@ const MenuPage = () => {
 
   const dispatch = useDispatch();
   const { user } = useAuth();
-  const { totalPage } = useSelector((state) => state.products);
+  const { totalPage, isLoading } = useSelector((state) => state.products);
   useEffect(() => {
     dispatch(
       getProducts({
@@ -54,20 +60,25 @@ const MenuPage = () => {
         name: filterName,
         price: JSON.stringify(price),
         sortBy: sort,
+        category: selectValue,
       })
     );
     if (user) dispatch(getfavoriteProduct());
-  }, [filterName, page, dispatch, sort, user, price]);
+  }, [filterName, page, dispatch, sort, user, price, selectValue]);
 
   const onSubmit = (data) => {
     setFilterName(data.nameQuery);
     setPage(1);
   };
   const resetFilter = () => {
+    setPage(1);
     reset();
     setFilterName("");
     setSort("");
-    setPrice("");
+    setPrice(arrayFilter);
+    setValue(arrayFilter);
+    setView("list");
+    setSelectValue("");
   };
   return (
     <Container maxWidth="lg">
@@ -119,15 +130,24 @@ const MenuPage = () => {
             <Stack
               sx={{ flexDirection: { xs: "row", sm: "row", md: "column" } }}
             >
-              <CategoryList page={page} />
-              <ProductFilter setPrice={setPrice} price={price} />
+              <CategoryList
+                selectValue={selectValue}
+                setSelectValue={setSelectValue}
+                setPage={setPage}
+              />
+              <ProductFilter
+                setPrice={setPrice}
+                price={price}
+                value={value}
+                setValue={setValue}
+              />
+              <Button type="submit"></Button>
             </Stack>
             <Stack sx={{ mt: 3 }} alignItems="center">
               <Paper elevation={1} sx={{ p: 1 }}>
                 <Box sx={{ width: 1 }}>
                   <Button
                     size="large"
-                    type="submit"
                     color="primary"
                     variant="outlined"
                     onClick={resetFilter}
@@ -139,13 +159,21 @@ const MenuPage = () => {
               </Paper>
             </Stack>
           </Grid>
-          <Grid item xs={12} md={10}>
-            <ProductList view={view} />
-            <Stack alignItems="center">
+          <Grid item xs={12} md={10} sx={{ position: "relative" }}>
+            {isLoading ? <LoadingScreen /> : <ProductList view={view} />}
+            {/* <ProductList view={view} /> */}
+            <Stack alignItems="center" justifyContent="end">
               <Pagination
+                sx={{
+                  borderColor: "success.light",
+                  border: "1px dashed ",
+                  p: 1,
+                  borderRadius: 2,
+                }}
                 count={totalPage}
                 shape="rounded"
                 color="success"
+                page={page}
                 onChange={(e, value) => setPage(value)}
               />
             </Stack>

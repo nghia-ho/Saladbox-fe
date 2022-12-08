@@ -8,7 +8,7 @@ import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
-import { Button, Container, Divider, Grid, Stack } from "@mui/material";
+import { Button, Container, Grid, Stack } from "@mui/material";
 
 import { useDispatch, useSelector } from "react-redux";
 import { getIngredients } from "../features/ingredient/ingredientSlice";
@@ -29,7 +29,7 @@ function TabPanel(props) {
     >
       {value === index && (
         <Box sx={{ p: p, borderRadius: 1, border: "1px solid green" }}>
-          <Typography>{children}</Typography>
+          <div>{children}</div>
         </Box>
       )}
     </div>
@@ -207,19 +207,19 @@ export default function CustomMealPage() {
                 sx={{ p: 4, borderRadius: 1 }}
               />
             </Tabs>
-
             <TabPanel value={value} index={0} dir={theme.direction} p={3}>
               <IngredientList ingredients={ingredientStep1} />
             </TabPanel>
-            <TabPanel value={value} index={1} dir={theme.direction} p={0}>
+            <TabPanel value={value} index={1} dir={theme.direction} p={3}>
               <Stack
                 direction="row"
                 justifyContent="space-between"
                 m={2}
                 sx={{ display: { xs: "block", sm: "flex" } }}
               >
-                {stepTwoCate.map((item) => (
+                {stepTwoCate.map((item, i) => (
                   <Button
+                    key={i}
                     variant="outlined"
                     sx={{ color: "primary.darker", m: 1 }}
                     onClick={(e) => handleClick(e)}
@@ -228,7 +228,6 @@ export default function CustomMealPage() {
                   </Button>
                 ))}
               </Stack>
-              <Divider />
               <Box sx={{ m: 2 }}>
                 <IngredientList ingredients={step2} />
               </Box>

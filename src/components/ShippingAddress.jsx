@@ -1,24 +1,28 @@
-import { useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { Container } from "@mui/system";
 import { Paper, Stack } from "@mui/material";
 
 import { FormProvider, FTextField } from "../components/form";
 import { useForm } from "react-hook-form";
-import { useNavigate, Link as RouterLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 
 import useAuth from "../hooks/useAuth";
 
-const ShippingAddress = () => {
-  const navigate = useNavigate();
-  const { saveShippingAddress, shippingAdress } = useAuth();
+//validator input
+const ShippingSchema = Yup.object().shape({
+  address: Yup.string().required("Address is required"),
+  district: Yup.string().required("District is required"),
+  city: Yup.string().required("City is required"),
+  phone: Yup.number().positive().required("Phone is required"),
+});
 
+const ShippingAddress = () => {
+  // info input shipping from user's info
+  const { saveShippingAddress, shippingAdress } = useAuth();
   const defaultValues = {
     address: shippingAdress.address || "",
     district: shippingAdress.district || "",
@@ -27,15 +31,13 @@ const ShippingAddress = () => {
   };
 
   const methods = useForm({
+    resolver: yupResolver(ShippingSchema),
     defaultValues,
   });
-  const {
-    handleSubmit,
-    reset,
-    setError,
-    formState: { errors, isSubmitting },
-  } = methods;
+  const { handleSubmit, reset, setError } = methods;
 
+  // submit and navigato to payment page
+  const navigate = useNavigate();
   const onSubmit = async (data) => {
     const { address, district, city, phone } = data;
     try {
