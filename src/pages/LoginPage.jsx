@@ -39,7 +39,7 @@ const LoginPage = () => {
     handleSubmit,
     reset,
     setError,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = methods;
   const onSubmit = async (data) => {
     const { email, password } = data;

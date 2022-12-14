@@ -9,12 +9,10 @@ import { FormProvider, FRadioGroup } from "../components/form";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
-import useAuth from "../hooks/useAuth";
+import { savePaymentMethod } from "../features/cart/cartSlice";
+import { useDispatch } from "react-redux";
 
-const ShippingAddress = () => {
-  const navigate = useNavigate();
-  const { savePaymentMethod, shippingAdress } = useAuth();
-  if (!shippingAdress) navigate("/shipping");
+const PaymentPage = () => {
   const [payment] = useState(["COD", "Paypal"]);
 
   const defaultValues = {
@@ -25,6 +23,8 @@ const ShippingAddress = () => {
     defaultValues,
   });
   const { handleSubmit, reset, setError } = methods;
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const onSubmit = async (data) => {
     const { payment } = data;
@@ -32,7 +32,7 @@ const ShippingAddress = () => {
       if (!payment) {
         return;
       }
-      savePaymentMethod(payment, () => navigate("/placeorder"));
+      dispatch(savePaymentMethod(payment, () => navigate("/placeorder")));
     } catch (error) {
       reset();
       setError("responseError", error);
@@ -70,4 +70,4 @@ const ShippingAddress = () => {
     </Container>
   );
 };
-export default ShippingAddress;
+export default PaymentPage;

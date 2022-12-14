@@ -20,6 +20,7 @@ import { Link as RouterLink } from "react-router-dom";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import useAuth from "../../hooks/useAuth";
+import { addToCard } from "../cart/cartSlice";
 
 const ProductCard = ({ product }) => {
   const [count, setCount] = useState(0);
@@ -48,7 +49,7 @@ const ProductCard = ({ product }) => {
   );
 
   return (
-    <Paper variant="elevation" elevation={2}>
+    <Paper variant="elevation" elevation={0}>
       <Card>
         <Box sx={{ p: 2 }}>
           <CardActionArea component={RouterLink} to={`/product/${product._id}`}>
@@ -114,7 +115,7 @@ const ProductCard = ({ product }) => {
           <IconButton
             size="large"
             color="success"
-            onClick={() => auth.addToCard(product)}
+            onClick={() => dispatch(addToCard(product))}
           >
             <ShoppingBasketIcon style={{ verticalAlign: "middle" }} />
           </IconButton>

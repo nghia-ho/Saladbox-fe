@@ -13,7 +13,7 @@ function FavoriteList() {
 
   const { favorite } = useSelector((state) => state.products);
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="md" sx={{ py: 3 }}>
       <Grid container spacing={3}>
         {favorite?.favorite?.map((fav) => {
           return (

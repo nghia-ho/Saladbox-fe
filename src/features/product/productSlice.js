@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { useDispatch } from "react-redux";
 import apiService from "../../app/apiService";
 
 export const getProducts = createAsyncThunk(
@@ -75,6 +76,41 @@ export const customProduct = createAsyncThunk(
     }
   }
 );
+export const editProduct = createAsyncThunk(
+  "product/edit",
+  async ({ id, name, decription, image, category, price, calo, type }) => {
+    try {
+      const data = { name, decription, image, category, price, calo, type };
+      let url = `/product/${id}`;
+      await apiService.put(url, data);
+      const response = await apiService.get(`/product?page=1`);
+      return response.data.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+export const createProduct = createAsyncThunk(
+  "product/create",
+  async ({ name, decription, image, category, type, ingredients }) => {
+    try {
+      const data = { name, decription, image, category, type, ingredients };
+      const response = await apiService.post(`/product`, data);
+      return response.data.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+export const deleteProduct = createAsyncThunk("product/delete", async (id) => {
+  try {
+    await apiService.delete(`/product/${id}`);
+    const response = await apiService.get(`/product?page=1`);
+    return response.data.data;
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 const initialState = {
   products: [],
@@ -188,6 +224,56 @@ const productSlice = createSlice({
       state.product = action.payload;
     },
     [customProduct.rejected]: (state, action) => {
+      state.isLoading = false;
+      if (action.payload) {
+        state.errorMessage = action.payload.message;
+      } else {
+        state.errorMessage = action.error.message;
+      }
+    },
+    [editProduct.pending]: (state, action) => {
+      state.isLoading = true;
+      state.errorMessage = "";
+    },
+    [editProduct.fulfilled]: (state, action) => {
+      state.isLoading = false;
+      // state.product = action.payload;
+      state.products = action.payload.product;
+    },
+    [editProduct.rejected]: (state, action) => {
+      state.isLoading = false;
+      if (action.payload) {
+        state.errorMessage = action.payload.message;
+      } else {
+        state.errorMessage = action.error.message;
+      }
+    },
+    [createProduct.pending]: (state, action) => {
+      state.isLoading = true;
+      state.errorMessage = "";
+    },
+    [createProduct.fulfilled]: (state, action) => {
+      state.isLoading = false;
+      state.product = action.payload;
+    },
+    [createProduct.rejected]: (state, action) => {
+      state.isLoading = false;
+      if (action.payload) {
+        state.errorMessage = action.payload.message;
+      } else {
+        state.errorMessage = action.error.message;
+      }
+    },
+    [deleteProduct.pending]: (state, action) => {
+      state.isLoading = true;
+      state.errorMessage = "";
+    },
+    [deleteProduct.fulfilled]: (state, action) => {
+      state.isLoading = false;
+      state.products = action.payload.product;
+      state.totalPage = action.payload.totalPage;
+    },
+    [deleteProduct.rejected]: (state, action) => {
       state.isLoading = false;
       if (action.payload) {
         state.errorMessage = action.payload.message;

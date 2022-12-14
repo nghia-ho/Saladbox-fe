@@ -35,7 +35,7 @@ const ProductCard2 = ({ product }) => {
       <FavoriteBorderIcon fontSize="inherit" color="primary" />
     </IconButton>
   ) : a ? (
-    <IconButton onClick={() => dispatch(removefavoriteProduct(product._id))}>
+    <IconButton onClick={() => dispatch(removefavoriteProduct(id))}>
       <FavoriteIcon fontSize="inherit" color="primary" />
     </IconButton>
   ) : (

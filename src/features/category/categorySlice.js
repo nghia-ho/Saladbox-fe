@@ -23,6 +23,10 @@ const categorySlice = createSlice({
       state.isLoading = false;
       state.categories = action.payload;
     },
+    createCategorySuccess: (state, action) => {
+      state.isLoading = false;
+      state.categories.push(action.payload);
+    },
   },
 });
 
@@ -31,6 +35,15 @@ export const getCategory = () => async (dispatch) => {
   try {
     const response = await apiService.get("/category");
     dispatch(categorySlice.actions.getCategorySuccess(response.data.data));
+  } catch (error) {
+    dispatch(categorySlice.actions.hasError(error));
+  }
+};
+export const createCategory = (name) => async (dispatch) => {
+  dispatch(categorySlice.actions.startLoading());
+  try {
+    const response = await apiService.post("/category", { name });
+    dispatch(categorySlice.actions.createCategorySuccess(response.data.data));
   } catch (error) {
     dispatch(categorySlice.actions.hasError(error));
   }

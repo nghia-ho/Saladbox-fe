@@ -64,7 +64,6 @@ const OrderList = () => {
     return order;
   };
   let rows = row(ordersList);
-  console.log(rows);
 
   return (
     <Box sx={{ width: 1 }}>

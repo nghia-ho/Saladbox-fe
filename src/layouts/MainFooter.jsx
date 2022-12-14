@@ -4,7 +4,7 @@ import { Box } from "@mui/system";
 
 function MainFooter() {
   return (
-    <Box sx={{ backgroundColor: "#6a9b90", mt: 10 }}>
+    <Box sx={{ backgroundColor: "primary.darker", mt: 10 }}>
       <Typography variant="body2" color="text.secondary" align="center" p={2}>
         {"Copyright © "}
         <Link

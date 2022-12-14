@@ -40,9 +40,7 @@ function OrderPage() {
   const [sdkReady, setsdkReady] = useState(false);
   let { id } = useParams();
   const dispatch = useDispatch();
-  const { orderDetail, orderPay, isLoading } = useSelector(
-    (state) => state.order
-  );
+  const { order, orderPay, isLoading } = useSelector((state) => state.order);
 
   useEffect(() => {
     const addPayPalScript = async () => {
@@ -54,11 +52,11 @@ function OrderPage() {
       script.onload = () => {
         setsdkReady(true);
       };
-      document.appendChild(script);
+      document.body.appendChild(script);
     };
-    if (!orderDetail._id) {
+    if (!order._id) {
       dispatch(getSingleOrder(id));
-    } else if (!orderDetail.isPaid) {
+    } else if (!order.isPaid) {
       if (!window.paypal) {
         addPayPalScript();
         setsdkReady(true);
@@ -66,14 +64,14 @@ function OrderPage() {
         setsdkReady(true);
       }
     }
-  }, [dispatch, id, orderDetail, orderPay]);
-  console.log(sdkReady);
+  }, [dispatch, id, order, orderPay]);
+
   const successPaymentHandler = (paymentResult) => {
     dispatch(payOrder(id, paymentResult));
   };
   return (
     <Container maxWidth="lg">
-      {!orderDetail._id ? (
+      {!order._id ? (
         <LoadingScreen />
       ) : (
         <Box>
@@ -100,8 +98,8 @@ function OrderPage() {
                     <Stack justifyContent="center" alignItems="start">
                       <Typography sx={{ fontWeight: 700 }}>Customer</Typography>
 
-                      <Typography>{orderDetail.user.name}</Typography>
-                      <Typography>{orderDetail.user.email}</Typography>
+                      <Typography>{order.user.name}</Typography>
+                      <Typography>{order.user.email}</Typography>
                     </Stack>
                   </Stack>
                 </Item>
@@ -122,17 +120,15 @@ function OrderPage() {
                         Order Info
                       </Typography>
                       <Typography>
-                        Shipping: {orderDetail.shippingAddress.city}
+                        Shipping: {order.shippingAddress.city}
                       </Typography>
-                      <Typography>
-                        Payment: {orderDetail.paymentMethod}
-                      </Typography>
+                      <Typography>Payment: {order.paymentMethod}</Typography>
                     </Stack>
                   </Stack>
                   <Box sx={{ mt: 1, width: 1 / 2 }}>
-                    {orderDetail.isPaid ? (
+                    {order.isPaid ? (
                       <Box sx={{ p: 3, backGroundColor: "green" }}>
-                        Paid status: {orderDetail.paymentResult.status}
+                        Paid status: {order.paymentResult.status}
                       </Box>
                     ) : (
                       <Box
@@ -164,18 +160,18 @@ function OrderPage() {
                         Deliver to
                       </Typography>
                       <Typography>
-                        Address: district ${orderDetail.shippingAddress.distrit}{" "}
-                        {orderDetail.shippingAddress.address}
+                        Address: district ${order.shippingAddress.distrit}{" "}
+                        {order.shippingAddress.address}
                       </Typography>
                       <Typography>
-                        Phone: {orderDetail.shippingAddress.phone}
+                        Phone: {order.shippingAddress.phone}
                       </Typography>
                     </Stack>
                   </Stack>
                   <Box sx={{ mt: 1, width: 1 / 3 }}>
-                    {orderDetail.isDeliverd ? (
+                    {order.isDeliverd ? (
                       <Box sx={{ p: 3, backGroundColor: "green" }}>
-                        Deliverd on {orderDetail.paidAt}
+                        Deliverd on {order.paidAt}
                       </Box>
                     ) : (
                       <Box
@@ -219,7 +215,7 @@ function OrderPage() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {orderDetail.orderItems.map((row) => (
+                    {order.orderItems.map((row) => (
                       <TableRow key={row.product_id}>
                         <TableCell align="center">
                           <Stack direction="row">
@@ -296,33 +292,33 @@ function OrderPage() {
                     <TableCell colSpan={2}>Subtotal</TableCell>
                     <TableCell colSpan={1} />
                     <TableCell align="center" colSpan={1}>
-                      {ccyFormat(orderDetail.totalPrice)}
+                      {ccyFormat(order.totalPrice)}
                     </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell colSpan={3}>Tax</TableCell>
                     <TableCell colSpan={2} align="center">
                       <Typography noWrap variant="subtitle2">
-                        {orderDetail.shippingPrice}
+                        {order.shippingPrice}
                       </Typography>
                     </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell colSpan={3}>Total</TableCell>
                     <TableCell align="center">
-                      {ccyFormat(orderDetail.totalPrice)}
+                      {ccyFormat(order.totalPrice)}
                     </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell colSpan={4}>
-                      {orderDetail === "paypal" && !orderDetail.isPaid ? (
+                      {order.paymentMethod === "paypal" && !order.isPaid ? (
                         <Box>
                           {isLoading && <LoadingScreen />}
                           {!sdkReady ? (
                             <LoadingScreen />
                           ) : (
                             <PayPalButton
-                              amount={orderDetail.totalPrice}
+                              amount={order.totalPrice}
                               onSuccess={successPaymentHandler}
                             />
                           )}

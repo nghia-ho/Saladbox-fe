@@ -19,8 +19,9 @@ import PersonIcon from "@mui/icons-material/Person";
 import { styled } from "@mui/material/styles";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import PlaceIcon from "@mui/icons-material/Place";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createOrder1 } from "../features/order/orderSlice";
+import { clearCart } from "../features/cart/cartSlice";
 const TAX_RATE = 0.07;
 
 function ccyFormat(num) {
@@ -46,9 +47,12 @@ const Item = styled(Box)(({ theme }) => ({
   color: "#E6E5A3",
 }));
 function PlaceOrder() {
-  const { cart, payment, shippingAdress, user, clearCart } = useAuth();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { cart, shippingAddress, paymentMethod } = useSelector(
+    (state) => state.cart
+  );
+  const { user } = useAuth();
 
   const Row = (param) => {
     const cart = param.map((cartItem) => {
@@ -73,15 +77,15 @@ function PlaceOrder() {
       const order = await dispatch(
         createOrder1({
           orderItems: rows,
-          shippingAddress: shippingAdress,
-          paymentMethod: payment.toLocaleLowerCase(),
+          shippingAddress: shippingAddress,
+          paymentMethod: paymentMethod.toLocaleLowerCase(),
           shippingPrice: invoiceTaxes,
           totalPrice: invoiceTotal,
         })
       );
       console.log(order);
       navigate(`/order/${order._id}`);
-      clearCart();
+      dispatch(clearCart());
     } catch (error) {
       console.log(error);
     }
@@ -131,8 +135,8 @@ function PlaceOrder() {
                   </Box>
                   <Stack justifyContent="center">
                     <Typography sx={{ fontWeight: 700 }}>Order Info</Typography>
-                    <Typography>Shipping: {shippingAdress.city}</Typography>
-                    <Typography>Payment: {payment}</Typography>
+                    <Typography>Shipping: {shippingAddress.city}</Typography>
+                    <Typography>Payment: {paymentMethod}</Typography>
                   </Stack>
                 </Stack>
               </Item>
@@ -150,8 +154,8 @@ function PlaceOrder() {
                   </Box>
                   <Stack justifyContent="center">
                     <Typography sx={{ fontWeight: 700 }}>Deliver to</Typography>
-                    <Typography>Address: {shippingAdress.address}</Typography>
-                    <Typography>Phone: {shippingAdress.phone}</Typography>
+                    <Typography>Address: {shippingAddress.address}</Typography>
+                    <Typography>Phone: {shippingAddress.phone}</Typography>
                   </Stack>
                 </Stack>
               </Item>

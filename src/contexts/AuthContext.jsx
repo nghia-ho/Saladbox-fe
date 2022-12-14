@@ -1,37 +1,33 @@
 import React from "react";
 import { createContext, useReducer, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import apiService from "../app/apiService";
+import { getCart, clearCart } from "../features/cart/cartSlice";
 import { isValidToken } from "../utils/jwt";
 
 const initialState = {
   isAuthenticated: false,
   isInitialized: false,
   user: null,
-  cart: [],
-  shippingAdress: {},
-  payment: "",
+  role: null,
 };
 
 const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 const LOGOUT = "LOGOUT";
 const REGISTER_SUCCESS = "REGISTER_SUCCESS";
 const INITIALIZE = "INITIALIZE";
-const ADDTOCART = "ADDTOCART";
-const DELETE_FROM_CART = "DELETE_FROM_CART";
-const SAVE_SHIPPING_ADDRESS = "SAVE_SHIPPING_ADDRESS";
-const SAVE_PAYMENT_METHOD = "SAVE_PAYMENT_METHOD";
-const CLEAR_CART = "CLEAR_CART";
+const UPDATE_PROFILE = "AUTH.UPDATE_PROFILE";
 
 const reducer = (state, action) => {
   switch (action.type) {
     case INITIALIZE:
-      const { isAuthenticated, user, cart } = action.payload;
+      const { isAuthenticated, user, role } = action.payload;
       return {
         ...state,
         isAuthenticated,
         isInitialized: true,
         user,
-        cart,
+        role,
       };
 
     case LOGIN_SUCCESS:
@@ -39,43 +35,34 @@ const reducer = (state, action) => {
         ...state,
         isAuthenticated: true,
         user: action.payload.user,
+        role: action.payload.role,
       };
     case LOGOUT:
       return {
         ...state,
         isAuthenticated: false,
         user: null,
+        role: null,
       };
     case REGISTER_SUCCESS:
       return {
         ...state,
         isAuthenticated: true,
         user,
+        role,
       };
-    case ADDTOCART:
+    case UPDATE_PROFILE:
+      const { name, address, phone, avatarURL, bmi } = action.payload;
       return {
         ...state,
-        cart: action.payload.cart,
-      };
-    case DELETE_FROM_CART:
-      return {
-        ...state,
-        cart: action.payload.updateCart,
-      };
-    case CLEAR_CART:
-      return {
-        ...state,
-        cart: action.payload,
-      };
-    case SAVE_SHIPPING_ADDRESS:
-      return {
-        ...state,
-        shippingAdress: action.payload,
-      };
-    case SAVE_PAYMENT_METHOD:
-      return {
-        ...state,
-        payment: action.payload,
+        user: {
+          ...state.user,
+          name,
+          address,
+          phone,
+          avatarURL,
+          bmi,
+        },
       };
 
     default:
@@ -97,13 +84,13 @@ const setSession = (accessToken) => {
 
 const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-
+  const updateProfile = useSelector((state) => state.user.updateProfile);
+  const dispatcher = useDispatch();
   useEffect(() => {
     const initialize = async () => {
       try {
         const accessToken = window.localStorage.getItem("accessToken");
-        let cart = window.localStorage.getItem("cart");
-        cart = JSON.parse(localStorage.getItem("cart")) || [];
+        dispatcher(getCart());
 
         if (accessToken && isValidToken(accessToken)) {
           setSession(accessToken);
@@ -111,13 +98,13 @@ const AuthProvider = ({ children }) => {
           const user = response.data.data;
           dispatch({
             type: INITIALIZE,
-            payload: { isAuthenticated: true, user, cart },
+            payload: { isAuthenticated: true, user, role: user.role },
           });
         } else {
           setSession(null);
           dispatch({
             type: INITIALIZE,
-            payload: { isAuthenticated: false, user: null, cart: [] },
+            payload: { isAuthenticated: false, user: null, role: null },
           });
         }
       } catch (err) {
@@ -127,23 +114,28 @@ const AuthProvider = ({ children }) => {
           payload: {
             isAuthenticated: false,
             user: null,
-            cart: [],
+            role: null,
           },
         });
       }
     };
     initialize();
-  }, []);
+  }, [dispatcher]);
+
+  useEffect(() => {
+    if (updateProfile)
+      dispatch({ type: UPDATE_PROFILE, payload: updateProfile });
+  }, [updateProfile]);
 
   const login = async ({ email, password }, callback) => {
     const response = await apiService.post("/auth/login", { email, password });
     const { user, accessToken } = response.data.data;
-    window.localStorage.setItem("username", user.name);
+    window.localStorage.setItem("username", user);
 
     setSession(accessToken);
     dispatch({
       type: LOGIN_SUCCESS,
-      payload: { user: user.name },
+      payload: { user, role: user.role },
     });
     callback();
   };
@@ -156,11 +148,11 @@ const AuthProvider = ({ children }) => {
     });
 
     const { user, accessToken } = response.data.data;
-    window.localStorage.setItem("username", user.name);
+    window.localStorage.setItem("username", user);
     setSession(accessToken);
     dispatch({
       type: LOGIN_SUCCESS,
-      payload: { user: { name: user.name } },
+      payload: { user: user.name, role: user.role },
     });
     callback();
   };
@@ -168,70 +160,9 @@ const AuthProvider = ({ children }) => {
   const logout = async (callback) => {
     window.localStorage.removeItem("username");
     window.localStorage.removeItem("cart");
+    dispatcher(clearCart());
     setSession(null);
     dispatch({ type: LOGOUT });
-
-    const updateCart = [];
-    dispatch({ type: DELETE_FROM_CART, payload: { updateCart } });
-    callback();
-  };
-
-  const addToCard = async (product) => {
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-    const duplicate = cart.filter((item) => item._id === product._id);
-    if (duplicate.length === 0) {
-      cart.push({ ...product, quantity: 1 });
-      localStorage.setItem("cart", JSON.stringify(cart));
-    } else {
-      cart = cart.map((cartItem) =>
-        cartItem._id === product._id
-          ? { ...cartItem, quantity: cartItem.quantity + 1 }
-          : cartItem
-      );
-      localStorage.setItem("cart", JSON.stringify(cart));
-    }
-    dispatch({ type: ADDTOCART, payload: { cart } });
-  };
-  const subtractToCart = async (product) => {
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-    cart = cart.map((cartItem) =>
-      cartItem._id === product._id
-        ? { ...cartItem, quantity: cartItem.quantity - 1 }
-        : cartItem
-    );
-    cart = cart.filter((cartItem) => cartItem.quantity !== 0);
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-
-    dispatch({ type: ADDTOCART, payload: { cart } });
-  };
-  const deleteFromCart = async (product) => {
-    let cart = localStorage.getItem("cart")
-      ? JSON.parse(localStorage.getItem("cart"))
-      : [];
-
-    const updateCart = cart.filter((item) => item._id !== product._id);
-    localStorage.setItem("cart", JSON.stringify(updateCart));
-
-    dispatch({ type: DELETE_FROM_CART, payload: { updateCart } });
-  };
-
-  const saveShippingAddress = async (data, callback) => {
-    dispatch({ type: SAVE_SHIPPING_ADDRESS, payload: data });
-    localStorage.setItem("shippingAddress", JSON.stringify(data));
-    callback();
-  };
-
-  const savePaymentMethod = async (data, callback) => {
-    dispatch({ type: SAVE_PAYMENT_METHOD, payload: data });
-    localStorage.setItem("payment", JSON.stringify(data));
-    callback();
-  };
-  const clearCart = async (callback) => {
-    window.localStorage.removeItem("cart");
-    dispatch({ type: CLEAR_CART, payload: [] });
     callback();
   };
 
@@ -242,12 +173,6 @@ const AuthProvider = ({ children }) => {
         logout,
         login,
         register,
-        addToCard,
-        subtractToCart,
-        deleteFromCart,
-        saveShippingAddress,
-        savePaymentMethod,
-        clearCart,
       }}
     >
       {children}

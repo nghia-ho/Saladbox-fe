@@ -10,7 +10,8 @@ import { useNavigate } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 
-import useAuth from "../hooks/useAuth";
+import { useDispatch, useSelector } from "react-redux";
+import { saveShippingAddress } from "../features/cart/cartSlice";
 
 //validator input
 const ShippingSchema = Yup.object().shape({
@@ -22,12 +23,13 @@ const ShippingSchema = Yup.object().shape({
 
 const ShippingAddress = () => {
   // info input shipping from user's info
-  const { saveShippingAddress, shippingAdress } = useAuth();
+  const { shippingAddress } = useSelector((state) => state.cart);
+  console.log(shippingAddress);
   const defaultValues = {
-    address: shippingAdress.address || "",
-    district: shippingAdress.district || "",
-    city: shippingAdress.city || "",
-    phone: shippingAdress.phone || "",
+    address: shippingAddress.address || "",
+    district: shippingAddress.district || "",
+    city: shippingAddress.city || "",
+    phone: shippingAddress.phone || "",
   };
 
   const methods = useForm({
@@ -38,11 +40,14 @@ const ShippingAddress = () => {
 
   // submit and navigato to payment page
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const onSubmit = async (data) => {
     const { address, district, city, phone } = data;
     try {
-      saveShippingAddress({ address, district, city, phone }, () =>
-        navigate("/payment")
+      dispatch(
+        saveShippingAddress({ address, district, city, phone }, () =>
+          navigate("/payment")
+        )
       );
     } catch (error) {
       reset();

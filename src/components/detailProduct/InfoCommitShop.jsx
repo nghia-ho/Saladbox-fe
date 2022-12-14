@@ -1,9 +1,7 @@
 import { Box, Card, Grid, Typography } from "@mui/material";
 import React from "react";
-import { useSelector } from "react-redux";
 
 function InfoCommitShop() {
-  const { product } = useSelector((state) => state.products);
   const pictures = [
     { pic: "/safe.png", title: "Safe" },
     { pic: "/fast-delivery.png", title: "Fast Deliver" },

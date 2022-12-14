@@ -26,10 +26,11 @@ import {
 } from "../features/ingredient/ingredientSlice";
 
 import useAuth from "../hooks/useAuth";
+import { addToCard } from "../features/cart/cartSlice";
 
 function CustomBoard({ setModal, setModalAdd }) {
   let { ingredientsCustom } = useSelector((state) => state.ingredient);
-  const { user, addToCard } = useAuth();
+  const { user } = useAuth();
 
   const dispatch = useDispatch();
   let calories = 0;
@@ -55,7 +56,7 @@ function CustomBoard({ setModal, setModalAdd }) {
           })
         );
         const id = product.payload._id;
-        addToCard(product.payload);
+        dispatch(addToCard(product.payload));
         dispatch(createfavoriteProduct({ id, type: "custom" }));
       }
     } else setModal(true);

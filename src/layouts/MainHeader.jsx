@@ -10,13 +10,17 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import Logo from "../components/Logo";
-import { Badge, Divider } from "@mui/material";
+import { Badge, Divider, useTheme } from "@mui/material";
 import ShoppingBagTwoToneIcon from "@mui/icons-material/ShoppingBagTwoTone";
 import AccountCircleTwoToneIcon from "@mui/icons-material/AccountCircleTwoTone";
 import FavoriteTwoToneIcon from "@mui/icons-material/FavoriteTwoTone";
+import Brightness4Icon from "@mui/icons-material/Brightness4";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { Stack } from "@mui/system";
+import { ColorModeContext } from "../contexts/ThemeProvider";
+import { useSelector } from "react-redux";
 
 const pages = ["home", "menu", "custom", "contact"];
 
@@ -40,7 +44,11 @@ function MainHeader() {
   };
   // const location = useLocation();
   const navigate = useNavigate();
+  const { cart } = useSelector((state) => state.cart);
   const auth = useAuth();
+  // dark mode
+  const theme = useTheme();
+  const colorMode = React.useContext(ColorModeContext);
 
   const menuProfile = auth.user ? (
     <Box sx={{ flexGrow: 0 }}>
@@ -182,8 +190,20 @@ function MainHeader() {
           </Box>
 
           <Stack direction="row" width="10%" justifyContent="space-around">
+            <IconButton
+              sx={{ p: 0, pb: 0.5 }}
+              onClick={colorMode.toggleColorMode}
+              color="success"
+            >
+              {theme.palette.mode === "dark" ? (
+                <Brightness7Icon color="success" align="center" />
+              ) : (
+                <Brightness4Icon color="success" align="center" />
+              )}
+            </IconButton>
+
             <Badge
-              badgeContent={auth.cart.length}
+              badgeContent={cart.length}
               color="success"
               sx={{ display: { xs: "none", md: "inline" } }}
               to="/cart"

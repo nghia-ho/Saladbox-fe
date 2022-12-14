@@ -5,7 +5,6 @@ import { Typography } from "@mui/material";
 import { Container } from "@mui/material";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -19,6 +18,12 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { IconButton } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addToCard,
+  subtractToCart,
+  deleteFromCart,
+} from "../features/cart/cartSlice";
 
 function ccyFormat(num) {
   return `${num.toFixed(0)}`;
@@ -38,7 +43,9 @@ function subtotal(items) {
 }
 
 function CartPage() {
-  const { cart, addToCard, subtractToCart, deleteFromCart } = useAuth();
+  const { cart } = useSelector((state) => state.cart);
+
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const row = (param) => {
     const cart = param.map((cartItem) => {
@@ -131,7 +138,7 @@ function CartPage() {
                           <IconButton
                             variant="outlined"
                             size="small"
-                            onClick={() => addToCard(row)}
+                            onClick={() => dispatch(addToCard(row))}
                           >
                             <AddIcon />
                           </IconButton>
@@ -145,7 +152,7 @@ function CartPage() {
                           <IconButton
                             variant="outlined"
                             size="small"
-                            onClick={() => subtractToCart(row)}
+                            onClick={() => dispatch(subtractToCart(row))}
                           >
                             <RemoveIcon />
                           </IconButton>
@@ -158,7 +165,7 @@ function CartPage() {
                       <TableCell align="center">
                         <IconButton
                           color="error"
-                          onClick={() => deleteFromCart(row)}
+                          onClick={() => dispatch(deleteFromCart(row))}
                         >
                           <DeleteForeverIcon />
                         </IconButton>

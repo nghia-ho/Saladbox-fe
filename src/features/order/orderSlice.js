@@ -4,8 +4,7 @@ import apiService from "../../app/apiService";
 const initialState = {
   isLoading: true,
   error: null,
-  order: {},
-  orderDetail: {},
+  order: null,
   orderPay: {},
   ordersList: [],
 };
@@ -26,12 +25,12 @@ const orderSlice = createSlice({
       state.isLoading = false;
     },
     getSingleOrderSuccess: (state, action) => {
-      state.orderDetail = action.payload;
+      state.order = action.payload;
       state.isLoading = false;
     },
     payOrderSuccess: (state, action) => {
       state.orderPay = action.payload;
-      state.orderDetail = action.payload;
+      state.order = action.payload;
       state.isLoading = false;
     },
     getOrdersSuccess: (state, action) => {
@@ -75,7 +74,6 @@ export const payOrder = (id, paymetResult) => async (dispatch) => {
   dispatch(orderSlice.actions.startLoading());
   try {
     const response = await apiService.put(`/order/${id}/pay`, paymetResult);
-    console.log(response);
     dispatch(orderSlice.actions.payOrderSuccess(response.data.data));
   } catch (error) {
     dispatch(orderSlice.actions.hasError(error));
@@ -90,5 +88,31 @@ export const getOrders = () => async (dispatch) => {
     dispatch(orderSlice.actions.hasError(error));
   }
 };
-
+export const editOrder =
+  ({ id, isDeliverd, phone, address, district }) =>
+  async (dispatch) => {
+    dispatch(orderSlice.actions.startLoading());
+    try {
+      await apiService.put(`/order/${id}`, {
+        isDeliverd,
+        phone,
+        address,
+        district,
+      });
+      const response = await apiService.get(`/order/${id}`);
+      dispatch(orderSlice.actions.getSingleOrderSuccess(response.data.data));
+    } catch (error) {
+      dispatch(orderSlice.actions.hasError(error));
+    }
+  };
+export const deleteOrder = (id) => async (dispatch) => {
+  dispatch(orderSlice.actions.startLoading());
+  try {
+    await apiService.delete(`/order/${id}`);
+    const response = await apiService.get(`/order`);
+    dispatch(orderSlice.actions.getOrdersSuccess(response.data.data));
+  } catch (error) {
+    dispatch(orderSlice.actions.hasError(error));
+  }
+};
 export default orderSlice.reducer;
