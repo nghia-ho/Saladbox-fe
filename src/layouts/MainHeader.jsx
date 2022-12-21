@@ -75,9 +75,16 @@ function MainHeader() {
         </Box>
 
         <Divider sx={{ bodertyle: "dashed" }} />
-        <MenuItem to="/account" component={Link} sx={{ mx: 1 }}>
-          My Profile
-        </MenuItem>
+        {auth.user.role === "admin" ? (
+          <MenuItem to="/admin" component={Link} sx={{ mx: 1 }}>
+            Admin
+          </MenuItem>
+        ) : (
+          <MenuItem to="/account" component={Link} sx={{ mx: 1 }}>
+            My Profile
+          </MenuItem>
+        )}
+
         <MenuItem to="/account" component={Link} sx={{ mx: 1 }}>
           Account setting
         </MenuItem>
