@@ -14,25 +14,31 @@ const Category = () => {
     {
       name: "Salad",
       icon: "/salad.png",
-      path: "menu",
+      path: "shop",
+      selected: "637464ef3c08c345541890f2",
     },
     {
       name: "Juice",
       icon: "/juice.png",
-      path: "menu",
+      path: "shop",
+      selected: "637464f63c08c345541890f5",
     },
     {
       name: "Smoothie",
       icon: "/smoothie.png",
-      path: "menu",
+      path: "shop",
+      selected: "6374652c3c08c345541890f8",
     },
     {
       name: "All",
       icon: "/salad-all.png",
-      path: "menu",
+      path: "shop",
     },
   ];
   const navigate = useNavigate();
+  const handleNavigate = (e, selected) => {
+    navigate(`/${e}`, { state: selected });
+  };
 
   return (
     <Box
@@ -40,7 +46,7 @@ const Category = () => {
         width: 1,
         height: 1,
         bgcolor: "secondary.light",
-        p: 5,
+        p: { xs: 2, sm: 5 },
         mt: 3,
         borderRadius: 2,
       }}
@@ -48,13 +54,14 @@ const Category = () => {
       <Typography variant="h4" sx={{ mb: 5, fontWeight: 600 }} align="center">
         Category
       </Typography>
-      <Grid container spacing={3}>
+      <Grid container spacing={{ xs: 1, sm: 3 }}>
         {category.map((e, i) => (
           <Grid item xs={6} sm={3} md={3} key={i}>
             <Card
-              onClick={() => navigate(`/${e.path}`)}
+              onClick={() => handleNavigate(e.path, e.selected)}
               sx={{
-                py: 4,
+                py: { xs: 1, sm: 4 },
+                p: { xs: 2, sm: 2 },
                 boxShadow: 0,
                 textAlign: "center",
                 cursor: "pointer",
@@ -70,17 +77,13 @@ const Category = () => {
                   justifyContent: "center",
                 }}
               >
-                <Card sx={{ boxShadow: "0", bgcolor: "transparent" }}>
+                <Card sx={{ boxShadow: "0", bgcolor: "secondary.dark" }}>
                   <CardMedia component="img" image={e.icon} alt={e.name} />
                 </Card>
               </Box>
               <Box sx={{ display: "flex", flexDirection: "column" }}>
-                <CardContent sx={{ flex: "1 0 auto" }}>
-                  <Typography
-                    component="div"
-                    variant="subtitle"
-                    sx={{ fontWeight: 600 }}
-                  >
+                <CardContent sx={{ p: 0 }}>
+                  <Typography variant="subtitle" sx={{ fontWeight: 600 }}>
                     {e.name}
                   </Typography>
                 </CardContent>

@@ -22,7 +22,9 @@ const ingredientSlice = createSlice({
     },
     getIngredientsSuccess: (state, action) => {
       state.isLoading = false;
-      state.ingredients = action.payload;
+      state.ingredients = action.payload.ingredient;
+      state.count = action.payload.count;
+      state.totalPage = action.payload.totalPage;
     },
     addIngredientsCustomSuccess: (state, action) => {
       state.isLoading = false;
@@ -68,15 +70,22 @@ const ingredientSlice = createSlice({
   },
 });
 
-export const getIngredients = () => async (dispatch) => {
-  dispatch(ingredientSlice.actions.startLoading());
-  try {
-    const response = await apiService.get(`/ingredient`);
-    dispatch(ingredientSlice.actions.getIngredientsSuccess(response.data.data));
-  } catch (error) {
-    dispatch(ingredientSlice.actions.hasError(error));
-  }
-};
+export const getIngredients =
+  ({ sort, name, limit, page }) =>
+  async (dispatch) => {
+    dispatch(ingredientSlice.actions.startLoading());
+    try {
+      const params = { limit, page };
+      if (name) params.name = name;
+      if (sort) params.sort = sort;
+      const response = await apiService.get(`/ingredient`, { params });
+      dispatch(
+        ingredientSlice.actions.getIngredientsSuccess(response.data.data)
+      );
+    } catch (error) {
+      dispatch(ingredientSlice.actions.hasError(error));
+    }
+  };
 
 export const addIngredientsCustom = (ingredient) => async (dispatch) => {
   dispatch(ingredientSlice.actions.startLoading());

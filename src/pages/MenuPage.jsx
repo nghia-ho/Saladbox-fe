@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  Pagination,
-  Paper,
-  Stack,
-} from "@mui/material";
+import { Box, Button, Container, Grid, Paper, Stack } from "@mui/material";
 import ClearAllIcon from "@mui/icons-material/ClearAll";
 
 import React, { useEffect, useState } from "react";
@@ -22,14 +14,16 @@ import { useDispatch, useSelector } from "react-redux";
 import CategoryList from "../features/category/CategoryList";
 import { useForm } from "react-hook-form";
 import { FormProvider } from "../components/form";
+
 import ProductFilter from "../features/product/ProductFilter";
 import useAuth from "../hooks/useAuth";
 import ProductView from "../components/ProductView";
-import LoadingScreen from "../components/LoadingScreen";
+import Pagination from "../components/Panigation";
+import { useLocation } from "react-router-dom";
 
 const MenuPage = () => {
-  // const { state } = useLocation();
-  // const va = state?.cate || "salad";
+  const location = useLocation();
+  const myparam = location.state;
 
   const [page, setPage] = useState(1);
   const [filterName, setFilterName] = useState("");
@@ -38,7 +32,8 @@ const MenuPage = () => {
   const arrayFilter = [0, 1500000];
   const [price, setPrice] = useState(arrayFilter);
   const [value, setValue] = useState(price);
-  const [selectValue, setSelectValue] = useState("");
+  const [selectValue, setSelectValue] = useState(myparam || "");
+
   const handleChange = (event, nextView) => {
     setView(nextView);
   };
@@ -52,7 +47,7 @@ const MenuPage = () => {
 
   const dispatch = useDispatch();
   const { user } = useAuth();
-  const { totalPage, isLoading } = useSelector((state) => state.products);
+  const { totalPage } = useSelector((state) => state.products);
   useEffect(() => {
     dispatch(
       getProducts({
@@ -63,7 +58,7 @@ const MenuPage = () => {
         category: selectValue,
       })
     );
-    if (user) dispatch(getfavoriteProduct());
+    if (user) dispatch(getfavoriteProduct({ limit: 1000 }));
   }, [filterName, page, dispatch, sort, user, price, selectValue]);
 
   const onSubmit = (data) => {
@@ -117,8 +112,9 @@ const MenuPage = () => {
                 setView={setView}
                 handleChange={handleChange}
               />
+
               <Box sx={{ display: { xs: "none", sm: "inline", md: "none" } }}>
-                <ProductSearch />
+                <ProductSearch size={"small"} />
               </Box>
               <ProductSort setSort={setSort} />
             </Stack>
@@ -135,21 +131,20 @@ const MenuPage = () => {
                 setSelectValue={setSelectValue}
                 setPage={setPage}
               />
+
               <ProductFilter
                 setPrice={setPrice}
                 price={price}
                 value={value}
                 setValue={setValue}
               />
-              <Button type="submit"></Button>
             </Stack>
-            <Stack sx={{ mt: 3 }} alignItems="center">
-              <Paper elevation={1} sx={{ p: 1 }}>
+            <Stack sx={{ my: { xs: 2, md: 1 } }} alignItems="center">
+              <Paper elevation={2} sx={{ p: 1 }}>
                 <Box sx={{ width: 1 }}>
                   <Button
                     size="large"
-                    color="primary"
-                    variant="outlined"
+                    variant="contained"
                     onClick={resetFilter}
                     startIcon={<ClearAllIcon />}
                   >
@@ -160,25 +155,13 @@ const MenuPage = () => {
             </Stack>
           </Grid>
           <Grid item xs={12} md={10} sx={{ position: "relative" }}>
-            {isLoading ? <LoadingScreen /> : <ProductList view={view} />}
-            {/* <ProductList view={view} /> */}
+            <ProductList view={view} />
             <Stack alignItems="center" justifyContent="end">
-              <Pagination
-                sx={{
-                  borderColor: "success.light",
-                  border: "1px dashed ",
-                  p: 1,
-                  borderRadius: 2,
-                }}
-                count={totalPage}
-                shape="rounded"
-                color="success"
-                page={page}
-                onChange={(e, value) => setPage(value)}
-              />
+              <Pagination count={totalPage} page={page} setPage={setPage} />
             </Stack>
           </Grid>
         </Grid>
+        <Button type="submit"></Button>
       </FormProvider>
     </Container>
   );

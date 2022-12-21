@@ -6,37 +6,28 @@ import {
   Container,
   Stack,
   Typography,
-  Toolbar,
   Tooltip,
   IconButton,
-  OutlinedInput,
-  InputAdornment,
   TableContainer,
   Table,
   TableHead,
-  TableRow,
-  TableCell,
-  TableSortLabel,
   Box,
-  TableBody,
-  Avatar,
-  TablePagination,
-  MenuItem,
-  Popover,
-  Chip,
 } from "@mui/material";
-import { styled, alpha } from "@mui/material/styles";
-import SearchIcon from "@mui/icons-material/Search";
+
 import AddIcon from "@mui/icons-material/Add";
 import FilterListIcon from "@mui/icons-material/FilterList";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useDispatch, useSelector } from "react-redux";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import FormModalIngredient from "../../components/FormModalIngredient";
+
+import FormModalIngredient from "../../features/ingredient/FormModalIngredient";
 import { getIngredients } from "../../features/ingredient/ingredientSlice";
-import DeleteModalProduct from "../../components/DeleteOrderModal";
-import DeleteIngredientModal from "../../components/DeleteIngredientModal";
+import DeleteModal from "../../components/DeleteModal";
+import PopoverMenu from "../../components/Popover";
+import HeadTable from "../../components/HeadTable";
+import { FormProvider } from "../../components/form";
+import IngredientSearch from "../../features/ingredient/IngredientSearch";
+import { useForm } from "react-hook-form";
+import BodyTable from "../../features/ingredient/BodyTable";
+import TablePaginations from "../../components/TablePaginations";
 
 const TABLE_HEAD = [
   { id: "name", label: "Name", alignRight: false },
@@ -48,41 +39,20 @@ const TABLE_HEAD = [
   { id: "isDeleted", label: "Is Deleted", alignRight: "not" },
 ];
 
-const StyledRoot = styled(Toolbar)(({ theme }) => ({
-  height: 96,
-  display: "flex",
-  justifyContent: "space-between",
-  padding: theme.spacing(0, 1, 0, 3),
-}));
-
-const StyledSearch = styled(OutlinedInput)(({ theme }) => ({
-  width: 240,
-  transition: theme.transitions.create(["box-shadow", "width"], {
-    easing: theme.transitions.easing.easeInOut,
-    duration: theme.transitions.duration.shorter,
-  }),
-  "&.Mui-focused": {
-    width: 320,
-    boxShadow: "rgba(0, 0, 0, 0.1) 0px 10px 50px",
-  },
-  "& fieldset": {
-    borderWidth: `1px !important`,
-    borderColor: `${alpha(theme.palette.grey[500], 0.32)} !important`,
-  },
-}));
-
 function IngredientPage() {
-  const [open, setOpen] = useState(null);
-  const [page, setPage] = useState(0);
-  const [order, setOrder] = useState("asc");
-  const [selected, setSelected] = useState([]);
-  const [orderBy, setOrderBy] = useState("name");
-  const [filterName, setFilterName] = useState("");
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [openModal, setOpenModal] = useState(false);
-  const [mode, setMode] = useState("create");
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [openPopover, setOpenPopover] = useState(null);
   const [openModalDelete, setopenModalDelete] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const [route, setRoute] = useState(null);
+
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const [filterName, setFilterName] = useState("");
+  const [mode, setMode] = useState("create");
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [order, setOrder] = useState("asc");
+  const [orderBy, setOrderBy] = useState("name");
 
   const handleClickEdit = () => {
     setOpenModal(true);
@@ -98,10 +68,10 @@ function IngredientPage() {
     setOpenModal(false);
   };
 
-  const handleClickDelete = () => {
-    setOpen(null);
-    setopenModalDelete(true);
-  };
+  // const handleClickDelete = () => {
+  //   setOpenPopover(null);
+  //   setopenModalDelete(true);
+  // };
   const handleCloseDelete = () => {
     setopenModalDelete(false);
   };
@@ -109,32 +79,47 @@ function IngredientPage() {
   // dispatch & get ingredient
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getIngredients());
-  }, [filterName, page, dispatch]);
+    dispatch(
+      getIngredients({
+        name: filterName,
+        sort: { orderBy, order },
+        page: page + 1,
+        limit: rowsPerPage,
+      })
+    );
+  }, [filterName, page, dispatch, orderBy, order, rowsPerPage]);
 
-  const ingredients = useSelector(
-    (state) => state.ingredient.ingredients.ingredient
-  );
+  const { ingredients, count } = useSelector((state) => state.ingredient);
 
-  const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
-    setOrderBy(property);
+  const handleOpenPopover = (event, value) => {
+    setOpenPopover(event.currentTarget);
+    setSelectedItem(value);
+    setRoute("ingredient");
   };
 
-  const createSortHandler = (property) => (event) => {
-    handleRequestSort(event, property);
+  // const handleCloseMenu = () => {
+  //   setOpenPopover(null);
+  // };
+  //--------------------------------------------------------------
+
+  const defaultValues = {
+    ingredientSearch: filterName,
+  };
+  const methods = useForm({
+    defaultValues,
+  });
+  const { handleSubmit } = methods;
+  const onSubmit = (data) => {
+    setFilterName(data.ingredientSearch);
+  };
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
   };
 
-  const handleOpenMenu = (event, value) => {
-    setOpen(event.currentTarget);
-    setSelectedProduct(value);
+  const handleChangeRowsPerPage = (event) => {
+    setPage(0);
+    setRowsPerPage(parseInt(event.target.value, 10));
   };
-
-  const handleCloseMenu = () => {
-    setOpen(null);
-  };
-
   return (
     <Container maxWidth="lg">
       <FormModalIngredient
@@ -142,12 +127,13 @@ function IngredientPage() {
         ingredients={ingredients}
         handleClose={handleClose}
         mode={mode}
-        selectedProduct={selectedProduct}
-        setSelectedProduct={setSelectedProduct}
+        selectedProduct={selectedItem}
+        setSelectedItem={setSelectedItem}
       />
-      <DeleteIngredientModal
-        selectedProduct={selectedProduct}
+      <DeleteModal
+        selectedItem={selectedItem}
         openModalDelete={openModalDelete}
+        route={route}
         handleCloseDelete={handleCloseDelete}
       />
       <Stack
@@ -169,176 +155,61 @@ function IngredientPage() {
         </Button>
       </Stack>
       <Card sx={{ boxShadow: "none" }}>
-        <StyledRoot>
-          <StyledSearch
-            // value={filterName}
-            // onChange={onFilterName}
-            placeholder="Search user..."
-            startAdornment={
-              <InputAdornment position="start">
-                <SearchIcon size="small" />
-              </InputAdornment>
-            }
-          />
+        <Box
+          sx={{
+            height: 96,
+            display: "flex",
+            justifyContent: "space-between",
+            padding: 3,
+          }}
+        >
+          <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+            <IngredientSearch />
+          </FormProvider>
 
           <Tooltip title="Filter list">
             <IconButton>
               <FilterListIcon />
             </IconButton>
           </Tooltip>
-        </StyledRoot>
+        </Box>
 
         <TableContainer sx={{ minWidth: 800 }}>
           <Table>
             <TableHead>
-              <TableRow>
-                {TABLE_HEAD.map((headCell) => (
-                  <TableCell
-                    key={headCell.id}
-                    align={
-                      headCell.alignRight === "not"
-                        ? "center"
-                        : headCell.alignRight
-                        ? "right"
-                        : "left"
-                    }
-                    sortDirection={orderBy === headCell.id ? order : false}
-                  >
-                    <TableSortLabel
-                      hideSortIcon
-                      active={orderBy === headCell.id}
-                      direction={orderBy === headCell.id ? order : "asc"}
-                      onClick={createSortHandler(headCell.id)}
-                    >
-                      {headCell.label}
-                      {orderBy === headCell.id ? (
-                        <Box
-                          sx={{
-                            border: 0,
-                            margin: -1,
-                            padding: 0,
-                            width: "1px",
-                            height: "1px",
-                            overflow: "hidden",
-                            position: "absolute",
-                            whiteSpace: "nowrap",
-                            clip: "rect(0 0 0 0)",
-                          }}
-                        >
-                          {order === "desc"
-                            ? "sorted descending"
-                            : "sorted ascending"}
-                        </Box>
-                      ) : null}
-                    </TableSortLabel>
-                  </TableCell>
-                ))}
-              </TableRow>
+              <HeadTable
+                TABLE_HEAD={TABLE_HEAD}
+                route={route}
+                order={order}
+                setOrder={setOrder}
+                orderBy={orderBy}
+                setOrderBy={setOrderBy}
+              />
             </TableHead>
-
-            <TableBody>
-              {ingredients &&
-                ingredients
-                  // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row) => {
-                    const { name, image, step, price, calo, type, isDeleted } =
-                      row;
-                    const selectedProduct = selected.indexOf(name) !== -1;
-
-                    return (
-                      <TableRow
-                        hover
-                        key={name}
-                        tabIndex={-1}
-                        role="checkbox"
-                        selected={selectedProduct}
-                      >
-                        <TableCell component="th" scope="row" padding="none">
-                          <Typography variant="subtitle2" noWrap sx={{ ml: 2 }}>
-                            {name}
-                          </Typography>
-                        </TableCell>
-
-                        <TableCell align="left">
-                          <Avatar
-                            alt={name}
-                            src={`http://localhost:8000${
-                              image || "/ingredients/1.png"
-                            }`}
-                          />
-                        </TableCell>
-
-                        <TableCell align="left">{step}</TableCell>
-                        <TableCell align="left">{price}</TableCell>
-                        <TableCell align="left">{calo}</TableCell>
-                        <TableCell align="center">{type}</TableCell>
-                        <TableCell align="center">
-                          {isDeleted ? (
-                            <Chip
-                              label="deleted"
-                              color="error"
-                              variant="outlined"
-                            />
-                          ) : (
-                            <Chip
-                              label="avaiable"
-                              color="success"
-                              variant="outlined"
-                            />
-                          )}
-                        </TableCell>
-
-                        <TableCell align="right">
-                          <IconButton
-                            size="large"
-                            color="inherit"
-                            onClick={(e) => handleOpenMenu(e, row)}
-                          >
-                            <MoreVertIcon />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-              {/* {emptyRows > 0 && (
-                  <TableRow style={{ height: 53 * emptyRows }}>
-                    <TableCell colSpan={6} />
-                  </TableRow>
-                )} */}
-            </TableBody>
+            <BodyTable
+              ingredients={ingredients}
+              handleOpenPopover={handleOpenPopover}
+            />
           </Table>
         </TableContainer>
       </Card>
-      <Popover
-        open={Boolean(open)}
-        anchorEl={open}
-        onClose={handleCloseMenu}
-        anchorOrigin={{ vertical: "top", horizontal: "left" }}
-        transformOrigin={{ vertical: "top", horizontal: "right" }}
-        PaperProps={{
-          sx: {
-            p: 1,
-            width: 140,
-            "& .MuiMenuItem-root": {
-              px: 1,
-              typography: "body2",
-              borderRadius: 0.75,
-            },
-          },
-        }}
-      >
-        <MenuItem onClick={handleClickEdit}>
-          <IconButton>
-            <EditIcon />
-          </IconButton>
-          Edit
-        </MenuItem>
 
-        <MenuItem sx={{ color: "error.main" }} onClick={handleClickDelete}>
-          <DeleteIcon />
-          Delete
-        </MenuItem>
-      </Popover>
+      <TablePaginations
+        count={count}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        handleChangePage={handleChangePage}
+        handleChangeRowsPerPage={handleChangeRowsPerPage}
+      />
+
+      <PopoverMenu
+        openPopover={openPopover}
+        setOpenPopover={setOpenPopover}
+        setopenModalDelete={setopenModalDelete}
+        selectedItem={selectedItem}
+        route={route}
+        handleClickEdit={handleClickEdit}
+      />
     </Container>
   );
 }

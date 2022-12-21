@@ -1,19 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Stack, Box, MenuItem, Menu } from "@mui/material";
-import { FTextField, FormProvider, FSelect, FMultiCheckbox } from "./form";
+import { Stack, Box } from "@mui/material";
+import { FTextField, FormProvider } from "./form";
 import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch } from "react-redux";
-import {
-  createIngredient,
-  editIngredient,
-} from "../features/ingredient/ingredientSlice";
+
 import { editOrder } from "../features/order/orderSlice";
 
 function ModalEditInfo({ open, handleClose, order }) {

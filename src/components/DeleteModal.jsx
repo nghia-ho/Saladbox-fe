@@ -6,14 +6,20 @@ import { deleteIngredient } from "../features/ingredient/ingredientSlice";
 import { deleteOrder } from "../features/order/orderSlice";
 import { deleteProduct } from "../features/product/productSlice";
 
-function DeleteOrderModal({
-  selectedProduct,
+function DeleteModal({
+  selectedItem,
   openModalDelete,
   handleCloseDelete,
+  route,
 }) {
   const dispatch = useDispatch();
+  console.log(route);
   const handleDelete = () => {
-    dispatch(deleteOrder(selectedProduct?._id));
+    if (route === "order") dispatch(deleteOrder(selectedItem?._id));
+
+    if (route === "product") dispatch(deleteProduct(selectedItem?._id));
+
+    if (route === "ingredient") dispatch(deleteIngredient(selectedItem?._id));
   };
   return (
     <Modal open={openModalDelete} onClose={handleCloseDelete}>
@@ -36,4 +42,4 @@ function DeleteOrderModal({
   );
 }
 
-export default DeleteOrderModal;
+export default DeleteModal;

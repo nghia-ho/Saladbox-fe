@@ -63,7 +63,7 @@ function CartPage() {
 
   const invoiceSubtotal = subtotal(rows);
   const invoiceTotal = invoiceSubtotal;
-
+  console.log(rows);
   const handleCheckout = () => {
     navigate("/shipping");
   };
@@ -73,7 +73,7 @@ function CartPage() {
       <Box>
         {cart.length ? (
           <Box sx={{ margin: "auto", textAlign: "center", mt: 5 }}>
-            <Typography variant="h4" paragraph>
+            <Typography variant="h4" paragraph fontWeight="600">
               Your Cart
             </Typography>
 
@@ -113,7 +113,11 @@ function CartPage() {
                               <CardMedia
                                 sx={{ borderRadius: 2 }}
                                 component="img"
-                                image={`http://localhost:8000${row?.image}`}
+                                image={
+                                  row?.image.length
+                                    ? `http://localhost:8000${row?.image}`
+                                    : "/saladcustom.png"
+                                }
                                 alt={row.desc}
                               />
                             </CardActionArea>
@@ -126,9 +130,7 @@ function CartPage() {
                               ml: 3,
                             }}
                           >
-                            <Typography align="center" gutterBottom>
-                              {row.desc}
-                            </Typography>
+                            <Typography align="center">{row.desc}</Typography>
                           </Box>
                         </Stack>
                       </TableCell>

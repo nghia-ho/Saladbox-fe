@@ -6,44 +6,17 @@ import {
   Stack,
   AppBar,
   Toolbar,
-  Input,
-  Slide,
-  Button,
   IconButton,
-  InputAdornment,
-  ClickAwayListener,
-  Divider,
   MenuItem,
-  Popover,
 } from "@mui/material";
-import { alpha } from "@mui/material/styles";
+import Menu from "@mui/material/Menu";
+import AccountCircleTwoToneIcon from "@mui/icons-material/AccountCircleTwoTone";
 
 import MenuIcon from "@mui/icons-material/Menu";
-import SearchIcon from "@mui/icons-material/Search";
-import HomeIcon from "@mui/icons-material/Home";
-import PersonIcon from "@mui/icons-material/Person";
-import SettingsIcon from "@mui/icons-material/Settings";
-
+import useAuth from "../hooks/useAuth";
 import { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 // ----------------------------------------------------------------------
-
-const StyledSearchbar = styled("div")(({ theme }) => ({
-  top: 0,
-  left: 0,
-  zIndex: 99,
-  width: "100%",
-  display: "flex",
-  position: "absolute",
-  alignItems: "center",
-  height: HEADER_MOBILE,
-  padding: theme.spacing(0, 3),
-  boxShadow: theme.customShadows.z8,
-  [theme.breakpoints.up("md")]: {
-    height: HEADER_DESKTOP,
-    padding: theme.spacing(0, 5),
-  },
-}));
 
 // ----------------------------------------------------------------------
 
@@ -52,21 +25,6 @@ const NAV_WIDTH = 280;
 const HEADER_MOBILE = 64;
 
 const HEADER_DESKTOP = 92;
-
-const MENU_OPTIONS = [
-  {
-    label: "Home",
-    icon: <HomeIcon />,
-  },
-  {
-    label: "Profile",
-    icon: <PersonIcon />,
-  },
-  {
-    label: "Settings",
-    icon: <SettingsIcon />,
-  },
-];
 
 const StyledRoot = styled(AppBar)(({ theme }) => ({
   boxShadow: "none",
@@ -92,16 +50,16 @@ MainHeaderAdmin.propTypes = {
 };
 
 export default function MainHeaderAdmin({ onOpenNav }) {
-  const [open, setOpen] = useState(false);
+  const [anchorElUser, setAnchorElUser] = useState(null);
 
-  const handleOpen = () => {
-    setOpen(!open);
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
   };
-
-  const handleClose = () => {
-    setOpen(false);
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
   };
-
+  const auth = useAuth();
+  const navigate = useNavigate();
   return (
     <StyledRoot>
       <StyledToolbar>
@@ -115,38 +73,7 @@ export default function MainHeaderAdmin({ onOpenNav }) {
         >
           <MenuIcon />
         </IconButton>
-        {/* Search Bar */}
-        <ClickAwayListener onClickAway={handleClose}>
-          <div>
-            {!open && (
-              <IconButton onClick={handleOpen}>
-                <SearchIcon />
-              </IconButton>
-            )}
 
-            <Slide direction="down" in={open} mountOnEnter unmountOnExit>
-              <StyledSearchbar>
-                <Input
-                  autoFocus
-                  fullWidth
-                  disableUnderline
-                  placeholder="Search…"
-                  startAdornment={
-                    <InputAdornment position="start">
-                      <SearchIcon
-                        sx={{ color: "text.disabled", width: 20, height: 20 }}
-                      />
-                    </InputAdornment>
-                  }
-                  sx={{ mr: 1, fontWeight: "fontWeightBold" }}
-                />
-                <Button variant="contained" onClick={handleClose}>
-                  Search
-                </Button>
-              </StyledSearchbar>
-            </Slide>
-          </div>
-        </ClickAwayListener>
         <Box sx={{ flexGrow: 1 }} />
 
         <Stack
@@ -157,61 +84,38 @@ export default function MainHeaderAdmin({ onOpenNav }) {
             sm: 1,
           }}
         >
-          <IconButton
-            onClick={handleOpen}
-            sx={{
-              p: 0,
-              ...(open && {
-                "&:before": {
-                  zIndex: 1,
-                  content: "''",
-                  width: "100%",
-                  height: "100%",
-                  borderRadius: "50%",
-                  position: "absolute",
-                  bgcolor: (theme) => alpha(theme.palette.grey[900], 0.8),
-                },
-              }),
-            }}
-          >
-            <PersonIcon />
-          </IconButton>
-
-          <Popover
-            open={Boolean(open)}
-            anchorEl={open}
-            onClose={handleClose}
-            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-            transformOrigin={{ vertical: "top", horizontal: "right" }}
-            PaperProps={{
-              sx: {
-                p: 0,
-                mt: 1.5,
-                ml: 0.75,
-                width: 180,
-                "& .MuiMenuItem-root": {
-                  typography: "body2",
-                  borderRadius: 0.75,
-                },
-              },
-            }}
-          >
-            <Divider sx={{ borderStyle: "dashed" }} />
-
-            <Stack sx={{ p: 1 }}>
-              {MENU_OPTIONS.map((option) => (
-                <MenuItem key={option.label} onClick={handleClose}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </Stack>
-
-            <Divider sx={{ borderStyle: "dashed" }} />
-
-            <MenuItem onClick={handleClose} sx={{ m: 1 }}>
-              Logout
-            </MenuItem>
-          </Popover>
+          <Box sx={{ flexGrow: 0 }}>
+            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+              <AccountCircleTwoToneIcon color="success" />
+            </IconButton>
+            <Menu
+              sx={{ mt: 2 }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "center",
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              <MenuItem
+                sx={{ mx: 1 }}
+                onClick={() =>
+                  auth.logout(() => {
+                    navigate("/", { replace: true });
+                  })
+                }
+              >
+                Log out
+              </MenuItem>
+            </Menu>
+          </Box>
         </Stack>
       </StyledToolbar>
     </StyledRoot>

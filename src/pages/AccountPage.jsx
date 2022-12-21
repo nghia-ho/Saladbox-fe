@@ -6,13 +6,11 @@ import React, { useState } from "react";
 
 import ProfileInfomation from "../features/user/ProfileInfomation";
 import OrderList from "../features/order/OrderList";
-import BMI from "../features/user/BMI";
 import ChangePassword from "../features/user/ChangePassword";
 import FavoriteList from "../features/product/FavoriteList";
 import PersonPinIcon from "@mui/icons-material/PersonPin";
 import ViewStreamIcon from "@mui/icons-material/ViewStream";
 import PasswordIcon from "@mui/icons-material/Password";
-import AttributionIcon from "@mui/icons-material/Attribution";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 
 const ACCOUNT_TABS = [
@@ -26,11 +24,7 @@ const ACCOUNT_TABS = [
     icon: <ViewStreamIcon />,
     component: <OrderList />,
   },
-  {
-    value: "BMI Calculate",
-    icon: <AttributionIcon />,
-    component: <BMI />,
-  },
+
   {
     value: "Change Password",
     icon: <PasswordIcon />,
@@ -55,8 +49,6 @@ const AccountPage = () => {
       <Paper>
         <Box
           sx={{
-            // flexGrow: 1,
-            // bgcolor: "background.paper",
             display: { xs: "block", sm: "block", md: "flex" },
           }}
         >

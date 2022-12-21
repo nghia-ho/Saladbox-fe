@@ -11,7 +11,7 @@ const PRIMARY = {
   main: "#A4BE7B",
   dark: "#5F8D4E",
   darker: "#07503f",
-  contrastText: "#FFF",
+  contrastText: "#FFF8EA",
 };
 const SECONDARY = {
   lighter: "#F7EDDB",
@@ -30,11 +30,11 @@ const SUCCESS = {
   contrastText: "#FFF8EA",
 };
 const SUCCESS_DARK = {
-  lighter: "#adb5bd",
-  light: "#6c757d",
+  lighter: "#212529",
+  light: "#343a40",
   main: "#495057",
-  dark: "#343a40",
-  darker: "#212529",
+  dark: "#6c757d",
+  darker: "#adb5bd",
   contrastText: "#dee2e6",
 };
 const SECONDARY_DARK = {
@@ -46,10 +46,10 @@ const SECONDARY_DARK = {
   contrastText: "#dee2e6",
 };
 const PRIMARY_DARK = {
-  lighter: "#adb5bd",
-  light: "#6c757d",
-  main: "#495057  ",
-  dark: "#343a40",
+  lighter: "#212529",
+  light: "#343a40",
+  main: "#495057",
+  dark: "#6c757d",
   darker: "#212529",
   contrastText: "#dee2e6",
 };

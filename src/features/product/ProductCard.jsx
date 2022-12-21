@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Card,
   CardActionArea,
   CardActions,
@@ -9,11 +10,10 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
+
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 import { Stack } from "@mui/system";
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createfavoriteProduct, removefavoriteProduct } from "./productSlice";
 import { Link as RouterLink } from "react-router-dom";
@@ -23,12 +23,9 @@ import useAuth from "../../hooks/useAuth";
 import { addToCard } from "../cart/cartSlice";
 
 const ProductCard = ({ product }) => {
-  const [count, setCount] = useState(0);
   const dispatch = useDispatch();
   const auth = useAuth();
-  if (count < 0) {
-    setCount(0);
-  }
+
   const { favorite } = useSelector((state) => state.products);
   const a = favorite?.favorite?.find((e) => e.product?._id === product?._id);
   const id = product._id;
@@ -90,35 +87,15 @@ const ProductCard = ({ product }) => {
           </Stack>
         </CardContent>
         <CardActions sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Stack direction="row">
-            <IconButton
-              variant="outlined"
-              size="small"
-              onClick={() => setCount(count + 1)}
-            >
-              <AddIcon />
-            </IconButton>
-            <Typography
-              variant="subtitle2"
-              sx={{ fontWeight: "600", flexGrow: 1, m: 1 }}
-            >
-              {count}
-            </Typography>
-            <IconButton
-              variant="outlined"
-              size="small"
-              onClick={() => setCount(count - 1)}
-            >
-              <RemoveIcon />
-            </IconButton>
-          </Stack>
-          <IconButton
-            size="large"
-            color="success"
+          <Button
             onClick={() => dispatch(addToCard(product))}
+            variant="outlined"
+            color="success"
+            fullWidth
+            startIcon={<ShoppingBasketIcon />}
           >
-            <ShoppingBasketIcon style={{ verticalAlign: "middle" }} />
-          </IconButton>
+            Add To Cart
+          </Button>
         </CardActions>
       </Card>
     </Paper>

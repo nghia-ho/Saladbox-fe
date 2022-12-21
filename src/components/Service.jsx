@@ -28,7 +28,7 @@ const Service = () => {
         width: 1,
         height: 1,
         bgcolor: "success.light",
-        p: 5,
+        p: { xs: 2, sm: 5 },
         mt: 3,
         borderRadius: 2,
       }}
@@ -40,7 +40,7 @@ const Service = () => {
       >
         Our Service
       </Typography>
-      <Grid container spacing={3}>
+      <Grid container spacing={{ xs: 1, sm: 3 }}>
         {category.map((e, i) => (
           <Grid item xs={12} sm={6} key={i}>
             <Card

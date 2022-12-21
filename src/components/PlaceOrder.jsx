@@ -1,28 +1,35 @@
-import { Box, Divider } from "@mui/material";
-import { Stack } from "@mui/material";
-import { Button } from "@mui/material";
-import { Typography } from "@mui/material";
-import { Container } from "@mui/material";
+import {
+  Box,
+  Divider,
+  Grid,
+  Stack,
+  Button,
+  Typography,
+  Container,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  CardActionArea,
+  CardMedia,
+  Card,
+} from "@mui/material";
+
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import { CardActionArea } from "@mui/material";
-import { CardMedia } from "@mui/material";
+
 import PersonIcon from "@mui/icons-material/Person";
 import { styled } from "@mui/material/styles";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import PlaceIcon from "@mui/icons-material/Place";
 import { useDispatch, useSelector } from "react-redux";
-import { createOrder1 } from "../features/order/orderSlice";
-import { clearCart } from "../features/cart/cartSlice";
-const TAX_RATE = 0.07;
+import { createOrder1, createOrderCustom } from "../features/order/orderSlice";
+import { clearCart, clearCartCustom } from "../features/cart/cartSlice";
+const shippingPrice = 15000;
 
 function ccyFormat(num) {
   return `${num.toFixed(0)}`;
@@ -49,43 +56,71 @@ const Item = styled(Box)(({ theme }) => ({
 function PlaceOrder() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { cart, shippingAddress, paymentMethod } = useSelector(
+  const { cart, shippingAddress, paymentMethod, cartCustom } = useSelector(
     (state) => state.cart
   );
   const { user } = useAuth();
 
-  const Row = (param) => {
-    const cart = param.map((cartItem) => {
-      return createRow(
-        cartItem.name,
-        cartItem.quantity,
-        cartItem.price,
-        cartItem.image[0],
-        cartItem._id
-      );
-    });
-    return cart;
-  };
-  let rows = Row(cart);
-
+  let rows;
+  if (cartCustom.length) {
+    const Row = (param) => {
+      const cart = param.map((cartItem) => {
+        return createRow(
+          cartItem.day.name,
+          cartItem.quantity,
+          cartItem.day.price,
+          cartItem.day.image[0],
+          cartItem.day._id
+        );
+      });
+      return cart;
+    };
+    rows = Row(cartCustom);
+  } else {
+    const Row = (param) => {
+      const cart = param.map((cartItem) => {
+        return createRow(
+          cartItem.name,
+          cartItem.quantity,
+          cartItem.price,
+          cartItem.image[0],
+          cartItem._id
+        );
+      });
+      return cart;
+    };
+    rows = Row(cart);
+  }
   const invoiceSubtotal = subtotal(rows);
-  const invoiceTaxes = TAX_RATE * invoiceSubtotal;
-  const invoiceTotal = invoiceTaxes + invoiceSubtotal;
+  const invoiceTotal = shippingPrice + invoiceSubtotal;
 
   const handlePlaceOrder = async () => {
     try {
-      const order = await dispatch(
-        createOrder1({
-          orderItems: rows,
-          shippingAddress: shippingAddress,
-          paymentMethod: paymentMethod.toLocaleLowerCase(),
-          shippingPrice: invoiceTaxes,
-          totalPrice: invoiceTotal,
-        })
-      );
-      console.log(order);
-      navigate(`/order/${order._id}`);
-      dispatch(clearCart());
+      if (cartCustom.length) {
+        const order = await dispatch(
+          createOrderCustom({
+            orderItems: rows,
+            shippingAddress: shippingAddress,
+            paymentMethod: paymentMethod.toLocaleLowerCase(),
+            shippingPrice: shippingPrice,
+            totalPrice: invoiceTotal,
+          })
+        );
+        navigate(`/order/${order._id}`);
+        dispatch(clearCartCustom());
+      } else {
+        const order = await dispatch(
+          createOrder1({
+            orderItems: rows,
+            shippingAddress: shippingAddress,
+            paymentMethod: paymentMethod.toLocaleLowerCase(),
+            shippingPrice: shippingPrice,
+            totalPrice: invoiceTotal,
+          })
+        );
+        navigate(`/order/${order._id}`);
+        dispatch(clearCart());
+      }
     } catch (error) {
       console.log(error);
     }
@@ -93,209 +128,213 @@ function PlaceOrder() {
 
   return (
     <Container maxWidth="lg">
-      <Box>
-        <Box sx={{ margin: "auto", textAlign: "center", mt: 5 }}>
-          <Box sx={{ mb: 5, backgroundColor: "#557153", borderRadius: 2 }}>
-            <Stack
-              direction="row"
-              divider={<Divider orientation="vertical" flexItem />}
-              spacing={1}
-              justifyContent="space-around"
-            >
-              <Item>
-                <Stack direction="row">
-                  <Box
-                    sx={{
-                      p: 3,
-                      backgroundColor: "#E6E5A3",
-                      borderRadius: "50%",
-                      mr: 3,
-                    }}
-                  >
-                    <PersonIcon fontSize="large" color="primary" />
-                  </Box>
-                  <Stack justifyContent="center">
-                    <Typography sx={{ fontWeight: 700 }}>Customer</Typography>
-
-                    <Typography>{user.name}</Typography>
-                  </Stack>
+      <Box sx={{ margin: "auto", textAlign: "center", mt: 5 }}>
+        <Box sx={{ mb: 4, backgroundColor: "primary.darker", borderRadius: 2 }}>
+          <Typography
+            variant="h6"
+            paragraph
+            fontWeight="600"
+            sx={{ p: 1, pt: 3 }}
+          >
+            Customer Infomation
+          </Typography>
+          <Divider />
+          <Stack
+            sx={{ flexDirection: { xs: "column", sm: "row" } }}
+            divider={<Divider orientation="vertical" flexItem />}
+            justifyContent="space-around"
+          >
+            <Item>
+              <Stack direction="row" spacing={3}>
+                <Stack
+                  sx={{
+                    display: { xs: "none", md: "inline" },
+                    p: 3,
+                    backgroundColor: "primary.lighter",
+                    borderRadius: "50%",
+                  }}
+                >
+                  <PersonIcon fontSize="large" color="success" />
                 </Stack>
-              </Item>
-              <Item>
-                <Stack direction="row">
-                  <Box
-                    sx={{
-                      p: 3,
-                      backgroundColor: "#E6E5A3",
-                      borderRadius: "50%",
-                      mr: 3,
-                    }}
-                  >
-                    <LocalShippingIcon fontSize="large" color="primary" />
-                  </Box>
-                  <Stack justifyContent="center">
-                    <Typography sx={{ fontWeight: 700 }}>Order Info</Typography>
-                    <Typography>Shipping: {shippingAddress.city}</Typography>
-                    <Typography>Payment: {paymentMethod}</Typography>
-                  </Stack>
+                <Stack justifyContent="center" alignItems="start">
+                  <Typography sx={{ fontWeight: 700 }}>Customer</Typography>
+                  <Typography>{user.name}</Typography>
                 </Stack>
-              </Item>
-              <Item>
-                <Stack direction="row">
-                  <Box
-                    sx={{
-                      p: 3,
-                      backgroundColor: "#E6E5A3",
-                      borderRadius: "50%",
-                      mr: 3,
-                    }}
-                  >
-                    <PlaceIcon fontSize="large" color="primary" />
-                  </Box>
-                  <Stack justifyContent="center">
-                    <Typography sx={{ fontWeight: 700 }}>Deliver to</Typography>
-                    <Typography>Address: {shippingAddress.address}</Typography>
-                    <Typography>Phone: {shippingAddress.phone}</Typography>
-                  </Stack>
+              </Stack>
+            </Item>
+            <Divider />
+            <Item>
+              <Stack direction="row" spacing={3}>
+                <Stack
+                  sx={{
+                    display: { xs: "none", md: "inline" },
+                    p: 3,
+                    backgroundColor: "primary.lighter",
+                    borderRadius: "50%",
+                  }}
+                >
+                  <LocalShippingIcon fontSize="large" color="success" />
                 </Stack>
-              </Item>
-            </Stack>
-          </Box>
+                <Stack justifyContent="center" alignItems="start">
+                  <Typography sx={{ fontWeight: 700 }}>Order Info</Typography>
+                  <Typography>Shipping: {shippingAddress.city}</Typography>
+                  <Typography>Payment: {paymentMethod}</Typography>
+                </Stack>
+              </Stack>
+            </Item>
+            <Divider />
+            <Item>
+              <Stack direction="row" spacing={3}>
+                <Stack
+                  sx={{
+                    p: 3,
+                    display: { xs: "none", md: "inline" },
+                    backgroundColor: "primary.lighter",
+                    borderRadius: "50%",
+                  }}
+                >
+                  <PlaceIcon fontSize="large" color="success" />
+                </Stack>
+                <Stack justifyContent="center" alignItems="start">
+                  <Typography sx={{ fontWeight: 700 }}>Deliver to</Typography>
+                  <Typography>Address: {shippingAddress.address}</Typography>
+                  <Typography>Phone: {shippingAddress.phone}</Typography>
+                </Stack>
+              </Stack>
+            </Item>
+          </Stack>
+        </Box>
 
-          <Stack direction="row">
-            <TableContainer
-              component={Paper}
-              sx={{
-                border: "1px solid grey",
-                borderRadius: 2,
-              }}
-            >
-              <Table sx={{ minWidth: 300 }} aria-label="spanning table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell align="center" colSpan={3}>
-                      Details
-                    </TableCell>
-                    <TableCell align="left" colSpan={2}>
-                      Price
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Item</TableCell>
-                    <TableCell align="center">Qty.</TableCell>
-                    <TableCell align="center">Unit</TableCell>
-                    <TableCell align="center">Sum</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {rows.map((row) => (
-                    <TableRow key={row.product_id}>
-                      <TableCell align="center">
-                        <Stack direction="row">
-                          <Box
-                            sx={{
-                              maxWidth: 50,
-                              display: { xs: "none", sm: "inline" },
-                            }}
-                          >
-                            <CardActionArea
-                              component={Link}
-                              to={`/product/${row.product_id}`}
-                            >
-                              <CardMedia
-                                sx={{ borderRadius: 2 }}
-                                component="img"
-                                image={`http://localhost:8000${row?.image}`}
-                                alt={row.desc}
-                              />
-                            </CardActionArea>
-                          </Box>
-
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              ml: 3,
-                            }}
-                          >
-                            <Typography align="center" gutterBottom>
-                              {row.desc}
-                            </Typography>
-                          </Box>
-                        </Stack>
-                      </TableCell>
-
-                      <TableCell align="center">
-                        <Stack direction="row" justifyContent="center">
-                          <Typography
-                            variant="subtitle2"
-                            sx={{ fontWeight: "600", m: 1 }}
-                            align="center"
-                          >
-                            {row.qty}
-                          </Typography>
-                        </Stack>
-                      </TableCell>
-                      <TableCell align="center">{row.unit}</TableCell>
-                      <TableCell align="center">
-                        {ccyFormat(row.price)}
+        <Grid container spacing={{ xs: 3, md: 1 }}>
+          <Grid item xs={12} md={9}>
+            <Card>
+              <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 300 }} aria-label="spanning table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="center" colSpan={4}>
+                        Cart Infomation
                       </TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <Box
-              sx={{
-                ml: 3,
-                border: "1px solid grey",
-                borderRadius: 2,
-              }}
-            >
-              <TableContainer>
+                    <TableRow>
+                      <TableCell>Item</TableCell>
+                      <TableCell align="center">Qty.</TableCell>
+                      <TableCell align="center">Unit</TableCell>
+                      <TableCell align="center">Sum</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {rows.map((row, i) => (
+                      <TableRow key={i}>
+                        <TableCell align="center">
+                          <Stack direction="row">
+                            <Box
+                              sx={{
+                                maxWidth: 50,
+                                display: { xs: "none", sm: "inline" },
+                              }}
+                            >
+                              <CardActionArea
+                                component={Link}
+                                to={`/product/${row.product_id}`}
+                              >
+                                <CardMedia
+                                  sx={{ borderRadius: 2 }}
+                                  component="img"
+                                  image={
+                                    row?.image
+                                      ? `http://localhost:8000${row?.image}`
+                                      : "/custom.png"
+                                  }
+                                  alt={row.desc}
+                                />
+                              </CardActionArea>
+                            </Box>
+
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                ml: 3,
+                              }}
+                            >
+                              <Typography align="center" gutterBottom>
+                                {row.name}
+                              </Typography>
+                            </Box>
+                          </Stack>
+                        </TableCell>
+
+                        <TableCell align="center">
+                          <Stack direction="row" justifyContent="center">
+                            <Typography
+                              variant="subtitle2"
+                              sx={{ fontWeight: "600", m: 1 }}
+                              align="center"
+                            >
+                              {row.qty}
+                            </Typography>
+                          </Stack>
+                        </TableCell>
+                        <TableCell align="center">{row.unit}</TableCell>
+                        <TableCell align="center">
+                          {ccyFormat(row.price)}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Card>
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <Card>
+              <TableContainer component={Paper}>
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell align="center">Details</TableCell>
+                      <TableCell colSpan={3} align="center">
+                        Invoice
+                      </TableCell>
                     </TableRow>
                   </TableHead>
-                  <TableBody></TableBody>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell> Subtotal</TableCell>
+                      <TableCell align="center">
+                        {ccyFormat(invoiceSubtotal)}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Shipping Fee</TableCell>
+
+                      <TableCell align="center">
+                        {ccyFormat(shippingPrice)}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Total</TableCell>
+                      <TableCell align="center">
+                        {ccyFormat(invoiceTotal)}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell colSpan={3} align="center" sx={{ p: 1.5 }}>
+                        <Button
+                          onClick={handlePlaceOrder}
+                          variant="contained"
+                          color="success"
+                        >
+                          Place Order
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
                 </Table>
-                <TableRow>
-                  <TableCell colSpan={2}>Subtotal</TableCell>
-                  <TableCell colSpan={1} />
-                  <TableCell align="center" colSpan={1}>
-                    {ccyFormat(invoiceSubtotal)}
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell colSpan={1}>Tax</TableCell>
-                  <TableCell colSpan={2} align="center">
-                    <Typography noWrap variant="subtitle2">
-                      {`${(TAX_RATE * 100).toFixed(0)} %`}
-                    </Typography>
-                  </TableCell>
-                  <TableCell align="center">
-                    {ccyFormat(invoiceTaxes)}
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell colSpan={3}>Total</TableCell>
-                  <TableCell align="center">
-                    {ccyFormat(invoiceTotal)} vnd
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell colSpan={4}>
-                    <Button onClick={handlePlaceOrder} variant="contained">
-                      Place Order
-                    </Button>
-                  </TableCell>
-                </TableRow>
               </TableContainer>
-            </Box>
-          </Stack>
-        </Box>
+            </Card>
+          </Grid>
+        </Grid>
       </Box>
     </Container>
   );

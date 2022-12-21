@@ -1,234 +1,104 @@
-// @mui
-import { useTheme } from "@mui/material/styles";
-import { Grid, Container, Typography } from "@mui/material";
-// components
-import { Overview, BestSelling, SaleReport } from "../../components/dashboard";
+import { Box, Container, Grid, Typography } from "@mui/material";
+import { Budget } from "../../components/dashboard/budget";
+import { LatestOrders } from "../../components/dashboard/latest-orders";
+import { LatestProducts } from "../../components/dashboard/latest-products";
+import { Sales } from "../../components/dashboard/sales";
+import { TasksProgress } from "../../components/dashboard/tasks-progress";
+import { TotalCustomers } from "../../components/dashboard/total-customers";
+import { TotalProfit } from "../../components/dashboard/total-profit";
+import { DashboardLayout } from "../../components/dashboard-layout";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { getOrders, getOrdersCustom } from "../../features/order/orderSlice";
+import { getUsers } from "../../features/user/userSlice";
+import { getProducts } from "../../features/product/productSlice";
 
-// ----------------------------------------------------------------------
+const Page = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getOrdersCustom({ limit: 1000 }));
+    dispatch(getOrders({ limit: 1000 }));
+    dispatch(getUsers({ limit: 1000 }));
+    dispatch(getProducts({ limit: 5 }));
+  }, [dispatch]);
 
-export default function AdminPage() {
-  const theme = useTheme();
+  const { ordersCustomList, ordersList, totalSale, totalSaleCustom } =
+    useSelector((state) => state.order);
+  const { userList } = useSelector((state) => state.user);
+  const { products } = useSelector((state) => state.products);
+
+  const totalSales =
+    ordersCustomList.reduce(
+      (accumulator, currentValue) => accumulator + currentValue.totalPrice,
+      0
+    ) +
+    ordersList.reduce(
+      (accumulator, currentValue) => accumulator + currentValue.totalPrice,
+      0
+    );
+
+  const totalcustomers = userList?.user.length;
+  const totalOrders = ordersCustomList?.length + ordersList?.length;
+
+  const progressDone =
+    ordersCustomList?.filter((e) => e.isDeliverd).length +
+    ordersList?.filter((e) => e.isDeliverd).length;
+  const notDeliver =
+    ordersCustomList?.filter((e) => !e.isDeliverd).length +
+    ordersList?.filter((e) => !e.isDeliverd).length;
+
+  function percentage(partialValue, totalValue) {
+    return ((progressDone / (progressDone + notDeliver)) * 100).toFixed(2);
+  }
+
+  const progress = percentage(progressDone, notDeliver);
 
   return (
     <>
-      {/* <Helmet>
-        <title> Dashboard | Minimal UI </title>
-      </Helmet> */}
+      <Typography sx={{ mx: 3 }} fontWeight="600">
+        Dashboard | SaladBox
+      </Typography>
+      <Box
+        component="main"
+        sx={{
+          py: 8,
+        }}
+      >
+        <Container maxWidth={false}>
+          <Grid container spacing={3}>
+            <Grid item lg={3} sm={6} xl={3} xs={12}>
+              <Budget totalSales={totalSales} />
+            </Grid>
+            <Grid item xl={3} lg={3} sm={6} xs={12}>
+              <TotalCustomers totalcustomers={totalcustomers} />
+            </Grid>
 
-      <Container maxWidth="xl">
-        <Typography variant="h5" sx={{ mb: 2 }}>
-          Overview
-        </Typography>
+            <Grid item xl={3} lg={3} sm={6} xs={12}>
+              <TasksProgress progress={progress} value={progress} />
+            </Grid>
 
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={4} md={4}>
-            <Overview title="Total Order" total={714000} />
+            <Grid item xl={3} lg={3} sm={6} xs={12}>
+              <TotalProfit totalOrders={totalOrders} />
+            </Grid>
+
+            <Grid item lg={7} md={7} xl={8} xs={12}>
+              <Sales totalSale={totalSale} totalSaleCustom={totalSaleCustom} />
+            </Grid>
+
+            <Grid item lg={5} md={5} xl={4} xs={12}>
+              <LatestProducts products={products} />
+            </Grid>
+
+            <Grid item xs={12}>
+              <LatestOrders orders={ordersList} />
+            </Grid>
           </Grid>
-
-          <Grid item xs={12} sm={4} md={4}>
-            <Overview title="Pending Order" total={1352831} color="secondary" />
-          </Grid>
-
-          <Grid item xs={12} sm={4} md={4}>
-            <Overview title="New Users" total={1723315} color="success" />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={8}>
-            <SaleReport
-              title="Sale Report"
-              subheader="(+43%) than last year"
-              chartLabels={[
-                "01/01/2003",
-                "02/01/2003",
-                "03/01/2003",
-                "04/01/2003",
-                "05/01/2003",
-                "06/01/2003",
-                "07/01/2003",
-                "08/01/2003",
-                "09/01/2003",
-                "10/01/2003",
-                "11/01/2003",
-              ]}
-              chartData={[
-                {
-                  name: "Team A",
-                  type: "column",
-                  fill: "solid",
-                  data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30],
-                },
-                {
-                  name: "Team B",
-                  type: "area",
-                  fill: "gradient",
-                  data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
-                },
-                {
-                  name: "Team C",
-                  type: "line",
-                  fill: "solid",
-                  data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39],
-                },
-              ]}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={4}>
-            <BestSelling
-              title="Current Visits"
-              chartData={[
-                { label: "America", value: 4344 },
-                { label: "Asia", value: 5435 },
-                { label: "Europe", value: 1443 },
-                { label: "Africa", value: 4443 },
-              ]}
-              chartColors={[
-                theme.palette.primary.main,
-                theme.palette.info.main,
-                theme.palette.warning.main,
-                theme.palette.error.main,
-              ]}
-            />
-          </Grid>
-          {/* 
-          <Grid item xs={12} md={6} lg={8}>
-            <AppConversionRates
-              title="Conversion Rates"
-              subheader="(+43%) than last year"
-              chartData={[
-                { label: "Italy", value: 400 },
-                { label: "Japan", value: 430 },
-                { label: "China", value: 448 },
-                { label: "Canada", value: 470 },
-                { label: "France", value: 540 },
-                { label: "Germany", value: 580 },
-                { label: "South Korea", value: 690 },
-                { label: "Netherlands", value: 1100 },
-                { label: "United States", value: 1200 },
-                { label: "United Kingdom", value: 1380 },
-              ]}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={4}>
-            <AppCurrentSubject
-              title="Current Subject"
-              chartLabels={[
-                "English",
-                "History",
-                "Physics",
-                "Geography",
-                "Chinese",
-                "Math",
-              ]}
-              chartData={[
-                { name: "Series 1", data: [80, 50, 30, 40, 100, 20] },
-                { name: "Series 2", data: [20, 30, 40, 80, 20, 80] },
-                { name: "Series 3", data: [44, 76, 78, 13, 43, 10] },
-              ]}
-              chartColors={[...Array(6)].map(
-                () => theme.palette.text.secondary
-              )}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={8}>
-            <AppNewsUpdate
-              title="News Update"
-              list={[...Array(5)].map((_, index) => ({
-                id: faker.datatype.uuid(),
-                title: faker.name.jobTitle(),
-                description: faker.name.jobTitle(),
-                image: `/assets/images/covers/cover_${index + 1}.jpg`,
-                postedAt: faker.date.recent(),
-              }))}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={4}>
-            <AppOrderTimeline
-              title="Order Timeline"
-              list={[...Array(5)].map((_, index) => ({
-                id: faker.datatype.uuid(),
-                title: [
-                  "1983, orders, $4220",
-                  "12 Invoices have been paid",
-                  "Order #37745 from September",
-                  "New order placed #XF-2356",
-                  "New order placed #XF-2346",
-                ][index],
-                type: `order${index + 1}`,
-                time: faker.date.past(),
-              }))}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={4}>
-            <AppTrafficBySite
-              title="Traffic by Site"
-              list={[
-                {
-                  name: "FaceBook",
-                  value: 323234,
-                  icon: (
-                    <Iconify
-                      icon={"eva:facebook-fill"}
-                      color="#1877F2"
-                      width={32}
-                    />
-                  ),
-                },
-                {
-                  name: "Google",
-                  value: 341212,
-                  icon: (
-                    <Iconify
-                      icon={"eva:google-fill"}
-                      color="#DF3E30"
-                      width={32}
-                    />
-                  ),
-                },
-                {
-                  name: "Linkedin",
-                  value: 411213,
-                  icon: (
-                    <Iconify
-                      icon={"eva:linkedin-fill"}
-                      color="#006097"
-                      width={32}
-                    />
-                  ),
-                },
-                {
-                  name: "Twitter",
-                  value: 443232,
-                  icon: (
-                    <Iconify
-                      icon={"eva:twitter-fill"}
-                      color="#1C9CEA"
-                      width={32}
-                    />
-                  ),
-                },
-              ]}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={8}>
-            <AppTasks
-              title="Tasks"
-              list={[
-                { id: "1", label: "Create FireStone Logo" },
-                { id: "2", label: "Add SCSS and JS files if required" },
-                { id: "3", label: "Stakeholder Meeting" },
-                { id: "4", label: "Scoping & Estimations" },
-                { id: "5", label: "Sprint Showcase" },
-              ]}
-            />
-          </Grid> */}
-        </Grid>
-      </Container>
+        </Container>
+      </Box>
     </>
   );
-}
+};
+
+Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+
+export default Page;

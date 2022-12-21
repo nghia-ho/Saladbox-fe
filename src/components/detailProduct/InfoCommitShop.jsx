@@ -9,7 +9,7 @@ function InfoCommitShop() {
   ];
   return (
     <Card>
-      <Box sx={{ bgcolor: "secondary.light" }}>
+      <Box sx={{ bgcolor: "secondary.light", p: 1 }}>
         <Box sx={{ display: "flex" }}>
           <Typography
             align="center"

@@ -48,11 +48,9 @@ function CustomBoard({ setModal, setModalAdd }) {
         const ingredient = ingredients.map((e) => e._id);
         const product = await dispatch(
           customProduct({
-            name: "custom",
             ingredients: ingredient,
             price,
             calo,
-            type: "custom",
           })
         );
         const id = product.payload._id;
@@ -148,7 +146,6 @@ function CustomBoard({ setModal, setModalAdd }) {
     <Stack
       sx={{
         width: 1,
-        height: 1,
         bgcolor: "success.main",
         borderRadius: 1,
         p: 0.5,
@@ -164,10 +161,10 @@ function CustomBoard({ setModal, setModalAdd }) {
       {ingredientsCustom.length ? (
         <List
           sx={{
-            width: "100%",
+            width: 1,
             position: "relative",
             overflow: "auto",
-            maxHeight: { xs: 350, sm: 350, md: 800, lg: 450, xl: 450 },
+            maxHeight: { xs: 350, sm: 350, md: 800, lg: 450, xl: 500 },
             "& ul": { padding: 0 },
           }}
           subheader={<li />}

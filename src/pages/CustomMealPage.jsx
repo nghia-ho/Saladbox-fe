@@ -55,7 +55,7 @@ export default function CustomMealPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getIngredients());
+    dispatch(getIngredients({ limit: 1000 }));
   }, [dispatch]);
 
   const { ingredients } = useSelector((state) => state.ingredient);
@@ -64,54 +64,57 @@ export default function CustomMealPage() {
   const [value, setValue] = useState(0);
   const [modal, setModal] = useState(false);
   const [modalAdd, setModalAdd] = useState(false);
-  const [step2, setStep2] = useState(() =>
-    ingredients?.ingredient?.filter(
+  const [step2, setStep2] = useState("");
+
+  useEffect(() => {
+    const changeStep2 = ingredients?.filter(
       (ingredient) => ingredient.type === "Cheeze" && ingredient.step === 2
-    )
-  );
+    );
+    setStep2(changeStep2);
+  }, [ingredients]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  const ingredientStep1 = ingredients?.ingredient?.filter((ingredient) => {
+  const ingredientStep1 = ingredients?.filter((ingredient) => {
     return ingredient.step === 1;
   });
-  const ingredientStep3 = ingredients?.ingredient?.filter((ingredient) => {
+  const ingredientStep3 = ingredients?.filter((ingredient) => {
     return ingredient.step === 3;
   });
 
   const stepTwoCate = ["Veggie", "Protein", "Cheese", "Fruit", "Nuts & Seeds"];
 
   const handleClick = (e) => {
-    switch (e.target.textContent) {
+    switch (e) {
       case "Cheese":
         return setStep2(
-          ingredients?.ingredient?.filter((ingredient) => {
+          ingredients?.filter((ingredient) => {
             return ingredient.type === "Cheeze" && ingredient.step === 2;
           })
         );
       case "Protein":
         return setStep2(
-          ingredients?.ingredient?.filter((ingredient) => {
+          ingredients?.filter((ingredient) => {
             return ingredient.type === "Protein" && ingredient.step === 2;
           })
         );
       case "Veggie":
         return setStep2(
-          ingredients?.ingredient?.filter((ingredient) => {
+          ingredients?.filter((ingredient) => {
             return ingredient.type === "Vegetable" && ingredient.step === 2;
           })
         );
       case "Fruit":
         return setStep2(
-          ingredients?.ingredient?.filter((ingredient) => {
+          ingredients?.filter((ingredient) => {
             return ingredient.type === "Fruit" && ingredient.step === 2;
           })
         );
       case "Nuts & Seeds":
         return setStep2(
-          ingredients?.ingredient?.filter((ingredient) => {
+          ingredients?.filter((ingredient) => {
             return ingredient.type === "NutsSeeds" && ingredient.step === 2;
           })
         );
@@ -121,7 +124,6 @@ export default function CustomMealPage() {
     }
   };
 
-  // const handleOpen = () => setModal(true);
   const style = {
     position: "absolute",
     top: "50%",
@@ -172,7 +174,7 @@ export default function CustomMealPage() {
         >
           <Box sx={style}>
             <Typography variant="h5" component="h2" align="center">
-              You need to add ingredient to customize your salad
+              You need to add ingredient into menu, to customize your salad
             </Typography>
           </Box>
         </Modal>
@@ -223,7 +225,7 @@ export default function CustomMealPage() {
                     key={i}
                     variant="outlined"
                     sx={{ color: "primary.darker", m: 1 }}
-                    onClick={(e) => handleClick(e)}
+                    onClick={() => handleClick(item)}
                   >
                     {item}
                   </Button>

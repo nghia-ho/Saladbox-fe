@@ -1,4 +1,4 @@
-import { Card, Divider, Grid, Paper, Typography } from "@mui/material";
+import { Divider, Grid, Paper, Typography } from "@mui/material";
 import { Box, Stack } from "@mui/system";
 import React, { useEffect, useCallback } from "react";
 import { FormProvider, FUploadAvatar } from "../../components/form";
@@ -94,7 +94,7 @@ function ProfileInfomation() {
               </Grid>
             </Stack>
             <Box sx={{ my: 3, width: 1 }}>
-              <Box py={3} v>
+              <Box py={3}>
                 <Divider />
               </Box>
               <Typography variant="h6" sx={{ fontWeight: 600 }}>
@@ -103,7 +103,12 @@ function ProfileInfomation() {
               <Box sx={{ mt: 4 }}>
                 <Stack spacing={2} alignItems="end">
                   <FTextField name="name" label="Your Name" size="large" />
-                  <FTextField name="email" label="Email" size="large" />
+                  <FTextField
+                    name="email"
+                    label="Email"
+                    size="large"
+                    disabled
+                  />
                   <FTextField name="address" label="Address" size="large" />
                   <FTextField name="phone" label="Phone" size="large" />
                   <FTextField

@@ -6,7 +6,7 @@ import "./index.css";
 function InfoIngredient() {
   const { product } = useSelector((state) => state.products);
   return (
-    <Card>
+    <Card sx={{ p: 1 }}>
       <Box>
         <Box sx={{ display: "flex" }}>
           <Typography
@@ -28,14 +28,14 @@ function InfoIngredient() {
         <Grid container spacing={1}>
           {product?.ingredients?.map((ingredient, index) => (
             <Grid key={ingredient._id} item xs={3} md={3} lg={3}>
-              <Box sx={{ m: 3 }} className="container">
+              <Box sx={{ m: { xs: 1, md: 3 } }} className="container">
                 <Box
                   sx={{
                     overflow: "hidden",
                     display: "flex",
                     justifyContent: "center",
                     borderRadius: 1,
-                    border: "1px dashed ",
+                    border: "1px dashed grey",
                     p: 1,
                   }}
                 >

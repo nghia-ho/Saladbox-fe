@@ -45,22 +45,42 @@ export const getUser = () => async (dispatch) => {
     dispatch(userSlice.actions.hasError(error.message));
   }
 };
-export const getUsers = () => async (dispatch) => {
-  dispatch(userSlice.actions.startLoading());
+export const getUsers =
+  ({ limit, page }) =>
+  async (dispatch) => {
+    dispatch(userSlice.actions.startLoading());
 
-  try {
-    const response = await apiService.get("users");
-    dispatch(userSlice.actions.getUsersSuccess(response.data.data));
-  } catch (error) {
-    dispatch(userSlice.actions.hasError(error.message));
-  }
-};
+    try {
+      const params = { page, limit };
+      const response = await apiService.get("users", { params });
+      dispatch(userSlice.actions.getUsersSuccess(response.data.data));
+    } catch (error) {
+      dispatch(userSlice.actions.hasError(error.message));
+    }
+  };
 export const updateUser =
-  ({ userId, name, address, phone, bmi, avatarURL }) =>
+  ({
+    userId,
+    name,
+    address,
+    phone,
+    bmi,
+    avatarURL,
+    newPassword,
+    passwordConfirmation,
+  }) =>
   async (dispatch) => {
     dispatch(userSlice.actions.startLoading());
     try {
-      const data = { name, bmi, address, phone, avatarURL };
+      const data = {
+        name,
+        bmi,
+        address,
+        phone,
+        avatarURL,
+        newPassword,
+        passwordConfirmation,
+      };
       if (avatarURL instanceof File) {
         const imageUrl = await cloudinaryUpload(avatarURL);
         data.avatarURL = imageUrl;

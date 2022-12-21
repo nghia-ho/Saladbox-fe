@@ -1,127 +1,82 @@
-import { Box } from "@mui/system";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getOrders } from "./orderSlice";
-import LoadingScreen from "../../components/LoadingScreen";
-import { Button, Typography } from "@mui/material";
-import { Link } from "react-router-dom";
+import { getOrders, getOrdersCustom } from "./orderSlice";
 
-import { styled } from "@mui/material/styles";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 
-import moment from "moment";
+import Order from "./Order";
+import OrderCustom from "./OrderCustom";
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
-  },
-}));
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  "&:nth-of-type(odd)": {
-    backgroundColor: theme.palette.action.hover,
-  },
-  // hide last border
-  "&:last-child td, &:last-child th": {
-    border: 0,
-  },
-}));
-
-function createData(orderId, date, product, price, status, isDeliverd) {
-  return { orderId, date, product, price, status, isDeliverd };
-}
+import { Box, Card, Container, Tab, Tabs } from "@mui/material";
 
 const OrderList = () => {
+  const [currentTab, setCurrentTab] = useState("order");
   const dispatch = useDispatch();
 
+  const handleChangeTab = (newValue) => {
+    setCurrentTab(newValue);
+  };
+
   useEffect(() => {
-    dispatch(getOrders());
+    dispatch(getOrders({}));
+    dispatch(getOrdersCustom({}));
   }, [dispatch]);
 
-  const { ordersList, isLoading } = useSelector((state) => state.order);
+  const { ordersList, isLoading, ordersCustomList } = useSelector(
+    (state) => state.order
+  );
 
-  const row = (param) => {
-    const order = param.map((orderItem) => {
-      return createData(
-        orderItem._id,
-        orderItem.createdAt,
-        orderItem.orderItems,
-        orderItem.totalPrice,
-        orderItem.isPaid,
-        orderItem.isDeliverd
-      );
-    });
-    return order;
-  };
-  let rows = row(ordersList);
+  const PROFILE_TABS = [
+    {
+      value: "order",
+      name: "Order",
+      icon: <AccountBoxIcon sx={{ fontSize: 24 }} />,
+      component: <Order isLoading={isLoading} ordersList={ordersList} />,
+    },
+    {
+      value: "orderCustom",
+      name: "Weekly Order",
+      icon: <PeopleAltIcon sx={{ fontSize: 24 }} />,
+      component: (
+        <OrderCustom isLoading={isLoading} ordersList={ordersCustomList} />
+      ),
+    },
+  ];
 
   return (
-    <Box sx={{ width: 1 }}>
-      {isLoading && <LoadingScreen />}
-      {(ordersList.length === 0 || !ordersList) && (
-        <Box sx={{ maxWidth: 480, margin: "auto", textAlign: "center" }}>
-          <Typography variant="h4" paragraph>
-            No Orders
-          </Typography>
-          <Button to="/menu" variant="contained" component={Link}>
-            Go Shopping
-          </Button>
-        </Box>
-      )}
-      <TableContainer component={Paper}>
-        <Table
-          sx={{ minWidth: { xs: 10, sm: 600, md: 700 } }}
-          aria-label="customized table"
+    <Container>
+      <Card sx={{ mt: 3 }}>
+        <Tabs
+          value={currentTab}
+          sx={{ m: 1 }}
+          scrollButtons="auto"
+          variant="scrollable"
+          allowScrollButtonsMobile
+          onChange={(e, value) => handleChangeTab(value)}
         >
-          <TableHead>
-            <TableRow>
-              <StyledTableCell>Order ID</StyledTableCell>
-              <StyledTableCell>Date</StyledTableCell>
-              <StyledTableCell>Product</StyledTableCell>
-              <StyledTableCell align="right">Amount</StyledTableCell>
-              <StyledTableCell align="right">Paid Status</StyledTableCell>
-              <StyledTableCell align="right">Delievery Status</StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row) => (
-              <StyledTableRow key={row.orderId}>
-                <StyledTableCell component="th" scope="row">
-                  {row.orderId}
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {row.date ? moment(row.date).calendar() : ""}
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                    {row.product[0]?.name}...
-                  </Typography>
-                  + {row.product.length - 1} other items
-                </StyledTableCell>
-
-                <StyledTableCell align="right">{row.price}</StyledTableCell>
-                <StyledTableCell align="right">
-                  {row.status ? "Complete" : "Unpaid"}
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {row.isDeliverd ? "Complete" : "Not yet"}
-                </StyledTableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Box>
+          {PROFILE_TABS.map((tab) => (
+            <Tab
+              disableRipple
+              key={tab.value}
+              value={tab.value}
+              icon={tab.icon}
+              label={tab.name}
+            />
+          ))}
+        </Tabs>
+        {PROFILE_TABS.map((tab) => {
+          const isMatched = tab.value === currentTab;
+          return (
+            isMatched && (
+              <Box mt={1} key={tab.value}>
+                {tab.component}
+              </Box>
+            )
+          );
+        })}
+      </Card>
+    </Container>
   );
 };
 

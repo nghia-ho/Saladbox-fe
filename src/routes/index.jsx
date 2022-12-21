@@ -21,10 +21,11 @@ import CustomMealPage from "../pages/CustomMealPage";
 import MainLayoutAdmin from "../layouts/MainLayoutAdmin";
 import AdminPage from "../pages/admin-pages/AdminPage";
 import AdminOrderPage from "../pages/admin-pages/AdminOrderPage";
-import UserPage from "../pages/admin-pages/UserPage";
 import AdminProductPage from "../pages/admin-pages/AdminProductPage";
 import IngredientPage from "../pages/admin-pages/IngredientPage";
 import OrderDeTailPage from "../pages/admin-pages/OrderDetailPage";
+import CustomMealsPage from "../pages/CustomMealsPage";
+import CartPageCustom from "../pages/CartPageCustom";
 
 const Router = () => {
   return (
@@ -32,10 +33,12 @@ const Router = () => {
     <Routes>
       <Route path="/" element={<MainLayout />}>
         <Route index element={<HomePage />} />
-        <Route path="menu" element={<MenuPage />} />
+        <Route path="shop" element={<MenuPage />} />
         <Route path="product/:id" element={<DetailPage />} />
         <Route path="cart" element={<CartPage />} />
+        <Route path="cartcustom" element={<CartPageCustom />} />
         <Route path="custom" element={<CustomMealPage />} />
+        <Route path="weeklymealplan" element={<CustomMealsPage />} />
       </Route>
       {/* // protect route for user*/}
       <Route
@@ -66,7 +69,6 @@ const Router = () => {
         <Route path="orders" element={<AdminOrderPage />} />
         <Route path="orders/:id" element={<OrderDeTailPage />} />
         <Route path="product" element={<AdminProductPage />} />
-        <Route path="user" element={<UserPage />} />
         <Route path="ingredient" element={<IngredientPage />} />
       </Route>
 

@@ -4,6 +4,7 @@ const initialState = {
   isLoading: false,
   error: null,
   cart: [],
+  cartCustom: [],
   shippingAddress: {},
   paymentMethod: "",
 };
@@ -22,6 +23,10 @@ const cartSlice = createSlice({
     addToCardSuccess: (state, action) => {
       state.isLoading = false;
       state.cart = action.payload;
+    },
+    addToCartCustomSuccess: (state, action) => {
+      state.isLoading = false;
+      state.cartCustom = action.payload;
     },
     getCartSuccess: (state, action) => {
       state.isLoading = false;
@@ -46,6 +51,12 @@ const cartSlice = createSlice({
     clearCartSuccess: (state, action) => {
       state.isLoading = false;
       state.cart = [];
+      state.shippingAddress = {};
+      state.paymentMethod = "";
+    },
+    clearCartCustomSuccess: (state, action) => {
+      state.isLoading = false;
+      state.cartCustom = [];
       state.shippingAddress = {};
       state.paymentMethod = "";
     },
@@ -74,6 +85,18 @@ export const addToCard = (product) => async (dispatch) => {
     dispatch(cartSlice.actions.hasError(error));
   }
 };
+
+export const addToCartCustom = (product) => async (dispatch) => {
+  dispatch(cartSlice.actions.startLoading());
+  try {
+    const cart = product.map((e) => ({ ...e, quantity: 1 }));
+
+    dispatch(cartSlice.actions.addToCartCustomSuccess(cart));
+  } catch (error) {
+    dispatch(cartSlice.actions.hasError(error));
+  }
+};
+
 export const getCart = () => async (dispatch) => {
   dispatch(cartSlice.actions.startLoading());
   try {
@@ -140,7 +163,19 @@ export const savePaymentMethod = (data, callback) => async (dispatch) => {
 export const clearCart = () => async (dispatch) => {
   dispatch(cartSlice.actions.startLoading());
   try {
+    window.localStorage.removeItem("cart");
+    window.localStorage.removeItem("payment");
+    window.localStorage.removeItem("__paypal_storage__");
+    window.localStorage.removeItem("shippingAddress");
     dispatch(cartSlice.actions.clearCartSuccess());
+  } catch (error) {
+    dispatch(cartSlice.actions.hasError(error));
+  }
+};
+export const clearCartCustom = () => async (dispatch) => {
+  dispatch(cartSlice.actions.startLoading());
+  try {
+    dispatch(cartSlice.actions.clearCartCustomSuccess());
   } catch (error) {
     dispatch(cartSlice.actions.hasError(error));
   }

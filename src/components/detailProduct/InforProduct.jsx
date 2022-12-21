@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Card,
   Grid,
@@ -7,32 +6,23 @@ import {
   Stack,
   Rating,
   Divider,
-  IconButton,
   Button,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
 
 // import { fCurrency } from "../utils";
 // import ReactMarkdown from "react-markdown";
 // import rehypeRaw from "rehype-raw";
-import { useSelector } from "react-redux";
-import useAuth from "../../hooks/useAuth";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCard } from "../../features/cart/cartSlice";
 
 const InforProduct = () => {
-  const [count, setCount] = useState(0);
-
-  if (count < 0) {
-    setCount(0);
-  }
-  const auth = useAuth();
-
+  const dispatch = useDispatch();
   const { product } = useSelector((state) => state.products);
   return (
     <Card>
       <Grid container sx={{ display: "flex", alignItems: "center" }}>
         <Grid item xs={12} md={6}>
-          <Box p={6}>
+          <Box p={{ xs: 3, lg: 6 }}>
             <Box
               sx={{
                 overflow: "hidden",
@@ -42,9 +32,13 @@ const InforProduct = () => {
             >
               <Box
                 component="img"
-                src={`http://localhost:8000${product?.image}`}
+                src={
+                  product?.image?.length
+                    ? `http://localhost:8000${product?.image}`
+                    : "/saladcustom.png"
+                }
                 alt={product?.bame}
-                sx={{ borderRadius: 2 }}
+                sx={{ borderRadius: 2, width: 1 }}
               />
             </Box>
           </Box>
@@ -64,6 +58,7 @@ const InforProduct = () => {
           <Stack direction="column" spacing={1} sx={{ mb: 1 }}>
             <Typography
               variant="subtitle2"
+              align="justify"
               sx={{
                 mt: 1,
               }}
@@ -105,59 +100,18 @@ const InforProduct = () => {
               {product.price} VND
             </Typography>
           </Box>
-
-          <Grid
-            spacing={1}
-            container
+          <Button
+            size="large"
+            color="primary"
+            variant="contained"
+            onClick={() => dispatch(addToCard(product))}
             sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
+              width: 1,
+              p: 1.4,
             }}
           >
-            <Grid item xs={12} md={3}>
-              <Stack
-                direction="row"
-                justifyContent="space-around"
-                sx={{
-                  border: "1px solid grey",
-                  borderRadius: 1,
-                }}
-              >
-                <IconButton
-                  variant="outlined"
-                  size="large"
-                  onClick={() => setCount(count + 1)}
-                >
-                  <AddIcon />
-                </IconButton>
-                <Typography variant="h6" sx={{ fontWeight: "600", m: 1 }}>
-                  {count}
-                </Typography>
-                <IconButton
-                  variant="outlined"
-                  size="large"
-                  onClick={() => setCount(count - 1)}
-                >
-                  <RemoveIcon />
-                </IconButton>
-              </Stack>
-            </Grid>
-            <Grid item xs={12} md={9}>
-              <Button
-                size="large"
-                color="primary"
-                variant="contained"
-                onClick={() => auth.addToCard(product)}
-                sx={{
-                  width: 1,
-                  p: 1.4,
-                }}
-              >
-                Add to Cart
-              </Button>
-            </Grid>
-          </Grid>
+            Add to Cart
+          </Button>
         </Grid>
       </Grid>
     </Card>

@@ -16,6 +16,7 @@ const CategoryList = ({ selectValue, setSelectValue, setPage }) => {
 
   const handleAlignment = (event, newCate) => {
     setSelectValue(newCate);
+    console.log(newCate);
   };
 
   const handleCate = (id, name) => {
@@ -25,10 +26,10 @@ const CategoryList = ({ selectValue, setSelectValue, setPage }) => {
 
   const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
     "& .MuiToggleButtonGroup-grouped": {
+      margin: theme.spacing(0.5),
       border: 0,
       "&.Mui-disabled": {
         border: 0,
-        color: "#000000",
       },
       "&:not(:first-of-type)": {
         borderRadius: theme.shape.borderRadius,
@@ -37,26 +38,23 @@ const CategoryList = ({ selectValue, setSelectValue, setPage }) => {
         borderRadius: theme.shape.borderRadius,
       },
       "&.Mui-selected": {
-        color: "#A4BE7B",
-        backgroundColor: "#815B5B",
+        color: "#C9B5b2",
       },
       "&:hover": {
-        color: "#A4BE7B",
-        backgroundColor: "white",
+        color: "#D0B8A8",
       },
     },
   }));
 
   return (
-    <Box sx={{ mt: 3, mr: 2, width: 1 }}>
+    <Box sx={{ mt: 3, mr: 1, width: 1 }}>
       <Paper elevation={2} sx={{ p: 1 }}>
-        <Typography align="center" sx={{ py: 1.5, fontWeight: 600 }}>
+        <Typography align="center" sx={{ py: 1.5, fontWeight: 700 }}>
           Categories
         </Typography>
         <Divider variant="middle" />
         <StyledToggleButtonGroup
           value={selectValue}
-          color="primary"
           exclusive
           onChange={handleAlignment}
           aria-label="text alignment"
@@ -74,7 +72,7 @@ const CategoryList = ({ selectValue, setSelectValue, setPage }) => {
               sx={{
                 my: 0.4,
                 p: 1,
-                color: "black",
+                color: "success.darker",
                 width: 1,
                 display: "flex",
                 flexDirection: "column",

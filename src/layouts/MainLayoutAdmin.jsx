@@ -4,6 +4,7 @@ import { styled } from "@mui/material/styles";
 //
 import MainHeaderAdmin from "./MainHeaderAdmin";
 import MainNavAdmin from "./MainNavAdmin";
+import { useState } from "react";
 
 // ----------------------------------------------------------------------
 
@@ -34,11 +35,12 @@ const Main = styled("div")(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function MainLayoutAdmin() {
+  const [open, setOpen] = useState(false);
   return (
     <StyledRoot>
-      <MainHeaderAdmin />
+      <MainHeaderAdmin onOpenNav={() => setOpen(true)} />
 
-      <MainNavAdmin />
+      <MainNavAdmin openNav={open} onCloseNav={() => setOpen(false)} />
 
       <Main>
         <Outlet />

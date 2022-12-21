@@ -3,13 +3,14 @@ import SearchIcon from "@mui/icons-material/Search";
 import React from "react";
 import { FTextField } from "../../components/form";
 
-function ProductSearch() {
+function ProductSearch({ size }) {
   return (
     <Stack spacing={1} direction={{ xs: "column", sm: "column" }}>
       <FTextField
         name="nameQuery"
         sx={{ width: 1 }}
-        size="small"
+        placeholder="Search Product..."
+        size={size}
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">

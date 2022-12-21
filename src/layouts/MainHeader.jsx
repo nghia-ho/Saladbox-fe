@@ -13,7 +13,6 @@ import Logo from "../components/Logo";
 import { Badge, Divider, useTheme } from "@mui/material";
 import ShoppingBagTwoToneIcon from "@mui/icons-material/ShoppingBagTwoTone";
 import AccountCircleTwoToneIcon from "@mui/icons-material/AccountCircleTwoTone";
-import FavoriteTwoToneIcon from "@mui/icons-material/FavoriteTwoTone";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import { Link, useNavigate } from "react-router-dom";
@@ -22,7 +21,7 @@ import { Stack } from "@mui/system";
 import { ColorModeContext } from "../contexts/ThemeProvider";
 import { useSelector } from "react-redux";
 
-const pages = ["home", "menu", "custom", "contact"];
+const pages = ["home", "shop", "custom", "weeklymealplan"];
 
 function MainHeader() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -127,12 +126,21 @@ function MainHeader() {
     >
       {pages.map((page, i) => (
         <MenuItem key={i} onClick={handleCloseNavMenu}>
-          <Typography
-            textAlign="center"
-            onClick={() => navigate(`/${page === "home" ? "" : page}`)}
-          >
-            {page.charAt(0).toUpperCase() + page.slice(1)}
-          </Typography>
+          {page === "weeklymealplan" ? (
+            <Typography
+              textAlign="center"
+              onClick={() => navigate(`/weeklymealplan`)}
+            >
+              Weekly Meal Plan
+            </Typography>
+          ) : (
+            <Typography
+              textAlign="center"
+              onClick={() => navigate(`/${page === "home" ? "" : page}`)}
+            >
+              {page.charAt(0).toUpperCase() + page.slice(1)}
+            </Typography>
+          )}
         </MenuItem>
       ))}
     </Menu>
@@ -147,30 +155,41 @@ function MainHeader() {
       }}
     >
       <Container maxWidth="lg" sx={{ p: 1 }}>
-        <Toolbar disableGutters>
+        <Toolbar
+          disableGutters
+          sx={{ display: "flex", justifyContent: "space-between" }}
+        >
           <Stack direction="row" alignItems="end">
             <Logo />
-            <Typography sx={{ fontWeight: 600, ml: 1 }} variant="body2">
+            <Typography
+              sx={{
+                fontWeight: 600,
+                ml: 1,
+                display: { xs: "none", md: "flex" },
+              }}
+              variant="body2"
+            >
               SaladBox
             </Typography>
+            <Box sx={{ display: { xs: "flex", md: "none" } }}>
+              <IconButton
+                sx={{ py: 0 }}
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleOpenNavMenu}
+                color="inherit"
+              >
+                <MenuIcon />
+              </IconButton>
+            </Box>
           </Stack>
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-          </Box>
           {menuPad}
           <Box
             sx={{
               flexGrow: 1,
-              display: { xs: "none", md: "flex" },
+              display: { xs: "none", sm: "flex" },
               justifyContent: "center",
               px: 5,
             }}
@@ -180,16 +199,32 @@ function MainHeader() {
                 key={i}
                 onClick={
                   (handleCloseNavMenu,
-                  () => navigate(`${page === "home" ? "" : page}`))
+                  () =>
+                    navigate(
+                      `${
+                        page === "home"
+                          ? ""
+                          : page === "weeklymealplan"
+                          ? "/weeklymealplan"
+                          : page
+                      }`
+                    ))
                 }
-                sx={{ my: 2, color: "primary.darker", display: "block", px: 3 }}
+                sx={{
+                  my: 2,
+                  color: "success.darker",
+                  display: "block",
+                  px: 3,
+                }}
               >
-                {page.charAt(0).toUpperCase() + page.slice(1)}
+                {page === "weeklymealplan"
+                  ? "Weekly Salad"
+                  : page.charAt(0).toUpperCase() + page.slice(1)}
               </Button>
             ))}
           </Box>
 
-          <Stack direction="row" width="10%" justifyContent="space-around">
+          <Stack direction="row" justifyContent="space-around" spacing={1}>
             <IconButton
               sx={{ p: 0, pb: 0.5 }}
               onClick={colorMode.toggleColorMode}
@@ -204,20 +239,13 @@ function MainHeader() {
 
             <Badge
               badgeContent={cart.length}
-              color="success"
-              sx={{ display: { xs: "none", md: "inline" } }}
+              color="secondary"
               to="/cart"
               component={Link}
             >
               <ShoppingBagTwoToneIcon color="success" align="center" />
             </Badge>
-            <Badge
-              badgeContent={0}
-              color="success"
-              sx={{ display: { xs: "none", md: "inline" } }}
-            >
-              <FavoriteTwoToneIcon color="success" />
-            </Badge>
+
             {menuProfile}
           </Stack>
         </Toolbar>

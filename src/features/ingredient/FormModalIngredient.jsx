@@ -1,19 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Stack, Box, MenuItem, Menu } from "@mui/material";
-import { FTextField, FormProvider, FSelect, FMultiCheckbox } from "./form";
+import { Stack, Box } from "@mui/material";
+import { FTextField, FormProvider, FSelect } from "../../components/form";
 import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch } from "react-redux";
-import {
-  createIngredient,
-  editIngredient,
-} from "../features/ingredient/ingredientSlice";
+import { createIngredient, editIngredient } from "./ingredientSlice";
 
 function FormModalIngredient({
   handleClose,
@@ -23,7 +18,6 @@ function FormModalIngredient({
   selectedProduct,
   setSelectedProduct,
 }) {
-  const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
 
   const defaultValues = {
@@ -77,7 +71,6 @@ function FormModalIngredient({
   }, [selectedProduct, reset, mode]);
 
   let type = [...new Set(ingredients?.map((i) => i.type))];
-  console.log(type);
   return (
     <Dialog open={open} onClose={handleClose}>
       <Box sx={{ width: { md: 400, lg: 600 } }}>

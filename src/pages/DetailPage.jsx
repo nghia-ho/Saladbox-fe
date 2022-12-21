@@ -9,9 +9,7 @@ import {
 } from "@mui/material";
 
 import { Link as RouterLink, useParams } from "react-router-dom";
-// import { fCurrency } from "../utils";
-// import ReactMarkdown from "react-markdown";
-// import rehypeRaw from "rehype-raw";
+
 import LoadingScreen from "../components/LoadingScreen";
 import { Alert } from "@mui/material";
 import { getProductById } from "../features/product/productSlice";
@@ -38,7 +36,7 @@ function DetailPage() {
             underline="hover"
             color="inherit"
             component={RouterLink}
-            to="/menu"
+            to="/shop"
           >
             Saladbox
           </Link>
@@ -46,7 +44,7 @@ function DetailPage() {
             underline="hover"
             color="inherit"
             component={RouterLink}
-            to="/menu"
+            to="/shop"
           >
             {product?.category?.name}{" "}
           </Link>

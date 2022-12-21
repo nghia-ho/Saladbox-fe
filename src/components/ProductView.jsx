@@ -8,9 +8,10 @@ import { styled } from "@mui/material/styles";
 export default function ProductView({ view, handleChange }) {
   const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
     "& .MuiToggleButtonGroup-grouped": {
+      margin: theme.spacing(0.5),
       border: 0,
       "&.Mui-disabled": {
-        color: "#000000",
+        border: 0,
       },
       "&:not(:first-of-type)": {
         borderRadius: theme.shape.borderRadius,
@@ -19,13 +20,9 @@ export default function ProductView({ view, handleChange }) {
         borderRadius: theme.shape.borderRadius,
       },
       "&.Mui-selected": {
-        color: "#07503f",
-        backgroundColor: "primary",
+        color: "#815B5B",
       },
-      "&:hover": {
-        color: "#000000",
-        backgroundColor: "none",
-      },
+      color: "#D0B8A8",
     },
   }));
 

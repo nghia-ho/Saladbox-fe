@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 // @mui
-import { Box, Drawer, Typography, Stack } from "@mui/material";
+import { Box, Drawer, Typography, Stack, useMediaQuery } from "@mui/material";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -10,7 +10,6 @@ import ListItemText from "@mui/material/ListItemText";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
 import TocIcon from "@mui/icons-material/Toc";
 import PropaneIcon from "@mui/icons-material/Propane";
-import PersonIcon from "@mui/icons-material/Person";
 import AirplaneTicketIcon from "@mui/icons-material/AirplaneTicket";
 // components
 import Logo from "../components/Logo";
@@ -37,11 +36,6 @@ const NAV_LIST = [
     to: "/product",
   },
   {
-    name: "User",
-    icon: <PersonIcon />,
-    to: "/user",
-  },
-  {
     name: "Ingredient",
     icon: <AirplaneTicketIcon />,
     to: "/ingredient",
@@ -57,7 +51,7 @@ MainNavAdmin.propTypes = {
 
 function MainNavAdmin({ openNav, onCloseNav }) {
   const [selectedIndex, setSelectedIndex] = React.useState(0);
-
+  const mediumViewport = useMediaQuery("(min-width:1200px)");
   const navigate = useNavigate();
   const handleListItemClick = (event, index, to) => {
     navigate(to);
@@ -72,7 +66,7 @@ function MainNavAdmin({ openNav, onCloseNav }) {
         alignItems="end"
         justifyContent="center"
       >
-        <Logo />
+        <Logo disableLink={true} />
         <Typography variant="h7" sx={{ fontWeight: 600, ml: 1 }} align="center">
           SaladBox
         </Typography>
@@ -108,7 +102,7 @@ function MainNavAdmin({ openNav, onCloseNav }) {
         width: { lg: NAV_WIDTH },
       }}
     >
-      {"isDesktop" ? (
+      {mediumViewport ? (
         <Drawer
           open
           variant="permanent"

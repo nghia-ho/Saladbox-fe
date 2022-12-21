@@ -1,16 +1,18 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { useDispatch } from "react-redux";
 import apiService from "../../app/apiService";
 
 export const getProducts = createAsyncThunk(
   "product/getProducts",
-  async ({ page = 1, name, price, sortBy, category }) => {
-    let url = `/product?page=${page}&limit=${12}`;
-    if (name) url += `&name=${name}`;
-    if (price) url += `&price=${price}`;
-    if (sortBy) url += `&sortBy=${sortBy}`;
-    if (category) url += `&category=${category}`;
-    const response = await apiService.get(url);
+  async ({ page = 1, limit = 12, name, price, sortBy, category, sort }) => {
+    const params = { page, limit };
+
+    if (name) params.name = name;
+    if (price) params.price = price;
+    if (sortBy) params.sortBy = sortBy;
+    if (category) params.category = category;
+    if (sort) params.sort = sort;
+
+    const response = await apiService.get(`/product`, { params });
     return response.data.data;
   }
 );
@@ -29,10 +31,11 @@ export const getProductById = createAsyncThunk(
 
 export const getfavoriteProduct = createAsyncThunk(
   "favorite/favorites",
-  async () => {
+  async ({ page, limit = 5 }) => {
+    const params = { page, limit };
     try {
-      let url = `/favorite`;
-      const response = await apiService.get(url);
+      const response = await apiService.get(`/favorite`, { params });
+      console.log(response);
       return response.data.data;
     } catch (error) {
       console.log(error);
@@ -65,9 +68,16 @@ export const removefavoriteProduct = createAsyncThunk(
 );
 export const customProduct = createAsyncThunk(
   "product/custom",
-  async ({ name, ingredients, price, calo, type }) => {
+  async ({
+    name = "Salad Custom",
+    ingredients,
+    price,
+    calo,
+    type = "custom",
+    image = "/custom/custom.png",
+  }) => {
     try {
-      const data = { name, ingredients, price, calo, type };
+      const data = { name, ingredients, price, calo, type, image };
       let url = `/product/custom`;
       const response = await apiService.post(url, data);
       return response.data.data;
@@ -78,9 +88,28 @@ export const customProduct = createAsyncThunk(
 );
 export const editProduct = createAsyncThunk(
   "product/edit",
-  async ({ id, name, decription, image, category, price, calo, type }) => {
+  async ({
+    id,
+    name,
+    decription,
+    image,
+    category,
+    price,
+    calo,
+    type,
+    ingredients,
+  }) => {
     try {
-      const data = { name, decription, image, category, price, calo, type };
+      const data = {
+        name,
+        decription,
+        image,
+        category,
+        price,
+        calo,
+        type,
+        ingredients,
+      };
       let url = `/product/${id}`;
       await apiService.put(url, data);
       const response = await apiService.get(`/product?page=1`);
@@ -141,6 +170,7 @@ const productSlice = createSlice({
       state.isLoading = false;
       state.products = action.payload.product;
       state.totalPage = action.payload.totalPage;
+      state.count = action.payload.count;
     },
     [getProducts.rejected]: (state, action) => {
       state.isLoading = false;

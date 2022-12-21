@@ -4,7 +4,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 const SORT_BY_ITEM = [
   { value: "calo-lowest", label: "Calo: Low-High" },
@@ -27,7 +27,7 @@ function ProductSort({ setSort }) {
   return (
     <>
       <Button
-        sx={{ color: "#212121" }}
+        sx={{ color: "success.light" }}
         p={0}
         onClick={handleClick}
         endIcon={anchorEl ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
@@ -41,7 +41,7 @@ function ProductSort({ setSort }) {
               key={option.value}
               onClick={() => handleClose(option.value)}
             >
-              {option.label}
+              <Typography fontWeight="600">{option.label}</Typography>
             </MenuItem>
           ))}
         </Box>

@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Card,
   CardActionArea,
   CardMedia,
@@ -8,8 +9,7 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
+
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 import { Stack } from "@mui/system";
 import React, { useState } from "react";
@@ -19,6 +19,7 @@ import { Link as RouterLink } from "react-router-dom";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import useAuth from "../../hooks/useAuth";
+import { addToCard } from "../cart/cartSlice";
 
 const ProductCard2 = ({ product }) => {
   const [count, setCount] = useState(0);
@@ -86,9 +87,11 @@ const ProductCard2 = ({ product }) => {
                     <CardMedia
                       sx={{ borderRadius: 1, width: 1, height: 1 }}
                       component="img"
-                      image={`http://localhost:8000${
-                        product?.image || "/salads/1.png"
-                      }`}
+                      image={
+                        product?.image.length
+                          ? `http://localhost:8000${product?.image}`
+                          : "/saladcustom.png"
+                      }
                       alt={product?.name}
                     />
                   </CardActionArea>
@@ -96,7 +99,7 @@ const ProductCard2 = ({ product }) => {
               </Grid>
               {/* GRID ITEM OF TONG */}
               <Grid item xs={12} sm={12} md={9} lg={9} xl={9}>
-                <Stack sx={{ p: 2, height: 1 }} justifyContent="space-around">
+                <Stack sx={{ px: 2, height: 1 }} justifyContent="space-around">
                   <Box>
                     <Typography
                       variant="subtitle2"
@@ -126,40 +129,49 @@ const ProductCard2 = ({ product }) => {
                     </Typography>
                     {wishList}
                   </Stack>
+                  <Grid container spacing={1}>
+                    {product?.ingredients?.map((ingredient, index) => (
+                      <Grid key={index} item xs={1}>
+                        {ingredient.image && (
+                          <Box sx={{ m: 0 }}>
+                            <Box
+                              sx={{
+                                overflow: "hidden",
+                                display: "flex",
+                                justifyContent: "center",
+                                borderRadius: 1,
+                                border: "1px dashed",
+                                p: 1,
+                              }}
+                            >
+                              <Box
+                                component="img"
+                                src={`http://localhost:8000${ingredient.image}`}
+                                alt={ingredient?._id}
+                                sx={{
+                                  width: 1 / 2,
+                                }}
+                              />
+                            </Box>
+                          </Box>
+                        )}
+                      </Grid>
+                    ))}
+                  </Grid>
+
                   <Box
                     sx={{
                       display: "flex",
-                      justifyContent: "space-between",
+                      justifyContent: "start",
                     }}
                   >
-                    <Stack direction="row">
-                      <IconButton
-                        variant="outlined"
-                        size="small"
-                        onClick={() => setCount(count + 1)}
-                      >
-                        <AddIcon />
-                      </IconButton>
-                      <Typography
-                        variant="subtitle2"
-                        sx={{ fontWeight: "600", flexGrow: 1, m: 1 }}
-                      >
-                        {count}
-                      </Typography>
-                      <IconButton
-                        variant="outlined"
-                        size="small"
-                        onClick={() => setCount(count - 1)}
-                      >
-                        <RemoveIcon />
-                      </IconButton>
-                    </Stack>
-                    <IconButton
-                      color="success"
-                      onClick={() => auth.addToCard(product)}
+                    <Button
+                      variant="outlined"
+                      onClick={() => dispatch(addToCard(product))}
+                      startIcon={<ShoppingBasketIcon />}
                     >
-                      <ShoppingBasketIcon />
-                    </IconButton>
+                      Add To Cart
+                    </Button>
                   </Box>
                 </Stack>
               </Grid>
