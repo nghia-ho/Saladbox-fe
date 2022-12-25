@@ -7,6 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Stack } from "@mui/system";
+import { isString } from "lodash";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { addIngredientsCustom } from "./ingredientSlice";
@@ -21,7 +22,13 @@ const IngredientCard = ({ ingredient }) => {
           <CardActionArea>
             <CardMedia
               component="img"
-              image={`http://localhost:8000${ingredient.image}`}
+              // image={`http://localhost:8000${ingredient.image}`}
+              image={
+                isString(ingredient.image) &&
+                ingredient.image.includes("cloudinary")
+                  ? ingredient.image
+                  : `http://localhost:8000${ingredient.image}`
+              }
               alt={ingredient.name}
             />
           </CardActionArea>
@@ -42,7 +49,7 @@ const IngredientCard = ({ ingredient }) => {
             {ingredient.calo}cal
           </Typography>
           <Typography variant="caption" noWrap sx={{ fontWeight: "600" }}>
-            {ingredient.price} vnd
+            {ingredient.price.toLocaleString()}
           </Typography>
         </Stack>
         <Button

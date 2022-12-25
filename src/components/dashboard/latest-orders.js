@@ -34,7 +34,7 @@ export const LatestOrders = ({ orders, sx }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {orders.map((order) => (
+              {orders.slice(0, 5).map((order) => (
                 <TableRow hover key={order._id}>
                   <TableCell>{order._id}</TableCell>
                   <TableCell>{order.user.name}</TableCell>
@@ -64,7 +64,7 @@ export const LatestOrders = ({ orders, sx }) => {
           endIcon={<ArrowRightIcon fontSize="small" />}
           size="small"
           variant="text"
-          onClick={() => navigate("/orders")}
+          onClick={() => navigate("/orders", { state: 1 })}
         >
           View all
         </Button>

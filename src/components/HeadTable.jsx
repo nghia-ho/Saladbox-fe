@@ -6,15 +6,20 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
+import { tableCellClasses } from "@mui/material/TableCell";
+import { styled } from "@mui/material/styles";
 
-function HeadTable({
-  TABLE_HEAD,
-  route,
-  order,
-  setOrder,
-  orderBy,
-  setOrderBy,
-}) {
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.success.darker,
+    color: theme.palette.primary.darker,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+
+function HeadTable({ TABLE_HEAD, order, setOrder, orderBy, setOrderBy }) {
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -28,7 +33,7 @@ function HeadTable({
   return (
     <TableRow>
       {TABLE_HEAD.map((headCell) => (
-        <TableCell
+        <StyledTableCell
           key={headCell.id}
           align={"center"}
           sortDirection={orderBy === headCell.id ? order : false}
@@ -38,8 +43,15 @@ function HeadTable({
             active={orderBy === headCell.id}
             direction={orderBy === headCell.id ? order : "asc"}
             onClick={createSortHandler(headCell.id)}
+            sx={{
+              "& .MuiTableSortLabel-icon": {
+                color: "grey   !important",
+              },
+            }}
           >
-            <Typography sx={{ fontWeight: 600 }}>{headCell.label}</Typography>
+            <Typography sx={{ fontWeight: 600, color: "white" }}>
+              {headCell.label}
+            </Typography>
             {orderBy === headCell.id ? (
               <Box
                 sx={{
@@ -58,7 +70,7 @@ function HeadTable({
               </Box>
             ) : null}
           </TableSortLabel>
-        </TableCell>
+        </StyledTableCell>
       ))}
     </TableRow>
   );

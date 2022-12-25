@@ -1,9 +1,7 @@
 import {
   Box,
-  Button,
   Card,
   CardActionArea,
-  CardActions,
   CardContent,
   CardMedia,
   Paper,
@@ -11,10 +9,10 @@ import {
 } from "@mui/material";
 
 import { Stack } from "@mui/system";
+import { isString } from "lodash";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 const ProductCardCustom = ({ product, handleAdd }) => {
-  const navigate = useNavigate();
   return (
     <>
       <Paper
@@ -30,7 +28,10 @@ const ProductCardCustom = ({ product, handleAdd }) => {
                 sx={{ borderRadius: 2 }}
                 component="img"
                 image={
-                  product?.image?.length
+                  isString(product?.image) &&
+                  product?.image.includes("cloudinary")
+                    ? product?.image
+                    : product?.image
                     ? `http://localhost:8000${product?.image}`
                     : "/saladcustom.png"
                 }
@@ -49,7 +50,7 @@ const ProductCardCustom = ({ product, handleAdd }) => {
                 alignItems="center"
               >
                 <Typography variant="caption" sx={{ fontWeight: "600" }} noWrap>
-                  {product?.price} vnd
+                  {product?.price.toLocaleString()}
                 </Typography>
                 <Typography variant="caption" ml={2}>
                   {product?.calo}cal
@@ -57,16 +58,6 @@ const ProductCardCustom = ({ product, handleAdd }) => {
               </Stack>
             </Stack>
           </CardContent>
-          <CardActions>
-            <Button
-              size="small"
-              color="primary"
-              sx={{ pt: 0 }}
-              onClick={() => navigate(`/product/${product?._id}`)}
-            >
-              View more
-            </Button>
-          </CardActions>
         </Card>
       </Paper>
     </>

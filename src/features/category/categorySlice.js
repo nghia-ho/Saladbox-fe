@@ -27,6 +27,10 @@ const categorySlice = createSlice({
       state.isLoading = false;
       state.categories.push(action.payload);
     },
+    deleteCategorySuccess: (state, action) => {
+      state.isLoading = false;
+      state.category = action.payload;
+    },
   },
 });
 
@@ -44,6 +48,27 @@ export const createCategory = (name) => async (dispatch) => {
   try {
     const response = await apiService.post("/category", { name });
     dispatch(categorySlice.actions.createCategorySuccess(response.data.data));
+  } catch (error) {
+    dispatch(categorySlice.actions.hasError(error));
+  }
+};
+export const editCategory =
+  ({ id, name }) =>
+  async (dispatch) => {
+    dispatch(categorySlice.actions.startLoading());
+    try {
+      await apiService.put(`/category/${id}`, { name });
+      dispatch(getCategory());
+    } catch (error) {
+      dispatch(categorySlice.actions.hasError(error));
+    }
+  };
+export const deleteCategory = (id) => async (dispatch) => {
+  dispatch(categorySlice.actions.startLoading());
+  try {
+    const response = await apiService.delete(`/category/${id}`);
+    dispatch(categorySlice.actions.deleteCategorySuccess(response.data.data));
+    dispatch(getCategory());
   } catch (error) {
     dispatch(categorySlice.actions.hasError(error));
   }

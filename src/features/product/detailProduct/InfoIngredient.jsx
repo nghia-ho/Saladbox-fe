@@ -1,10 +1,9 @@
 import { Box, Card, Grid, Typography } from "@mui/material";
+import { isString } from "lodash";
 import React from "react";
-import { useSelector } from "react-redux";
-import "./index.css";
+import "../detailProduct/index.css";
 
-function InfoIngredient() {
-  const { product } = useSelector((state) => state.products);
+function InfoIngredient({ product }) {
   return (
     <Card sx={{ p: 1 }}>
       <Box>
@@ -27,7 +26,7 @@ function InfoIngredient() {
 
         <Grid container spacing={1}>
           {product?.ingredients?.map((ingredient, index) => (
-            <Grid key={ingredient._id} item xs={3} md={3} lg={3}>
+            <Grid key={index} item xs={3} md={3} lg={3}>
               <Box sx={{ m: { xs: 1, md: 3 } }} className="container">
                 <Box
                   sx={{
@@ -41,7 +40,12 @@ function InfoIngredient() {
                 >
                   <Box
                     component="img"
-                    src={`http://localhost:8000${ingredient.image}`}
+                    src={
+                      isString(ingredient.image) &&
+                      ingredient.image.includes("cloudinary")
+                        ? ingredient.image
+                        : `http://localhost:8000${ingredient.image}`
+                    }
                     alt={ingredient?._id}
                     sx={{
                       width: 1 / 2,

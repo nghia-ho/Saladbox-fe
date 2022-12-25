@@ -23,15 +23,16 @@ import BodyTable from "./BodyTable";
 import TablePaginations from "../../components/TablePaginations";
 
 const TABLE_HEAD = [
-  { id: "_id", label: "ORDER ID" },
-  { id: "user", label: "CUSTOMER NAME" },
-  { id: "createdAt", label: "DATE" },
-  { id: "isPaid", label: "PAYMENT" },
-  { id: "totalPrice", label: "TOTAL" },
-  { id: "isDeliverd", label: "STATUS" },
+  { id: "_id", label: "Order ID" },
+  { id: "user", label: "Name" },
+  { id: "createdAt", label: "Date" },
+  { id: "isPaid", label: "Payment" },
+  { id: "totalPrice", label: "Total" },
+  { id: "isDeliverd", label: "Status" },
+  { id: "more", label: "More" },
 ];
 
-function AdminOrderCustom({ filterName }) {
+function AdminOrderCustom({ filterName, type }) {
   // open Modal Edit, delete,
   const [openPopover, setOpenPopover] = useState(null);
   const [openModalDelete, setopenModalDelete] = useState(false);
@@ -40,7 +41,7 @@ function AdminOrderCustom({ filterName }) {
 
   const [selectedItem, setSelectedItem] = useState(null);
   const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("name");
+  const [orderBy, setOrderBy] = useState("");
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
@@ -98,7 +99,12 @@ function AdminOrderCustom({ filterName }) {
       />
 
       <Card sx={{ boxShadow: "none" }}>
-        <TableContainer sx={{ minWidth: 800 }}>
+        <TableContainer
+          sx={{
+            width: 1,
+            borderRadius: 1,
+          }}
+        >
           <Table>
             <TableHead>
               <HeadTable
@@ -117,6 +123,7 @@ function AdminOrderCustom({ filterName }) {
             />
           </Table>
         </TableContainer>
+
         <TablePaginations
           count={count}
           rowsPerPage={rowsPerPage}
@@ -124,12 +131,14 @@ function AdminOrderCustom({ filterName }) {
           handleChangePage={handleChangePage}
           handleChangeRowsPerPage={handleChangeRowsPerPage}
         />
+
         <PopoverMenu
           openPopover={openPopover}
           setOpenPopover={setOpenPopover}
           setopenModalDelete={setopenModalDelete}
           selectedItem={selectedItem}
           route={route}
+          type={type}
         />
       </Card>
     </Container>

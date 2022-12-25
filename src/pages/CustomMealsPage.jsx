@@ -21,6 +21,7 @@ export default function CustomMealsPage() {
   const [saturday, setSaturday] = useState(null);
   const [sunday, setSunday] = useState(null);
   const [view, setView] = useState("custom");
+
   const day = [
     { day: monday, setDay: setMonday, name: "Monday" },
     { day: tuesday, setDay: setTuesday, name: "Tuesday" },
@@ -33,7 +34,6 @@ export default function CustomMealsPage() {
 
   const fullSelected =
     monday && tuesday && wednesday && thursday && friday && saturday && sunday;
-
   const dispatch = useDispatch();
   const auth = useAuth();
 
@@ -49,11 +49,11 @@ export default function CustomMealsPage() {
 
   useEffect(() => {
     dispatch(getProducts({ category: "637464ef3c08c345541890f2", limit: 50 }));
+
     if (auth.user) dispatch(getfavoriteProduct({ limit: 100 }));
   }, [dispatch, auth.user]);
 
   const { products } = useSelector((state) => state.products);
-  console.log(products);
 
   const autoSelect = (product) => {
     let items = product.slice(0);

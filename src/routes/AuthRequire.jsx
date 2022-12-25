@@ -5,7 +5,6 @@ import useAuth from "../hooks/useAuth";
 function AuthRequire({ children, allowRoles }) {
   const { isAuthenticated, isInitialized, role, user } = useAuth();
   const location = useLocation();
-
   if (!isInitialized) {
     return <LoadingScreen />;
   }
@@ -13,7 +12,6 @@ function AuthRequire({ children, allowRoles }) {
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
-
   return allowRoles?.includes(role) ? (
     children
   ) : user ? (

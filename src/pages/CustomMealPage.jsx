@@ -1,22 +1,23 @@
 import React from "react";
 import { useEffect, useState } from "react";
 
-import PropTypes from "prop-types";
-import { useTheme } from "@mui/material";
-
+import { Card, ToggleButton, ToggleButtonGroup, useTheme } from "@mui/material";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
-import { Button, Container, Grid, Stack } from "@mui/material";
+import { Button, Container, Grid } from "@mui/material";
 
+import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
-import { getIngredients } from "../features/ingredient/ingredientSlice";
-import CustomBoard from "../components/CustomBoard";
-import IngredientList from "../features/ingredient/IngredientList";
 import { Link } from "react-router-dom";
 
+import { getIngredients } from "../features/ingredient/ingredientSlice";
+import IngredientList from "../features/ingredient/IngredientList";
+
+import CustomBoard from "../features/ingredient/CustomBoard";
+import styled from "@emotion/styled";
 function TabPanel(props) {
   const { children, value, index, p, ...other } = props;
 
@@ -29,9 +30,9 @@ function TabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: p, borderRadius: 1, border: "1px solid green" }}>
+        <Card elevation={3} sx={{ p: p, borderRadius: 1, border: "1px" }}>
           <div>{children}</div>
-        </Box>
+        </Card>
       )}
     </div>
   );
@@ -52,6 +53,13 @@ function a11yProps(index) {
 }
 
 export default function CustomMealPage() {
+  const theme = useTheme();
+  const [value, setValue] = useState(0);
+  const [modal, setModal] = useState(false);
+  const [modalAdd, setModalAdd] = useState(false);
+  const [step2, setStep2] = useState("");
+  const [alignment, setAlignment] = useState("Veggie");
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -59,62 +67,55 @@ export default function CustomMealPage() {
   }, [dispatch]);
 
   const { ingredients } = useSelector((state) => state.ingredient);
-
-  const theme = useTheme();
-  const [value, setValue] = useState(0);
-  const [modal, setModal] = useState(false);
-  const [modalAdd, setModalAdd] = useState(false);
-  const [step2, setStep2] = useState("");
-
-  useEffect(() => {
-    const changeStep2 = ingredients?.filter(
-      (ingredient) => ingredient.type === "Cheeze" && ingredient.step === 2
-    );
-    setStep2(changeStep2);
-  }, [ingredients]);
+  const ingredientList = ingredients?.filter(
+    (data) => data.isDeleted === false
+  );
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  const ingredientStep1 = ingredients?.filter((ingredient) => {
+  const ingredientStep1 = ingredientList?.filter((ingredient) => {
     return ingredient.step === 1;
   });
-  const ingredientStep3 = ingredients?.filter((ingredient) => {
+  const ingredientStep3 = ingredientList?.filter((ingredient) => {
     return ingredient.step === 3;
+  });
+  const dabStep2 = ingredientList?.filter((ingredient) => {
+    return ingredient.type === "Vegetable" && ingredient.step === 2;
   });
 
   const stepTwoCate = ["Veggie", "Protein", "Cheese", "Fruit", "Nuts & Seeds"];
-
-  const handleClick = (e) => {
-    switch (e) {
+  const handleAlignment = (event, newAlignment) => {
+    setAlignment(newAlignment);
+    switch (newAlignment) {
       case "Cheese":
         return setStep2(
-          ingredients?.filter((ingredient) => {
+          ingredientList?.filter((ingredient) => {
             return ingredient.type === "Cheeze" && ingredient.step === 2;
           })
         );
       case "Protein":
         return setStep2(
-          ingredients?.filter((ingredient) => {
+          ingredientList?.filter((ingredient) => {
             return ingredient.type === "Protein" && ingredient.step === 2;
           })
         );
       case "Veggie":
         return setStep2(
-          ingredients?.filter((ingredient) => {
+          ingredientList?.filter((ingredient) => {
             return ingredient.type === "Vegetable" && ingredient.step === 2;
           })
         );
       case "Fruit":
         return setStep2(
-          ingredients?.filter((ingredient) => {
+          ingredientList?.filter((ingredient) => {
             return ingredient.type === "Fruit" && ingredient.step === 2;
           })
         );
       case "Nuts & Seeds":
         return setStep2(
-          ingredients?.filter((ingredient) => {
+          ingredientList?.filter((ingredient) => {
             return ingredient.type === "NutsSeeds" && ingredient.step === 2;
           })
         );
@@ -123,7 +124,6 @@ export default function CustomMealPage() {
         break;
     }
   };
-
   const style = {
     position: "absolute",
     top: "50%",
@@ -136,6 +136,26 @@ export default function CustomMealPage() {
     boxShadow: 24,
     p: 4,
   };
+
+  const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
+    "& .MuiToggleButtonGroup-grouped": {
+      margin: theme.spacing(0.5),
+      width: "100%",
+      "&.Mui-disabled": {
+        border: 0,
+      },
+      "&:not(:first-of-type)": {
+        borderRadius: theme.shape.borderRadius,
+      },
+      "&:first-of-type": {
+        borderRadius: theme.shape.borderRadius,
+      },
+      "&.Mui-selected": {
+        color: "#815B5B",
+      },
+      color: "#D0B8A8",
+    },
+  }));
 
   const handleClose = () => setModal(false);
   const handleCloseModalAdd = () => setModalAdd(false);
@@ -214,25 +234,32 @@ export default function CustomMealPage() {
               <IngredientList ingredients={ingredientStep1} />
             </TabPanel>
             <TabPanel value={value} index={1} dir={theme.direction} p={3}>
-              <Stack
-                direction="row"
-                justifyContent="space-between"
-                m={2}
-                sx={{ display: { xs: "block", sm: "flex" } }}
+              <StyledToggleButtonGroup
+                value={alignment}
+                exclusive
+                onChange={handleAlignment}
+                aria-label="text alignment"
+                sx={{
+                  display: {
+                    xs: "block",
+                    sm: "flex",
+                  },
+                }}
               >
                 {stepTwoCate.map((item, i) => (
-                  <Button
+                  <ToggleButton
+                    value={item}
+                    aria-label="left aligned"
                     key={i}
-                    variant="outlined"
-                    sx={{ color: "primary.darker", m: 1 }}
-                    onClick={() => handleClick(item)}
+                    sx={{ border: "none" }}
                   >
                     {item}
-                  </Button>
+                  </ToggleButton>
                 ))}
-              </Stack>
+              </StyledToggleButtonGroup>
+
               <Box sx={{ m: 2 }}>
-                <IngredientList ingredients={step2} />
+                <IngredientList ingredients={step2 || dabStep2} />
               </Box>
             </TabPanel>
             <TabPanel value={value} index={2} dir={theme.direction} p={3}>

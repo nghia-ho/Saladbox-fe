@@ -7,12 +7,16 @@ import ProductCardCustom from "./ProductCardCustom";
 
 function ProductList({ view, handleAdd }) {
   const { favorite, products } = useSelector((state) => state.products);
+  const productList = products.filter(
+    (dataProduct) => dataProduct.isDeleted === false
+  );
+
   const spacing = { xs: 1, md: 2 };
   return (
     <>
       {(view === "list" || !view) && (
         <Grid container spacing={spacing} mt={1} mb={4}>
-          {products?.map((product) => (
+          {productList?.map((product) => (
             <Grid key={product._id} item xs={6} sm={4} md={3} lg={3}>
               <ProductCard product={product} />
             </Grid>
@@ -21,7 +25,7 @@ function ProductList({ view, handleAdd }) {
       )}
       {view === "module" && (
         <Grid container spacing={spacing} mt={1} mb={4}>
-          {products?.map((product) => (
+          {productList?.map((product) => (
             <Grid key={product._id} item xs={12} sm={12} md={12} lg={12}>
               <ProductCard2 product={product} />
             </Grid>
@@ -30,7 +34,7 @@ function ProductList({ view, handleAdd }) {
       )}
       {view === "custom" && (
         <Grid container spacing={spacing} mt={1} mb={4}>
-          {products?.map((product) => (
+          {productList?.map((product) => (
             <Grid key={product._id} item xs={6} sm={4} md={3} lg={2}>
               <ProductCardCustom product={product} handleAdd={handleAdd} />
             </Grid>

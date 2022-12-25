@@ -19,15 +19,15 @@ export const TasksProgress = ({ progress, sx, value }) => {
               Tasks Progress
             </Typography>
             <Typography color="textPrimary" variant="h4">
-              {progress}%
+              {isNaN(progress) ? 0 : progress}%
             </Typography>
           </Grid>
           <Grid item>
             <Avatar
               sx={{
                 backgroundColor: "secondary.darker",
-                height: 56,
-                width: 56,
+                height: 45,
+                width: 45,
               }}
             >
               <InsertChartIcon />

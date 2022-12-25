@@ -16,7 +16,7 @@ import {
 import { Container } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import {
   editOrder,
   editOrderCustom,
@@ -31,7 +31,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import EditIcon from "@mui/icons-material/Edit";
-import ModalEditInfo from "../../components/ModalEditInfo";
+import ModalEditInfo from "../../features/order/ModalEditInfo";
 
 function createRow(product, qty, price) {
   const total = qty * price;
@@ -43,6 +43,7 @@ function subtotal(items) {
 }
 
 function OrderDeTailPage() {
+  const location = useLocation();
   const { order } = useSelector((state) => state.order);
   const listDay = [
     order?.day1,
@@ -81,7 +82,11 @@ function OrderDeTailPage() {
   const invoiceSubtotal = subtotal(rows);
 
   const handleSuccess = () => {
-    dispatch(editOrder({ id, isDeliverd: true }));
+    if (location.state === "order") {
+      dispatch(editOrder({ id, isDeliverd: true }));
+    } else if (location.state === "orderCustom") {
+      dispatch(editOrderCustom({ id, isDeliverd: true }));
+    }
   };
 
   const handleClickEdit = () => {
@@ -108,16 +113,60 @@ function OrderDeTailPage() {
     dispatch(editOrderCustom({ id, day: activeStep }));
   };
 
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
   return (
     <Container>
       <ModalEditInfo handleClose={handleClose} open={openModal} order={order} />
+      <Box
+        sx={{
+          mb: 3,
+          backgroundColor: "primary.darker",
+          borderRadius: 2,
+          p: 2,
+        }}
+      >
+        <Typography variant="h6" fontWeight="600" color="primary.contrastText">
+          Order Detail
+        </Typography>
+      </Box>
+      {order?.custom && (
+        <Card sx={{ width: 1, mb: 3, p: 3 }}>
+          <Box>
+            <Stepper activeStep={activeStep}>
+              {steps.map((label, index) => {
+                const stepProps = {};
+                const labelProps = {};
+
+                return (
+                  <Step key={label} {...stepProps}>
+                    <StepLabel {...labelProps}>{label}</StepLabel>
+                  </Step>
+                );
+              })}
+            </Stepper>
+            {activeStep === steps.length ? (
+              <React.Fragment>
+                <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+                  <Box sx={{ flex: "1 1 auto" }} />
+                  <Button disabled>Completed</Button>
+                </Box>
+              </React.Fragment>
+            ) : (
+              <React.Fragment>
+                <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+                  <Box sx={{ flex: "1 1 auto" }} />
+
+                  <Button onClick={handleNext}>
+                    {activeStep === steps.length - 1 ? "Finish" : "Next"}
+                  </Button>
+                </Box>
+              </React.Fragment>
+            )}
+          </Box>
+        </Card>
+      )}
       {order && (
         <Grid container spacing={2}>
-          <Grid item xs={8}>
+          <Grid item xs={12} md={8}>
             <Card sx={{ mb: 4 }}>
               <Box sx={{ p: 2 }}>
                 <Typography variant="h6" fontWeight="600">
@@ -142,7 +191,7 @@ function OrderDeTailPage() {
                   </TableHead>
                   <TableBody>
                     {rows?.map((row, i) => (
-                      <TableRow key={i}>
+                      <TableRow key={i} sx={{ height: 67 }}>
                         <TableCell>{row.product}</TableCell>
                         <TableCell align="right">{row.qty}</TableCell>
                         <TableCell align="right">{row.price}</TableCell>
@@ -210,7 +259,7 @@ function OrderDeTailPage() {
             </Card>
           </Grid>
 
-          <Grid item xs={4}>
+          <Grid item xs={12} md={4}>
             <Card sx={{ p: 2 }}>
               <Box sx={{ mb: 4 }}>
                 <Typography variant="h6" fontWeight="600">
@@ -249,7 +298,7 @@ function OrderDeTailPage() {
                 </Typography>
               </Box>
 
-              <Stack spacing={3}>
+              <Stack spacing={2}>
                 {order.isDeleted ? (
                   <Alert severity="error">
                     <AlertTitle>Canceled</AlertTitle>
@@ -263,8 +312,20 @@ function OrderDeTailPage() {
                           <AlertTitle>Pending</AlertTitle>
                           Order not delivered successfully
                         </Alert>
-                        <Button variant="contained" onClick={handleSuccess}>
-                          Confirm Order Delivered Successfully
+                        {!order.isPaid && <Alert severity="info">Unpaid</Alert>}
+                        <Button
+                          variant="contained"
+                          onClick={handleSuccess}
+                          sx={{ bgcolor: "primary.darker" }}
+                          disabled={
+                            location.state === "order"
+                              ? false
+                              : !order.day7
+                              ? true
+                              : false
+                          }
+                        >
+                          Confirm Order
                         </Button>
                       </>
                     ) : (
@@ -273,6 +334,7 @@ function OrderDeTailPage() {
                           <AlertTitle>Success</AlertTitle>
                           Order Delivered Successfully
                         </Alert>
+                        {order.isPaid && <Alert severity="success">Paid</Alert>}
                       </>
                     )}
                   </>
@@ -281,50 +343,6 @@ function OrderDeTailPage() {
             </Card>
           </Grid>
         </Grid>
-      )}
-      {order?.custom && (
-        <Card sx={{ width: 1, mt: 3, p: 3 }}>
-          <Box>
-            <Stepper activeStep={activeStep}>
-              {steps.map((label, index) => {
-                const stepProps = {};
-                const labelProps = {};
-
-                return (
-                  <Step key={label} {...stepProps}>
-                    <StepLabel {...labelProps}>{label}</StepLabel>
-                  </Step>
-                );
-              })}
-            </Stepper>
-            {activeStep === steps.length ? (
-              <React.Fragment>
-                <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-                  <Box sx={{ flex: "1 1 auto" }} />
-                  <Button disabled>Completed</Button>
-                </Box>
-              </React.Fragment>
-            ) : (
-              <React.Fragment>
-                <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-                  <Button
-                    color="inherit"
-                    disabled={activeStep === 0}
-                    onClick={handleBack}
-                    sx={{ mr: 1 }}
-                  >
-                    Back
-                  </Button>
-                  <Box sx={{ flex: "1 1 auto" }} />
-
-                  <Button onClick={handleNext}>
-                    {activeStep === steps.length - 1 ? "Finish" : "Next"}
-                  </Button>
-                </Box>
-              </React.Fragment>
-            )}
-          </Box>
-        </Card>
       )}
     </Container>
   );

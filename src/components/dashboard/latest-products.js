@@ -7,15 +7,14 @@ import {
   Card,
   CardHeader,
   Divider,
-  IconButton,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
 } from "@mui/material";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useNavigate } from "react-router-dom";
+import { isString } from "lodash";
 
 export const LatestProducts = ({ products }) => {
   const navigate = useNavigate();
@@ -32,20 +31,22 @@ export const LatestProducts = ({ products }) => {
             <ListItemAvatar>
               <img
                 alt={product.name}
-                src={`http://localhost:8000${product.image[0]}`}
                 style={{
                   height: 48,
                   width: 48,
                 }}
+                src={
+                  isString(product.image) &&
+                  product.image.includes("cloudinary")
+                    ? product.image
+                    : `http://localhost:8000${product.image}`
+                }
               />
             </ListItemAvatar>
             <ListItemText
               primary={product.name}
               secondary={`Updated ${moment(product.updatedAt).calendar()}`}
             />
-            <IconButton edge="end" size="small">
-              <MoreVertIcon />
-            </IconButton>
           </ListItem>
         ))}
       </List>
@@ -62,7 +63,7 @@ export const LatestProducts = ({ products }) => {
           endIcon={<ArrowRightIcon />}
           size="small"
           variant="text"
-          onClick={() => navigate("/product")}
+          onClick={() => navigate("/product", { state: 2 })}
         >
           View all
         </Button>

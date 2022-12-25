@@ -11,12 +11,13 @@ function PopoverMenu({
   selectedItem,
   route,
   handleClickEdit,
+  type,
 }) {
   const navigate = useNavigate();
 
   const handleEdit = () => {
     if (route === "order") {
-      navigate(`/orders/${selectedItem._id}`);
+      navigate(`/orders/${selectedItem._id}`, { state: type });
     } else {
       handleClickEdit();
     }
@@ -34,8 +35,8 @@ function PopoverMenu({
       onClose={() => {
         setOpenPopover(null);
       }}
-      anchorOrigin={{ vertical: "top", horizontal: "left" }}
-      transformOrigin={{ vertical: "top", horizontal: "right" }}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      transformOrigin={{ vertical: "top", horizontal: "left" }}
       PaperProps={{
         sx: {
           p: 1,
@@ -55,8 +56,10 @@ function PopoverMenu({
         Edit
       </MenuItem>
 
-      <MenuItem sx={{ color: "error.main" }} onClick={handleDelete}>
-        <DeleteIcon />
+      <MenuItem onClick={handleDelete}>
+        <IconButton>
+          <DeleteIcon />
+        </IconButton>
         Delete
       </MenuItem>
     </Popover>

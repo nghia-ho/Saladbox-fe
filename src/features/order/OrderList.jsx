@@ -6,7 +6,6 @@ import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 
 import Order from "./Order";
-import OrderCustom from "./OrderCustom";
 
 import { Box, Card, Container, Tab, Tabs } from "@mui/material";
 
@@ -38,15 +37,13 @@ const OrderList = () => {
       value: "orderCustom",
       name: "Weekly Order",
       icon: <PeopleAltIcon sx={{ fontSize: 24 }} />,
-      component: (
-        <OrderCustom isLoading={isLoading} ordersList={ordersCustomList} />
-      ),
+      component: <Order isLoading={isLoading} ordersList={ordersCustomList} />,
     },
   ];
 
   return (
     <Container>
-      <Card sx={{ mt: 3 }}>
+      <Card sx={{ mt: 3, p: 3 }}>
         <Tabs
           value={currentTab}
           sx={{ m: 1 }}

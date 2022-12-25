@@ -5,11 +5,9 @@ import Box from "@mui/material/Box";
 import React, { useState } from "react";
 
 import ProfileInfomation from "../features/user/ProfileInfomation";
-import OrderList from "../features/order/OrderList";
 import ChangePassword from "../features/user/ChangePassword";
 import FavoriteList from "../features/product/FavoriteList";
 import PersonPinIcon from "@mui/icons-material/PersonPin";
-import ViewStreamIcon from "@mui/icons-material/ViewStream";
 import PasswordIcon from "@mui/icons-material/Password";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 
@@ -18,11 +16,6 @@ const ACCOUNT_TABS = [
     value: "Profile Infomation",
     icon: <PersonPinIcon />,
     component: <ProfileInfomation />,
-  },
-  {
-    value: "Order List",
-    icon: <ViewStreamIcon />,
-    component: <OrderList />,
   },
 
   {

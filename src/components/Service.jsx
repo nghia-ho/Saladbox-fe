@@ -15,7 +15,7 @@ const Service = () => {
     {
       name: "Special Weekly Meal",
       icon: "/custom.png",
-      path: "customeweaklysalad",
+      path: "weeklymealplan",
       caption:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus consectetur porro molestiae vero ea in maxime delectus esse, nihil eligendi.",
     },

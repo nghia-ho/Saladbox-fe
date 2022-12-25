@@ -11,7 +11,7 @@ import PeopleIcon from "@mui/icons-material/PeopleOutlined";
 export const TotalCustomers = ({ totalcustomers, ...sx }) => (
   <Card {...sx}>
     <CardContent>
-      <Grid container spacing={3} sx={{ justifyContent: "space-between" }}>
+      <Grid container spacing={1} sx={{ justifyContent: "space-between" }}>
         <Grid item>
           <Typography gutterBottom variant="overline">
             TOTAL CUSTOMERS
@@ -24,8 +24,8 @@ export const TotalCustomers = ({ totalcustomers, ...sx }) => (
           <Avatar
             sx={{
               backgroundColor: "primary.darker",
-              height: 56,
-              width: 56,
+              height: 45,
+              width: 45,
             }}
           >
             <PeopleIcon />

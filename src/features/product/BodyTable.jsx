@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import React from "react";
+import { isString } from "lodash";
 
 function BodyTable({ products, handleOpenPopover }) {
   return (
@@ -30,7 +31,15 @@ function BodyTable({ products, handleOpenPopover }) {
                 <Stack direction="row" justifyContent="center">
                   <Avatar
                     alt={name}
-                    src={`http://localhost:8000${image[0] || "/salads/1.png"}`}
+                    // src={`http://localhost:8000${image[0] || "/salads/1.png"}`}
+
+                    src={
+                      isString(image) && image.includes("cloudinary")
+                        ? image
+                        : image
+                        ? `http://localhost:8000${image}`
+                        : "/salads/1.png"
+                    }
                   />
                 </Stack>
               </TableCell>

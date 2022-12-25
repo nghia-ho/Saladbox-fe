@@ -21,6 +21,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import useAuth from "../../hooks/useAuth";
 import { addToCard } from "../cart/cartSlice";
+import { isString } from "lodash";
 
 const ProductCard = ({ product }) => {
   const dispatch = useDispatch();
@@ -53,9 +54,18 @@ const ProductCard = ({ product }) => {
             <CardMedia
               sx={{ borderRadius: 2 }}
               component="img"
-              image={`http://localhost:8000${
-                product?.image || "/salads/1.png"
-              }`}
+              // image={`http://localhost:8000${
+              //   product?.image || "/salads/1.png"
+              // }`}
+
+              image={
+                isString(product?.image) &&
+                product?.image.includes("cloudinary")
+                  ? product?.image
+                  : product?.image
+                  ? `http://localhost:8000${product?.image}`
+                  : "/salads/1.png"
+              }
               alt={product.name}
             />
           </CardActionArea>
@@ -80,7 +90,7 @@ const ProductCard = ({ product }) => {
               alignItems="center"
             >
               <Typography variant="subtitle1" sx={{ fontWeight: "600" }}>
-                {product.price} vnd
+                {product.price.toLocaleString()}
               </Typography>
               {wishList}
             </Stack>

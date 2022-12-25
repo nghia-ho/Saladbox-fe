@@ -8,6 +8,7 @@ function FAutocomplete({
   width,
   defaultValue,
   isOptionEqualToValue,
+  label,
   ...other
 }) {
   const { control } = useFormContext();
@@ -29,7 +30,7 @@ function FAutocomplete({
           renderInput={(params) => (
             <TextField
               {...params}
-              label="Ingredient List"
+              label={label}
               placeholder="Choose Ingredient"
               fullWidth
               error={!!error}

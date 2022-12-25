@@ -1,4 +1,4 @@
-import Category from "../components/Category";
+import Category from "../features/category/Category";
 import MainBanner from "../components/Banner/MainBanner";
 import React from "react";
 import { Container } from "@mui/material";

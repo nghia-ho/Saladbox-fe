@@ -20,6 +20,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import useAuth from "../../hooks/useAuth";
 import { addToCard } from "../cart/cartSlice";
+import { isString } from "lodash";
 
 const ProductCard2 = ({ product }) => {
   const [count, setCount] = useState(0);
@@ -87,10 +88,18 @@ const ProductCard2 = ({ product }) => {
                     <CardMedia
                       sx={{ borderRadius: 1, width: 1, height: 1 }}
                       component="img"
+                      // image={
+                      //   product?.image.length
+                      //     ? `http://localhost:8000${product?.image}`
+                      //     : "/saladcustom.png"
+                      // }
                       image={
-                        product?.image.length
+                        isString(product?.image) &&
+                        product?.image.includes("cloudinary")
+                          ? product?.image
+                          : product?.image
                           ? `http://localhost:8000${product?.image}`
-                          : "/saladcustom.png"
+                          : "/salads/1.png"
                       }
                       alt={product?.name}
                     />
@@ -121,7 +130,7 @@ const ProductCard2 = ({ product }) => {
                     alignItems="center"
                   >
                     <Typography variant="subtitle1" sx={{ fontWeight: "600" }}>
-                      {product?.price} vnd
+                      {product?.price.toLocaleString()}
                     </Typography>
 
                     <Typography variant="caption">
@@ -146,7 +155,13 @@ const ProductCard2 = ({ product }) => {
                             >
                               <Box
                                 component="img"
-                                src={`http://localhost:8000${ingredient.image}`}
+                                // src={`http://localhost:8000${ingredient.image}`}
+                                src={
+                                  isString(ingredient?.image) &&
+                                  ingredient?.image.includes("cloudinary")
+                                    ? ingredient?.image
+                                    : `http://localhost:8000${ingredient?.image}`
+                                }
                                 alt={ingredient?._id}
                                 sx={{
                                   width: 1 / 2,

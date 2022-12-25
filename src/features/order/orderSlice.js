@@ -7,7 +7,6 @@ const initialState = {
   order: null,
   orderPay: {},
   ordersList: [],
-  ordersCustomList: [],
 };
 
 const orderSlice = createSlice({
@@ -164,8 +163,8 @@ export const editOrderCustom =
         district,
         day,
       });
-      // const response = await apiService.get(`/order/${id}`);
-      // dispatch(orderSlice.actions.getSingleOrderSuccess(response.data.data));
+      const response = await apiService.get(`/order/${id}`);
+      dispatch(orderSlice.actions.getSingleOrderSuccess(response.data.data));
     } catch (error) {
       dispatch(orderSlice.actions.hasError(error));
     }
@@ -173,11 +172,16 @@ export const editOrderCustom =
 export const deleteOrder = (id) => async (dispatch) => {
   dispatch(orderSlice.actions.startLoading());
   try {
-    await apiService.delete(`/order/${id}`);
-    const response = await apiService.get(`/order`);
-    dispatch(orderSlice.actions.getOrdersSuccess(response.data.data));
+    const response = await apiService.delete(`/order/${id}`);
+    if (response.data.data.type === "order") {
+      dispatch(getOrders({}));
+    }
+    if (response.data.data.type === "speacialOrder") {
+      dispatch(getOrdersCustom({}));
+    }
   } catch (error) {
     dispatch(orderSlice.actions.hasError(error));
   }
 };
+
 export default orderSlice.reducer;

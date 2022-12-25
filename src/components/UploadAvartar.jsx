@@ -4,11 +4,11 @@ import { useDropzone } from "react-dropzone";
 import { Typography, Box } from "@mui/material";
 import AddAPhotoRoundedIcon from "@mui/icons-material/AddAPhotoRounded";
 import { styled, alpha } from "@mui/material/styles";
-// import RejectionFiles from "./RejectionFiles";
+import RejectionFiles from "./RejectionFiles";
 
 const RootStyle = styled("div")(({ theme }) => ({
-  width: 180,
-  height: 180,
+  width: 144,
+  height: 144,
   margin: "auto",
   borderRadius: "50%",
   padding: theme.spacing(1),
@@ -50,13 +50,13 @@ const PlaceholderStyle = styled("div")(({ theme }) => ({
   "&:hover": { opacity: 0.72 },
 }));
 
-function UploadAvatar({ error, file, helperText, sx, ...other }) {
+function UploadAvatar({ error, file, helperText, sx, product, ...other }) {
   const {
     getRootProps,
     getInputProps,
     isDragActive,
     isDragReject,
-    // fileRejections,
+    fileRejections,
   } = useDropzone({
     multiple: false,
     ...other,
@@ -88,7 +88,16 @@ function UploadAvatar({ error, file, helperText, sx, ...other }) {
                 "& img": { objectFit: "cover", width: 1, height: 1 },
               }}
             >
-              <img alt="avatar" src={isString(file) ? file : file.preview} />
+              <img
+                alt="avatar"
+                src={
+                  isString(file) && file.includes("cloudinary")
+                    ? file
+                    : file.preview
+                    ? file.preview
+                    : `http://localhost:8000${product?.image}`
+                }
+              />
             </Box>
           )}
 
@@ -116,9 +125,9 @@ function UploadAvatar({ error, file, helperText, sx, ...other }) {
 
       {helperText && helperText}
 
-      {/* {fileRejections.length > 0 && (
+      {fileRejections.length > 0 && (
         <RejectionFiles fileRejections={fileRejections} />
-      )} */}
+      )}
     </>
   );
 }

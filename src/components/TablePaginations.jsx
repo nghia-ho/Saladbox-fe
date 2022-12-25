@@ -15,6 +15,10 @@ function TablePaginations({
           {
             display: { xs: "none", md: "block" },
           },
+
+        "& .MuiTablePagination-toolbar": {
+          bgcolor: "success.light",
+        },
       }}
       rowsPerPageOptions={[5, 10, 25]}
       component="div"

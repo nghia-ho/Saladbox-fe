@@ -1,22 +1,34 @@
-import { Divider, Grid, Paper, Typography } from "@mui/material";
-import { Box, Stack } from "@mui/system";
 import React, { useEffect, useCallback } from "react";
-import { FormProvider, FUploadAvatar } from "../../components/form";
-import FTextField from "../../components/form/FTextField";
+
+import {
+  Divider,
+  Grid,
+  Paper,
+  Typography,
+  Box,
+  Stack,
+  Button,
+} from "@mui/material";
+import { LoadingButton } from "@mui/lab";
+
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { getUser, updateUser } from "./userSlice";
+import { useNavigate } from "react-router-dom";
+
 import useAuth from "../../hooks/useAuth";
-import { LoadingButton } from "@mui/lab";
+import { FormProvider, FUploadAvatar } from "../../components/form";
+import FTextField from "../../components/form/FTextField";
+import { deleteMe, getUser, updateUser } from "./userSlice";
 
 function ProfileInfomation() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const isLoading = useSelector((state) => state.user.isLoading);
   useEffect(() => {
     dispatch(getUser());
   }, [dispatch]);
 
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
   const defaultValues = {
     name: user?.name || "",
@@ -24,6 +36,7 @@ function ProfileInfomation() {
     address: user?.address || "",
     phone: user?.phone || "",
     avatarUrl: user?.avatarURL || "",
+    aboutme: user?.aboutme || "",
   };
   const methods = useForm({
     defaultValues,
@@ -56,9 +69,15 @@ function ProfileInfomation() {
       updateUser({ userId: user._id, ...data, avatarURL: data.avatarUrl })
     );
   };
+  const deactiveAccount = async () => {
+    dispatch(deleteMe());
+    logout(() => {
+      navigate("/login", { replace: true });
+    });
+  };
 
   return (
-    <Box sx={{ width: 1 }}>
+    <Box>
       <Paper
         elevation={1}
         sx={{
@@ -78,8 +97,8 @@ function ProfileInfomation() {
               <Grid item xs={12} md={6}>
                 <FUploadAvatar
                   name="avatarUrl"
-                  accept="image/*"
-                  maxSize={9145728}
+                  // accept="image/*"
+                  maxSize={3145728}
                   onDrop={handleDrop}
                 />
               </Grid>
@@ -126,6 +145,14 @@ function ProfileInfomation() {
                   >
                     Save
                   </LoadingButton>
+                  <Button
+                    sx={{ width: 1 / 3, mt: 4 }}
+                    variant="contained"
+                    color="error"
+                    onClick={deactiveAccount}
+                  >
+                    Deative Account
+                  </Button>
                 </Stack>
               </Box>
             </Box>

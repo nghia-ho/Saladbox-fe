@@ -32,6 +32,10 @@ const userSlice = createSlice({
       state.isLoading = false;
       state.updateProfile = action.payload;
     },
+    deleteMeSuccess: (state, action) => {
+      state.isLoading = false;
+      state.user = action.payload;
+    },
   },
 });
 
@@ -65,6 +69,7 @@ export const updateUser =
     address,
     phone,
     bmi,
+    aboutme,
     avatarURL,
     newPassword,
     passwordConfirmation,
@@ -76,6 +81,7 @@ export const updateUser =
         name,
         bmi,
         address,
+        aboutme,
         phone,
         avatarURL,
         newPassword,
@@ -91,5 +97,14 @@ export const updateUser =
       dispatch(userSlice.actions.hasError(error.message));
     }
   };
+export const deleteMe = () => async (dispatch) => {
+  dispatch(userSlice.actions.startLoading());
+  try {
+    const response = await apiService.delete("users/me/delete");
+    dispatch(userSlice.actions.deleteMeSuccess(response.data.data));
+  } catch (error) {
+    dispatch(userSlice.actions.hasError(error.message));
+  }
+};
 
 export default userSlice.reducer;

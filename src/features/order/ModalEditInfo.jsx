@@ -5,14 +5,18 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Stack, Box } from "@mui/material";
-import { FTextField, FormProvider } from "./form";
+
+import { editOrder, editOrderCustom } from "./orderSlice";
+
+import { useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 
-import { editOrder } from "../features/order/orderSlice";
+import { FTextField, FormProvider } from "../../components/form";
 
 function ModalEditInfo({ open, handleClose, order }) {
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const defaultValues = {
     name: order?.user.name || "",
@@ -28,14 +32,26 @@ function ModalEditInfo({ open, handleClose, order }) {
   const { handleSubmit, reset } = methods;
 
   const onSubmit = async (data) => {
-    dispatch(
-      editOrder({
-        id: order._id,
-        phone: data.phone,
-        address: data.address,
-        district: data.district,
-      })
-    );
+    if (location.state === "order") {
+      dispatch(
+        editOrder({
+          id: order._id,
+          phone: data.phone,
+          address: data.address,
+          district: data.district,
+        })
+      );
+    } else if (location.state === "orderCustom") {
+      dispatch(
+        editOrderCustom({
+          id: order._id,
+          phone: data.phone,
+          address: data.address,
+          district: data.district,
+        })
+      );
+    }
+    handleClose();
   };
 
   useEffect(() => {

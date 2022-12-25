@@ -37,9 +37,6 @@ export const Sales = ({ sx, totalSale, totalSaleCustom }) => {
     date.setDate(date.getDate() - index);
     return moment(date).format("l");
   });
-
-  const saleOrderDay = totalSale?.map((e) => e.totalPrice).reverse();
-  const saleWeeklyOrder = totalSaleCustom?.map((e) => e.totalPrice).reverse();
   const data = {
     datasets: [
       {
@@ -48,8 +45,8 @@ export const Sales = ({ sx, totalSale, totalSaleCustom }) => {
         barThickness: 12,
         borderRadius: 4,
         categoryPercentage: 0.5,
-        data: saleOrderDay,
-        label: "Order in day",
+        data: totalSale,
+        label: "Normal Order",
         maxBarThickness: 10,
       },
       {
@@ -58,7 +55,7 @@ export const Sales = ({ sx, totalSale, totalSaleCustom }) => {
         barThickness: 12,
         borderRadius: 4,
         categoryPercentage: 0.5,
-        data: saleWeeklyOrder,
+        data: totalSaleCustom,
         label: "Weekly Order",
         maxBarThickness: 10,
       },

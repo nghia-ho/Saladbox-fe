@@ -55,71 +55,73 @@ const ChangePassword = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ m: 3 }}>
-      <Typography component="h1" variant="h5" align="center">
-        Change Password
-      </Typography>
-      <Box sx={{ mt: 1 }}>
-        <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-          <Stack spacing={1}>
-            <FTextField
-              name="password"
-              style={{ marginBottom: "0.4rem" }}
-              label="Password"
-              type={showPassword ? " text" : "password"}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={() => setShowPassword(!showPassword)}
-                      edge="end"
-                    >
-                      {showPassword ? (
-                        <VisibilityIcon />
-                      ) : (
-                        <VisibilityOffIcon />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <FTextField
-              name="passwordConfirmation"
-              label="Password Confirmation"
-              type={showPasswordConfirmation ? " text" : "password"}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={() =>
-                        setShowPasswordConfirmation(!showPasswordConfirmation)
-                      }
-                      edge="end"
-                    >
-                      {showPassword ? (
-                        <VisibilityIcon />
-                      ) : (
-                        <VisibilityOffIcon />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Stack>
+    <Container maxWidth="lg">
+      <Box sx={{ p: 3 }}>
+        <Typography component="h1" variant="h5" align="center">
+          Change Password
+        </Typography>
+        <Box sx={{ mt: 1 }}>
+          <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+            <Stack spacing={1}>
+              <FTextField
+                name="password"
+                style={{ marginBottom: "0.4rem" }}
+                label="Password"
+                type={showPassword ? " text" : "password"}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={() => setShowPassword(!showPassword)}
+                        edge="end"
+                      >
+                        {showPassword ? (
+                          <VisibilityIcon />
+                        ) : (
+                          <VisibilityOffIcon />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <FTextField
+                name="passwordConfirmation"
+                label="Password Confirmation"
+                type={showPasswordConfirmation ? " text" : "password"}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={() =>
+                          setShowPasswordConfirmation(!showPasswordConfirmation)
+                        }
+                        edge="end"
+                      >
+                        {showPassword ? (
+                          <VisibilityIcon />
+                        ) : (
+                          <VisibilityOffIcon />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Stack>
 
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Save
-          </Button>
-        </FormProvider>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Save
+            </Button>
+          </FormProvider>
+        </Box>
       </Box>
     </Container>
   );

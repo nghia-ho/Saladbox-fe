@@ -4,18 +4,15 @@ import {
   Button,
   Card,
   Container,
-  Stack,
   Typography,
-  Tooltip,
-  IconButton,
   TableContainer,
   Table,
   TableHead,
   Box,
+  Divider,
 } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
-import FilterListIcon from "@mui/icons-material/FilterList";
 import { useDispatch, useSelector } from "react-redux";
 
 import FormModalIngredient from "../../features/ingredient/FormModalIngredient";
@@ -35,8 +32,9 @@ const TABLE_HEAD = [
   { id: "step", label: "Step", alignRight: false },
   { id: "price", label: "Price", alignRight: false },
   { id: "calo", label: "Calo", alignRight: false },
-  { id: "type", label: "Type", alignRight: "not" },
-  { id: "isDeleted", label: "Is Deleted", alignRight: "not" },
+  { id: "type", label: "Type", alignRight: false },
+  { id: "isDeleted", label: "Avaiable", alignRight: false },
+  { id: "more", label: "More", alignRight: false },
 ];
 
 function IngredientPage() {
@@ -46,13 +44,13 @@ function IngredientPage() {
   const [route, setRoute] = useState(null);
 
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const [filterName, setFilterName] = useState("");
   const [mode, setMode] = useState("create");
   const [selectedItem, setSelectedItem] = useState(null);
   const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("name");
+  const [orderBy, setOrderBy] = useState("");
 
   const handleClickEdit = () => {
     setOpenModal(true);
@@ -89,18 +87,13 @@ function IngredientPage() {
     );
   }, [filterName, page, dispatch, orderBy, order, rowsPerPage]);
 
-  const { ingredients, count } = useSelector((state) => state.ingredient);
+  const { ingredients, count, type } = useSelector((state) => state.ingredient);
 
   const handleOpenPopover = (event, value) => {
     setOpenPopover(event.currentTarget);
     setSelectedItem(value);
     setRoute("ingredient");
   };
-
-  // const handleCloseMenu = () => {
-  //   setOpenPopover(null);
-  // };
-  //--------------------------------------------------------------
 
   const defaultValues = {
     ingredientSearch: filterName,
@@ -129,35 +122,36 @@ function IngredientPage() {
         mode={mode}
         selectedProduct={selectedItem}
         setSelectedItem={setSelectedItem}
+        type={type}
+        page={page}
+        rowsPerPage={rowsPerPage}
+        filterName={filterName}
+        order={order}
+        orderBy={orderBy}
       />
       <DeleteModal
         selectedItem={selectedItem}
         openModalDelete={openModalDelete}
         route={route}
         handleCloseDelete={handleCloseDelete}
+        page={page}
+        rowsPerPage={rowsPerPage}
+        name={filterName}
+        orderBy={orderBy}
+        order={order}
       />
-      <Stack
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-        mb={5}
+
+      <Typography variant="h5" gutterBottom fontWeight={600}>
+        Ingredient
+      </Typography>
+      <Card
+        sx={{
+          p: 3,
+          mt: 2,
+        }}
       >
-        <Typography variant="h5" gutterBottom fontWeight={600}>
-          Ingredient
-        </Typography>
-        <Button
-          variant="contained"
-          color="info"
-          startIcon={<AddIcon />}
-          onClick={handleClickCreate}
-        >
-          New Ingredient
-        </Button>
-      </Stack>
-      <Card sx={{ boxShadow: "none" }}>
         <Box
           sx={{
-            height: 96,
             display: "flex",
             justifyContent: "space-between",
             padding: 3,
@@ -167,40 +161,46 @@ function IngredientPage() {
             <IngredientSearch />
           </FormProvider>
 
-          <Tooltip title="Filter list">
-            <IconButton>
-              <FilterListIcon />
-            </IconButton>
-          </Tooltip>
+          <Button
+            variant="contained"
+            color="success"
+            startIcon={<AddIcon />}
+            onClick={handleClickCreate}
+          >
+            New Ingredient
+          </Button>
         </Box>
-
-        <TableContainer sx={{ minWidth: 800 }}>
-          <Table>
-            <TableHead>
-              <HeadTable
-                TABLE_HEAD={TABLE_HEAD}
-                route={route}
-                order={order}
-                setOrder={setOrder}
-                orderBy={orderBy}
-                setOrderBy={setOrderBy}
-              />
-            </TableHead>
-            <BodyTable
-              ingredients={ingredients}
-              handleOpenPopover={handleOpenPopover}
+        <Divider sx={{ mx: 3, mb: 2 }} />
+        <Container maxWidth="lg">
+          <Card sx={{ boxShadow: "none" }}>
+            <TableContainer sx={{ width: 1, borderRadius: 1, pb: 3 }}>
+              <Table>
+                <TableHead>
+                  <HeadTable
+                    TABLE_HEAD={TABLE_HEAD}
+                    route={route}
+                    order={order}
+                    setOrder={setOrder}
+                    orderBy={orderBy}
+                    setOrderBy={setOrderBy}
+                  />
+                </TableHead>
+                <BodyTable
+                  ingredients={ingredients}
+                  handleOpenPopover={handleOpenPopover}
+                />
+              </Table>
+            </TableContainer>
+            <TablePaginations
+              count={count}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              handleChangePage={handleChangePage}
+              handleChangeRowsPerPage={handleChangeRowsPerPage}
             />
-          </Table>
-        </TableContainer>
+          </Card>
+        </Container>
       </Card>
-
-      <TablePaginations
-        count={count}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        handleChangePage={handleChangePage}
-        handleChangeRowsPerPage={handleChangeRowsPerPage}
-      />
 
       <PopoverMenu
         openPopover={openPopover}

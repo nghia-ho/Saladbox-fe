@@ -8,12 +8,10 @@ import {
   Divider,
   Button,
 } from "@mui/material";
+import { isString } from "lodash";
 
-// import { fCurrency } from "../utils";
-// import ReactMarkdown from "react-markdown";
-// import rehypeRaw from "rehype-raw";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCard } from "../../features/cart/cartSlice";
+import { addToCard } from "../../cart/cartSlice";
 
 const InforProduct = () => {
   const dispatch = useDispatch();
@@ -33,7 +31,10 @@ const InforProduct = () => {
               <Box
                 component="img"
                 src={
-                  product?.image?.length
+                  isString(product?.image) &&
+                  product?.image.includes("cloudinary")
+                    ? product?.image
+                    : product?.image
                     ? `http://localhost:8000${product?.image}`
                     : "/saladcustom.png"
                 }
@@ -97,7 +98,7 @@ const InforProduct = () => {
               }}
             >
               {" "}
-              {product.price} VND
+              {product?.price?.toLocaleString()}
             </Typography>
           </Box>
           <Button

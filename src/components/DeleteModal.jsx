@@ -1,4 +1,4 @@
-import { Button, Modal } from "@mui/material";
+import { Button, Modal, Stack, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
 import { useDispatch } from "react-redux";
@@ -11,15 +11,39 @@ function DeleteModal({
   openModalDelete,
   handleCloseDelete,
   route,
+  page,
+  rowsPerPage,
+  orderBy,
+  order,
+  name,
 }) {
   const dispatch = useDispatch();
-  console.log(route);
   const handleDelete = () => {
     if (route === "order") dispatch(deleteOrder(selectedItem?._id));
 
-    if (route === "product") dispatch(deleteProduct(selectedItem?._id));
+    if (route === "product")
+      dispatch(
+        deleteProduct({
+          id: selectedItem?._id,
+          sort: { orderBy, order },
+          name,
+          limit: rowsPerPage,
+          page: page + 1,
+        })
+      );
 
-    if (route === "ingredient") dispatch(deleteIngredient(selectedItem?._id));
+    if (route === "ingredient")
+      dispatch(
+        deleteIngredient({
+          id: selectedItem?._id,
+          sort: { orderBy, order },
+          name,
+          limit: rowsPerPage,
+          page: page + 1,
+        })
+      );
+
+    handleCloseDelete();
   };
   return (
     <Modal open={openModalDelete} onClose={handleCloseDelete}>
@@ -36,7 +60,18 @@ function DeleteModal({
           p: 4,
         }}
       >
-        <Button onClick={handleDelete}>Delete</Button>
+        <Stack>
+          <Typography variant="h6" fontWeight="600">
+            Delete {route}?
+          </Typography>
+          <Typography sx={{ mt: 2 }}>
+            This cannot be undone and it will be deleted
+          </Typography>
+          <Stack direction="row" justifyContent="end">
+            <Button onClick={handleDelete}>Delete</Button>
+            <Button onClick={handleCloseDelete}>Cancel</Button>
+          </Stack>
+        </Stack>
       </Box>
     </Modal>
   );

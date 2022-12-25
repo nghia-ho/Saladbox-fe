@@ -23,15 +23,16 @@ import BodyTable from "./BodyTable";
 import TablePaginations from "../../components/TablePaginations";
 
 const TABLE_HEAD = [
-  { id: "_id", label: "ORDER ID" },
-  { id: "user", label: "CUSTOMER NAME" },
-  { id: "createdAt", label: "DATE" },
-  { id: "isPaid", label: "PAYMENT" },
-  { id: "totalPrice", label: "TOTAL" },
-  { id: "isDeliverd", label: "STATUS" },
+  { id: "_id", label: "Order ID" },
+  { id: "user", label: "Name" },
+  { id: "createdAt", label: "Date" },
+  { id: "isPaid", label: "Payment" },
+  { id: "totalPrice", label: "Total" },
+  { id: "isDeliverd", label: "Status" },
+  { id: "more", label: "More" },
 ];
 
-function AdminOrderList({ filterName }) {
+function AdminOrderList({ filterName, type }) {
   // open Modal Edit, delete,
   const [openPopover, setOpenPopover] = useState(null);
   const [openModalDelete, setopenModalDelete] = useState(false);
@@ -41,7 +42,7 @@ function AdminOrderList({ filterName }) {
   const [selectedItem, setSelectedItem] = useState(null);
 
   const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("name");
+  const [orderBy, setOrderBy] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
 
@@ -102,7 +103,7 @@ function AdminOrderList({ filterName }) {
         <TableContainer
           sx={{
             width: 1,
-            px: 3,
+            borderRadius: 1,
           }}
         >
           <Table>
@@ -137,6 +138,7 @@ function AdminOrderList({ filterName }) {
           setopenModalDelete={setopenModalDelete}
           selectedItem={selectedItem}
           route={route}
+          type={type}
         />
       </Card>
     </Container>

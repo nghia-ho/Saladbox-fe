@@ -21,6 +21,7 @@ import {
 import { useDispatch } from "react-redux";
 import { addToCartCustom } from "../../features/cart/cartSlice";
 import { useNavigate } from "react-router-dom";
+import { isString } from "lodash";
 
 const drawerBleeding = 60;
 
@@ -59,7 +60,6 @@ function SwipeableEdgeDrawer(props) {
     );
     navigate("/cartcustom");
   };
-
   // This is used only for the example
   const container =
     window !== undefined ? () => window().document.body : undefined;
@@ -73,7 +73,12 @@ function SwipeableEdgeDrawer(props) {
               <CardMedia
                 sx={{ width: 1 }}
                 component="img"
-                image={`http://localhost:8000${item.day?.image}`}
+                image={
+                  isString(item.day?.image) &&
+                  item.day?.image.includes("cloudinary")
+                    ? item.day?.image
+                    : `http://localhost:8000${item.day?.image}`
+                }
                 alt={item.day?.name}
               />
             </CardActionArea>
@@ -89,7 +94,7 @@ function SwipeableEdgeDrawer(props) {
 
             <Stack direction="row" justifyContent="space-between">
               <Typography sx={{ color: "success.contrastText" }} align="center">
-                {item.day?.price} vnd
+                {item.day?.price.toLocaleString()}
               </Typography>
               <Divider orientation="vertical" />
               <Typography sx={{ color: "success.contrastText" }} align="center">
@@ -182,7 +187,7 @@ function SwipeableEdgeDrawer(props) {
                   align="center"
                   sx={{ fontWeight: 600, color: "success.contrastText" }}
                 >
-                  Total: {price} VND
+                  Total: {price.toLocaleString()}
                 </Typography>
 
                 <Typography

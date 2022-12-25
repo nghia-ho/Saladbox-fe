@@ -1,7 +1,7 @@
 import React from "react";
 import { Box } from "@mui/system";
 import LoadingScreen from "../../components/LoadingScreen";
-import { Button, Typography } from "@mui/material";
+import { Button, IconButton, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -10,11 +10,13 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import DeleteIcon from "@mui/icons-material/Delete";
+
 import moment from "moment";
 
 import { styled } from "@mui/material/styles";
 import { useDispatch } from "react-redux";
-import { getSingleOrder } from "./orderSlice";
+import { deleteOrder, getSingleOrder } from "./orderSlice";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -36,8 +38,26 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function createData(orderId, date, product, price, status, isDeliverd) {
-  return { orderId, date, product, price, status, isDeliverd };
+function createData(
+  orderId,
+  date,
+  product,
+  price,
+  paymentMethod,
+  status,
+  isDeliverd,
+  deleted
+) {
+  return {
+    orderId,
+    date,
+    product,
+    price,
+    status,
+    paymentMethod,
+    isDeliverd,
+    deleted,
+  };
 }
 
 function Order({ isLoading, ordersList }) {
@@ -50,25 +70,27 @@ function Order({ isLoading, ordersList }) {
         orderItem.createdAt,
         orderItem.orderItems,
         orderItem.totalPrice,
+        orderItem.paymentMethod,
         orderItem.isPaid,
-        orderItem.isDeliverd
+        orderItem.isDeliverd,
+        orderItem.isDeleted
       );
     });
     return order;
   };
   let rows = row(ordersList);
-
   const handleView = (order) => {
     dispatch(getSingleOrder(order.orderId));
     navigate(`/order/${order.orderId}`);
   };
+  console.log(rows);
   return (
     <Box sx={{ width: 1 }}>
       {isLoading && <LoadingScreen />}
       {(ordersList.length === 0 || !ordersList) && (
-        <Box sx={{ maxWidth: 480, margin: "auto", textAlign: "center" }}>
+        <Box sx={{ maxWidth: 480, margin: "auto", textAlign: "center", mb: 3 }}>
           <Typography variant="h4" paragraph>
-            No Orders
+            No Order
           </Typography>
           <Button to="/menu" variant="contained" component={Link}>
             Go Shopping
@@ -86,9 +108,11 @@ function Order({ isLoading, ordersList }) {
               <StyledTableCell>Date</StyledTableCell>
               <StyledTableCell align="right"> Product</StyledTableCell>
               <StyledTableCell align="right">Amount</StyledTableCell>
+              <StyledTableCell align="right">Payment Method</StyledTableCell>
               <StyledTableCell align="right">Paid Status</StyledTableCell>
               <StyledTableCell align="right">Delievery Status</StyledTableCell>
               <StyledTableCell align="center">More</StyledTableCell>
+              <StyledTableCell align="center">Cancel</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -108,14 +132,36 @@ function Order({ isLoading, ordersList }) {
                 </StyledTableCell>
                 <StyledTableCell align="right">{row.price}</StyledTableCell>
                 <StyledTableCell align="right">
+                  {row.paymentMethod}
+                </StyledTableCell>
+                <StyledTableCell align="right">
                   {row.status ? "Complete" : "Unpaid"}
                 </StyledTableCell>
                 <StyledTableCell align="right">
                   {row.isDeliverd ? "Complete" : "Not yet"}
                 </StyledTableCell>
                 <StyledTableCell align="center">
-                  <Button onClick={() => handleView(row)}>View More</Button>
+                  <Button onClick={() => handleView(row)}>More</Button>
                 </StyledTableCell>
+                {!row.isDeliverd ? (
+                  <StyledTableCell align="center">
+                    {row.deleted ? (
+                      <Typography color="error" fontWeight="600">
+                        Canceled
+                      </Typography>
+                    ) : (
+                      <IconButton
+                        size="large"
+                        color="inherit"
+                        onClick={() => dispatch(deleteOrder(row?.orderId))}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    )}
+                  </StyledTableCell>
+                ) : (
+                  <StyledTableCell align="center"></StyledTableCell>
+                )}
               </StyledTableRow>
             ))}
           </TableBody>

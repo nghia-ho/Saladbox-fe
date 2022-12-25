@@ -2,7 +2,9 @@ import React from "react";
 import { createContext, useReducer, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import apiService from "../app/apiService";
+
 import { getCart, clearCart } from "../features/cart/cartSlice";
+
 import { isValidToken } from "../utils/jwt";
 
 const initialState = {
@@ -152,7 +154,7 @@ const AuthProvider = ({ children }) => {
     setSession(accessToken);
     dispatch({
       type: LOGIN_SUCCESS,
-      payload: { user: user.name, role: user.role },
+      payload: { user: user, role: user.role },
     });
     callback();
   };

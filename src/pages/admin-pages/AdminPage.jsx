@@ -6,7 +6,7 @@ import { Sales } from "../../components/dashboard/sales";
 import { TasksProgress } from "../../components/dashboard/tasks-progress";
 import { TotalCustomers } from "../../components/dashboard/total-customers";
 import { TotalProfit } from "../../components/dashboard/total-profit";
-import { DashboardLayout } from "../../components/dashboard-layout";
+import { DashboardLayout } from "../../components/dashboard/dashboard-layout";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getOrders, getOrdersCustom } from "../../features/order/orderSlice";
@@ -28,7 +28,7 @@ const Page = () => {
   const { products } = useSelector((state) => state.products);
 
   const totalSales =
-    ordersCustomList.reduce(
+    ordersCustomList?.reduce(
       (accumulator, currentValue) => accumulator + currentValue.totalPrice,
       0
     ) +
@@ -48,11 +48,10 @@ const Page = () => {
     ordersList?.filter((e) => !e.isDeliverd).length;
 
   function percentage(partialValue, totalValue) {
-    return ((progressDone / (progressDone + notDeliver)) * 100).toFixed(2);
+    return ((partialValue / (partialValue + totalValue)) * 100).toFixed(2);
   }
 
   const progress = percentage(progressDone, notDeliver);
-
   return (
     <>
       <Typography sx={{ mx: 3 }} fontWeight="600">

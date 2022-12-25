@@ -17,7 +17,7 @@ import { FormProvider } from "../components/form";
 
 import ProductFilter from "../features/product/ProductFilter";
 import useAuth from "../hooks/useAuth";
-import ProductView from "../components/ProductView";
+import ProductView from "../features/product/ProductView";
 import Pagination from "../components/Panigation";
 import { useLocation } from "react-router-dom";
 

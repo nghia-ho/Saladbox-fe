@@ -14,6 +14,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { CardActionArea } from "@mui/material";
 import { CardMedia } from "@mui/material";
+
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { IconButton } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -24,10 +25,7 @@ import {
   subtractToCart,
   deleteFromCart,
 } from "../features/cart/cartSlice";
-
-function ccyFormat(num) {
-  return `${num.toFixed(0)}`;
-}
+import { isString } from "lodash";
 
 function priceRow(qty, unit) {
   return qty * unit;
@@ -63,7 +61,7 @@ function CartPage() {
 
   const invoiceSubtotal = subtotal(rows);
   const invoiceTotal = invoiceSubtotal;
-  console.log(rows);
+
   const handleCheckout = () => {
     navigate("/shipping");
   };
@@ -114,7 +112,10 @@ function CartPage() {
                                 sx={{ borderRadius: 2 }}
                                 component="img"
                                 image={
-                                  row?.image.length
+                                  isString(row?.image) &&
+                                  row?.image.includes("cloudinary")
+                                    ? row?.image
+                                    : row?.image
                                     ? `http://localhost:8000${row?.image}`
                                     : "/saladcustom.png"
                                 }
@@ -162,7 +163,7 @@ function CartPage() {
                       </TableCell>
                       <TableCell align="center">{row.unit}</TableCell>
                       <TableCell align="center">
-                        {ccyFormat(row.price)}{" "}
+                        {row.price.toLocaleString()}{" "}
                       </TableCell>
                       <TableCell align="center">
                         <IconButton
@@ -180,14 +181,14 @@ function CartPage() {
                     <TableCell colSpan={1}>Subtotal</TableCell>
                     <TableCell colSpan={1} />
                     <TableCell align="center" colSpan={1}>
-                      {ccyFormat(invoiceSubtotal)}
+                      {invoiceSubtotal.toLocaleString()}
                     </TableCell>
                   </TableRow>
 
                   <TableRow>
                     <TableCell colSpan={2}>Total</TableCell>
                     <TableCell align="center">
-                      {ccyFormat(invoiceTotal)} vnd
+                      {invoiceTotal.toLocaleString()}
                     </TableCell>
                   </TableRow>
                   <TableRow>

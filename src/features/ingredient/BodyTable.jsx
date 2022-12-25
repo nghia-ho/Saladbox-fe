@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { isString } from "lodash";
 
 function BodyTable({ ingredients, handleOpenPopover }) {
   return (
@@ -34,9 +35,17 @@ function BodyTable({ ingredients, handleOpenPopover }) {
                   <Stack direction="row" justifyContent="center">
                     <Avatar
                       alt={name}
-                      src={`http://localhost:8000${
-                        image || "/ingredients/1.png"
-                      }`}
+                      // src={`http://localhost:8000${
+                      //   image || "/ingredients/1.png"
+                      // }`}
+
+                      src={
+                        isString(image) && image.includes("cloudinary")
+                          ? image
+                          : image
+                          ? `http://localhost:8000${image}`
+                          : "/ingredients/1.png"
+                      }
                     />
                   </Stack>
                 </TableCell>

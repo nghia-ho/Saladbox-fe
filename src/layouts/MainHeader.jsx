@@ -10,16 +10,17 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import Logo from "../components/Logo";
-import { Badge, Divider, useTheme } from "@mui/material";
+import { Badge, Divider, useTheme, Stack } from "@mui/material";
 import ShoppingBagTwoToneIcon from "@mui/icons-material/ShoppingBagTwoTone";
 import AccountCircleTwoToneIcon from "@mui/icons-material/AccountCircleTwoTone";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
-import { Link, useNavigate } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
-import { Stack } from "@mui/system";
-import { ColorModeContext } from "../contexts/ThemeProvider";
+
 import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+
+import useAuth from "../hooks/useAuth";
+import { ColorModeContext } from "../contexts/ThemeProvider";
 
 const pages = ["home", "shop", "custom", "weeklymealplan"];
 
@@ -41,7 +42,6 @@ function MainHeader() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-  // const location = useLocation();
   const navigate = useNavigate();
   const { cart } = useSelector((state) => state.cart);
   const auth = useAuth();
@@ -80,14 +80,16 @@ function MainHeader() {
             Admin
           </MenuItem>
         ) : (
-          <MenuItem to="/account" component={Link} sx={{ mx: 1 }}>
-            My Profile
-          </MenuItem>
+          <Box>
+            <MenuItem to="/account" component={Link} sx={{ mx: 1 }}>
+              My Profile
+            </MenuItem>
+            <MenuItem to="/order" component={Link} sx={{ mx: 1 }}>
+              My Order
+            </MenuItem>
+          </Box>
         )}
 
-        <MenuItem to="/account" component={Link} sx={{ mx: 1 }}>
-          Account setting
-        </MenuItem>
         <Divider sx={{ bodertyle: "dashed" }} />
         <MenuItem
           sx={{ mx: 1 }}
@@ -196,7 +198,7 @@ function MainHeader() {
           <Box
             sx={{
               flexGrow: 1,
-              display: { xs: "none", sm: "flex" },
+              display: { xs: "none", md: "flex" },
               justifyContent: "center",
               px: 5,
             }}

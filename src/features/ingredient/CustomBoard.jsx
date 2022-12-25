@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Box,
   Button,
@@ -7,26 +8,25 @@ import {
   Divider,
   IconButton,
   List,
+  Stack,
   Typography,
 } from "@mui/material";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { Stack } from "@mui/system";
-import React from "react";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+
 import { useDispatch, useSelector } from "react-redux";
-import {
-  customProduct,
-  createfavoriteProduct,
-} from "../features/product/productSlice";
+import isString from "lodash/isString";
+
+import { customProduct, createfavoriteProduct } from "../product/productSlice";
 import {
   addIngredientsCustom,
   removeFromCustomBoard,
   subtractIngredientsCustom,
-} from "../features/ingredient/ingredientSlice";
+} from "./ingredientSlice";
+import { addToCard } from "../cart/cartSlice";
 
-import useAuth from "../hooks/useAuth";
-import { addToCard } from "../features/cart/cartSlice";
+import useAuth from "../../hooks/useAuth";
 
 function CustomBoard({ setModal, setModalAdd }) {
   let { ingredientsCustom } = useSelector((state) => state.ingredient);
@@ -64,12 +64,16 @@ function CustomBoard({ setModal, setModalAdd }) {
     <Box my={1} sx={{ width: 1 }}>
       {ingredientsCustom.map((ingredientItem) => (
         <Stack direction="row" sx={{ p: 1 }} key={ingredientItem._id}>
-          <Card>
-            <CardActionArea sx={{ display: "flex", p: 0.5 }}>
+          <Card sx={{ width: 1 / 3 }}>
+            <CardActionArea sx={{ display: "flex", p: 0.5, width: 1 }}>
               <CardMedia
-                sx={{ width: 1 }}
                 component="img"
-                image={`http://localhost:8000${ingredientItem.image}`}
+                image={
+                  isString(ingredientItem.image) &&
+                  ingredientItem.image.includes("cloudinary")
+                    ? ingredientItem.image
+                    : `http://localhost:8000${ingredientItem.image}`
+                }
                 alt={ingredientItem.name}
               />
               <Box
@@ -95,14 +99,14 @@ function CustomBoard({ setModal, setModalAdd }) {
               <Typography
                 sx={{ fontWeight: 600, color: "success.contrastText" }}
               >
-                {ingredientItem.name}
+                {ingredientItem.name.slice(0, 20)}
               </Typography>
 
               <IconButton
                 sx={{ p: 0 }}
                 onClick={() => dispatch(removeFromCustomBoard(ingredientItem))}
               >
-                <DeleteForeverIcon color="primary" fontSize="small" />
+                <DeleteForeverIcon fontSize="small" />
               </IconButton>
             </Stack>
 
@@ -128,7 +132,7 @@ function CustomBoard({ setModal, setModalAdd }) {
 
             <Stack direction="row" justifyContent="space-between">
               <Typography sx={{ color: "success.contrastText" }}>
-                {ingredientItem.price} vnd
+                {ingredientItem.price.toLocaleString()}
               </Typography>
 
               <Divider orientation="vertical" />
@@ -149,6 +153,14 @@ function CustomBoard({ setModal, setModalAdd }) {
         bgcolor: "success.main",
         borderRadius: 1,
         p: 0.5,
+        height: 1,
+        maxHeight: {
+          xs: 350,
+          sm: 350,
+          md: 800,
+          lg: 450,
+          xl: 559,
+        },
       }}
     >
       <Typography
@@ -164,7 +176,13 @@ function CustomBoard({ setModal, setModalAdd }) {
             width: 1,
             position: "relative",
             overflow: "auto",
-            maxHeight: { xs: 350, sm: 350, md: 800, lg: 450, xl: 500 },
+            maxHeight: {
+              xs: 350,
+              sm: 350,
+              md: 800,
+              lg: 450,
+              xl: 500,
+            },
             "& ul": { padding: 0 },
           }}
           subheader={<li />}
@@ -196,7 +214,7 @@ function CustomBoard({ setModal, setModalAdd }) {
             align="center"
             sx={{ fontWeight: 600, color: "success.contrastText" }}
           >
-            {price} VND
+            {price.toLocaleString()}
           </Typography>
           <Typography
             variant="subtitle1"

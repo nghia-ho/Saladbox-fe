@@ -15,7 +15,7 @@ import * as Yup from "yup";
 
 import useAuth from "../hooks/useAuth";
 
-const LoginSchema = Yup.object().shape({
+const RegisterSchema = Yup.object().shape({
   email: Yup.string().email("Invalid Email").required("Email is required"),
   password: Yup.string().required("Password is required"),
   passwordConfirmation: Yup.string()
@@ -39,7 +39,7 @@ const RegisterPage = () => {
     useState(false);
 
   const methods = useForm({
-    resolver: yupResolver(LoginSchema),
+    resolver: yupResolver(RegisterSchema),
     defaultValues,
   });
   const {

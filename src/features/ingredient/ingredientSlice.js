@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import apiService from "../../app/apiService";
+import { cloudinaryUpload } from "../../utils/cloudinary";
 
 const initialState = {
   isLoading: false,
@@ -25,6 +26,7 @@ const ingredientSlice = createSlice({
       state.ingredients = action.payload.ingredient;
       state.count = action.payload.count;
       state.totalPage = action.payload.totalPage;
+      state.type = action.payload.type;
     },
     addIngredientsCustomSuccess: (state, action) => {
       state.isLoading = false;
@@ -39,7 +41,7 @@ const ingredientSlice = createSlice({
             : ingredient
         );
       } else {
-        state.ingredientsCustom.push({ ...action.payload, amount: 1 });
+        state.ingredientsCustom.unshift({ ...action.payload, amount: 1 });
       }
     },
     subtractIngredientsCustomSuccess: (state, action) => {
@@ -61,7 +63,7 @@ const ingredientSlice = createSlice({
     },
     createIngredientSuccess: (state, action) => {
       state.isLoading = false;
-      state.ingredients.ingredient.push(action.payload);
+      state.ingredients.unshift(action.payload);
     },
     editIngredientSuccess: (state, action) => {
       state.isLoading = false;
@@ -120,11 +122,14 @@ export const createIngredient =
   ({ name, image, price, calo, type }) =>
   async (dispatch) => {
     dispatch(ingredientSlice.actions.startLoading());
-    const data = { name, image, price, calo, type };
     try {
-      console.log(data);
+      const data = { name, image, price, calo, type };
+      console.log(type);
+      if (image instanceof File) {
+        const imageUrl = await cloudinaryUpload(image);
+        data.image = imageUrl;
+      }
       const response = await apiService.post(`/ingredient`, data);
-      console.log(response);
 
       dispatch(
         ingredientSlice.actions.createIngredientSuccess(response.data.data)
@@ -134,29 +139,32 @@ export const createIngredient =
     }
   };
 export const editIngredient =
-  ({ id, name, image, price, calo, type }) =>
+  ({ id, name, image, price, calo, type, filterName, sort, limit, page }) =>
   async (dispatch) => {
     dispatch(ingredientSlice.actions.startLoading());
-    const data = { name, image, price, calo, type };
     try {
+      const data = { name, image, price, calo, type };
+      if (image instanceof File) {
+        const imageUrl = await cloudinaryUpload(image);
+        data.image = imageUrl;
+      }
       await apiService.put(`/ingredient/${id}`, data);
-      const response = await apiService.get(`/ingredient`);
-      dispatch(
-        ingredientSlice.actions.getIngredientsSuccess(response.data.data)
-      );
+      dispatch(getIngredients({ sort, name: filterName, limit, page }));
     } catch (error) {
       dispatch(ingredientSlice.actions.hasError(error));
     }
   };
-export const deleteIngredient = (id) => async (dispatch) => {
-  dispatch(ingredientSlice.actions.startLoading());
-  try {
-    await apiService.delete(`/ingredient/${id}`);
-    const response = await apiService.get(`/ingredient`);
-    dispatch(ingredientSlice.actions.getIngredientsSuccess(response.data.data));
-  } catch (error) {
-    dispatch(ingredientSlice.actions.hasError(error));
-  }
-};
+export const deleteIngredient =
+  ({ id, sort, name, limit, page }) =>
+  async (dispatch) => {
+    dispatch(ingredientSlice.actions.startLoading());
+    try {
+      await apiService.delete(`/ingredient/${id}`);
+
+      dispatch(getIngredients({ sort, name, limit, page }));
+    } catch (error) {
+      dispatch(ingredientSlice.actions.hasError(error));
+    }
+  };
 
 export default ingredientSlice.reducer;

@@ -1,7 +1,7 @@
 import { useFormContext, Controller } from "react-hook-form";
 import { TextField } from "@mui/material";
 
-function FSelect({ name, children, ...other }) {
+function FSelect({ name, children, defaultValue, ...other }) {
   const { control } = useFormContext();
 
   return (
@@ -15,6 +15,7 @@ function FSelect({ name, children, ...other }) {
           fullWidth
           SelectProps={{ native: true }}
           error={!!error}
+          defaultValue={defaultValue}
           helperText={error?.message}
           {...other}
         >

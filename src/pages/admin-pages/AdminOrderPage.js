@@ -1,5 +1,13 @@
 //mui
-import { Card, Container, Box, Tabs, Tab, Divider } from "@mui/material";
+import {
+  Card,
+  Container,
+  Box,
+  Tabs,
+  Tab,
+  Divider,
+  Typography,
+} from "@mui/material";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import LocalDiningIcon from "@mui/icons-material/LocalDining";
 // framework
@@ -37,20 +45,24 @@ function AdminOrderPage() {
       value: "order",
       name: "Order",
       icon: <RestaurantIcon sx={{ fontSize: 24 }} />,
-      component: <AdminOrderList filterName={filterName} />,
+      component: <AdminOrderList filterName={filterName} type={currentTab} />,
     },
     {
       value: "orderCustom",
       name: "Weekly Order",
       icon: <LocalDiningIcon sx={{ fontSize: 24 }} />,
-      component: <AdminOrderCustom filterName={filterName} />,
+      component: <AdminOrderCustom filterName={filterName} type={currentTab} />,
     },
   ];
 
   return (
     <Container>
+      <Typography variant="h5" gutterBottom fontWeight={600}>
+        Order
+      </Typography>
       <Card
         sx={{
+          mt: 3,
           position: "relative",
           p: 3,
         }}
@@ -59,14 +71,15 @@ function AdminOrderPage() {
           justifyContent="space-between"
           direction="row"
           alignItems="center"
+          sx={{ px: 3, py: 2 }}
         >
           <Tabs
             value={currentTab}
             sx={{
               mb: 1,
-              px: 6,
               "& button.Mui-selected": {
-                backgroundColor: "primary.main",
+                backgroundColor: "success.dark",
+                color: "#FFF8EA",
                 borderRadius: 1,
               },
             }}
@@ -88,17 +101,11 @@ function AdminOrderPage() {
               />
             ))}
           </Tabs>
-          <Box
-            sx={{
-              py: 3,
-            }}
-          >
-            <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-              <OrderSearch />
-            </FormProvider>
-          </Box>
+          <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+            <OrderSearch />
+          </FormProvider>
         </Stack>
-        <Divider sx={{ mx: 6, my: 3 }} />
+        <Divider sx={{ mx: 3, mb: 2 }} />
         {VALUE_TABS.map((tab) => {
           const isMatched = tab.value === currentTab;
           return isMatched && <Box key={tab.value}>{tab.component}</Box>;

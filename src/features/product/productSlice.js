@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import apiService from "../../app/apiService";
+import { cloudinaryUpload } from "../../utils/cloudinary";
 
 export const getProducts = createAsyncThunk(
   "product/getProducts",
@@ -110,6 +111,11 @@ export const editProduct = createAsyncThunk(
         type,
         ingredients,
       };
+      if (image instanceof File) {
+        const imageUrl = await cloudinaryUpload(image);
+        data.image = imageUrl;
+      }
+
       let url = `/product/${id}`;
       await apiService.put(url, data);
       const response = await apiService.get(`/product?page=1`);
@@ -124,6 +130,10 @@ export const createProduct = createAsyncThunk(
   async ({ name, decription, image, category, type, ingredients }) => {
     try {
       const data = { name, decription, image, category, type, ingredients };
+      if (image instanceof File) {
+        const imageUrl = await cloudinaryUpload(image);
+        data.image = imageUrl;
+      }
       const response = await apiService.post(`/product`, data);
       return response.data.data;
     } catch (error) {
@@ -131,15 +141,24 @@ export const createProduct = createAsyncThunk(
     }
   }
 );
-export const deleteProduct = createAsyncThunk("product/delete", async (id) => {
-  try {
-    await apiService.delete(`/product/${id}`);
-    const response = await apiService.get(`/product?page=1`);
-    return response.data.data;
-  } catch (error) {
-    console.log(error);
+export const deleteProduct = createAsyncThunk(
+  "product/delete",
+  async ({ id, page, limit, name, sort }) => {
+    try {
+      await apiService.delete(`/product/${id}`);
+
+      const params = { page, limit };
+
+      if (name) params.name = name;
+      if (sort) params.sort = sort;
+
+      const response = await apiService.get(`/product`, { params });
+      return response.data.data;
+    } catch (error) {
+      console.log(error);
+    }
   }
-});
+);
 
 const initialState = {
   products: [],
@@ -285,6 +304,7 @@ const productSlice = createSlice({
     [createProduct.fulfilled]: (state, action) => {
       state.isLoading = false;
       state.product = action.payload;
+      state.products.unshift(action.payload);
     },
     [createProduct.rejected]: (state, action) => {
       state.isLoading = false;

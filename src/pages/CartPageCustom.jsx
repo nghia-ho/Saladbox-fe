@@ -16,10 +16,7 @@ import { CardActionArea } from "@mui/material";
 import { CardMedia } from "@mui/material";
 
 import { useSelector } from "react-redux";
-
-function ccyFormat(num) {
-  return `${num.toFixed(0)}`;
-}
+import { isString } from "lodash";
 
 function priceRow(qty, unit) {
   return qty * unit;
@@ -59,7 +56,6 @@ function CartPageCustom() {
   const handleCheckout = () => {
     navigate("/shipping");
   };
-  console.log(rows);
   return (
     <Container>
       <Box>
@@ -92,7 +88,7 @@ function CartPageCustom() {
                   <TableRow key={i}>
                     <TableCell align="center">{row.name}</TableCell>
                     <TableCell align="center">
-                      <Stack direction="row" justifyContent="center">
+                      <Stack direction="row" justifyContent="start">
                         <Box
                           sx={{
                             maxWidth: 50,
@@ -107,7 +103,10 @@ function CartPageCustom() {
                               sx={{ borderRadius: 2 }}
                               component="img"
                               image={
-                                row?.image.length
+                                isString(row?.image) &&
+                                row?.image.includes("cloudinary")
+                                  ? row?.image
+                                  : row?.image
                                   ? `http://localhost:8000${row?.image}`
                                   : "/saladcustom.png"
                               }
@@ -123,7 +122,7 @@ function CartPageCustom() {
                             ml: 3,
                           }}
                         >
-                          <Typography align="center" gutterBottom>
+                          <Typography align="left" gutterBottom>
                             {row.desc}
                           </Typography>
                         </Box>
@@ -143,7 +142,7 @@ function CartPageCustom() {
                     </TableCell>
                     <TableCell align="center">{row.unit}</TableCell>
                     <TableCell align="center">
-                      {ccyFormat(row.price)}{" "}
+                      {row.price.toLocaleString()}{" "}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -153,14 +152,14 @@ function CartPageCustom() {
                   <TableCell colSpan={1}>Subtotal</TableCell>
                   <TableCell colSpan={1} />
                   <TableCell align="center" colSpan={1}>
-                    {ccyFormat(invoiceSubtotal)}
+                    {invoiceSubtotal.toLocaleString()}
                   </TableCell>
                 </TableRow>
 
                 <TableRow>
                   <TableCell colSpan={2}>Total</TableCell>
                   <TableCell align="center">
-                    {ccyFormat(invoiceTotal)} vnd
+                    {invoiceTotal.toLocaleString()}
                   </TableCell>
                 </TableRow>
                 <TableRow>

@@ -4,12 +4,12 @@ import {
   Button,
   Card,
   Container,
-  Stack,
   Typography,
   TableContainer,
   Table,
   TableHead,
   Box,
+  Divider,
 } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
@@ -34,7 +34,8 @@ const TABLE_HEAD = [
   { id: "category", label: "category" },
   { id: "price", label: "Price" },
   { id: "calo", label: "Calo" },
-  { id: "isDeleted", label: "Is Deleted" },
+  { id: "isDeleted", label: "Avaiable" },
+  { id: "more", label: "More" },
 ];
 
 function AdminProductPage() {
@@ -44,13 +45,13 @@ function AdminProductPage() {
   const [route, setRoute] = useState(null);
 
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const [filterName, setFilterName] = useState("");
   const [mode, setMode] = useState("create");
   const [selectedItem, setSelectedItem] = useState(null);
   const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("name");
+  const [orderBy, setOrderBy] = useState("");
 
   const handleClickEdit = () => {
     setOpenModal(true);
@@ -87,15 +88,12 @@ function AdminProductPage() {
       })
     );
     dispatch(getCategory());
-    dispatch(getIngredients({}));
+    dispatch(getIngredients({ limit: 1000 }));
   }, [filterName, page, dispatch, orderBy, order, rowsPerPage]);
 
-  const { products, count } = useSelector((state) => state.products);
+  const { products, count, isLoading } = useSelector((state) => state.products);
   const categories = useSelector((state) => state.category.categories);
-  const ingredients = useSelector(
-    (state) => state.ingredient.ingredients.ingredient
-  );
-
+  const ingredients = useSelector((state) => state.ingredient.ingredients);
   const handleOpenPopover = (event, value) => {
     setOpenPopover(event.currentTarget);
     let step1 = value.ingredients.filter((i) => i.step === 1);
@@ -106,13 +104,11 @@ function AdminProductPage() {
     newValue.ingredientStep1 = step1;
     newValue.ingredientStep2 = step2;
     newValue.ingredientStep3 = step3;
+
     setSelectedItem(newValue);
     setRoute("product");
   };
 
-  // const handleCloseMenu = () => {
-  //   setOpenPopover(null);
-  // };
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -135,84 +131,97 @@ function AdminProductPage() {
     setFilterName(data.nameQuery);
     setPage(0);
   };
+
+  //handle display category in modal edit
+  const copyCate = [...categories];
+  const index = copyCate.findIndex(
+    (e) => e._id === selectedItem?.category?._id
+  );
+  const currentCate = copyCate.splice(index, 1);
+  const newCategory = [...[...currentCate], ...[...copyCate]];
+  const newSelectedItem = {
+    ...selectedItem,
+    category: selectedItem?.category?._id,
+  };
   return (
     <Container maxWidth="lg">
       <FormModalProduct
         open={openModal}
         handleClose={handleClose}
-        categories={categories}
+        categories={newCategory}
         ingredients={ingredients}
-        refreshData={() => {
-          setOpenModal(false);
-        }}
-        selectedItem={selectedItem}
+        selectedItem={newSelectedItem}
         mode={mode}
+        isLoading={isLoading}
       />
       <DeleteModal
         selectedItem={selectedItem}
         openModalDelete={openModalDelete}
         handleCloseDelete={handleCloseDelete}
         route={route}
+        page={page}
+        rowsPerPage={rowsPerPage}
+        name={filterName}
+        orderBy={orderBy}
+        order={order}
       />
-      <Stack
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-        mb={5}
-      >
-        <Typography variant="h5" gutterBottom fontWeight={600}>
-          Product
-        </Typography>
-        <Button
-          variant="contained"
-          color="info"
-          startIcon={<AddIcon />}
-          onClick={handleClickCreate}
-        >
-          New Product
-        </Button>
-      </Stack>
-      <Card sx={{ boxShadow: "none" }}>
+
+      <Typography variant="h5" gutterBottom fontWeight={600}>
+        Product
+      </Typography>
+
+      <Card sx={{ p: 3, mt: 2 }}>
         <Box
           sx={{
-            height: 96,
             display: "flex",
             justifyContent: "space-between",
-            padding: 3,
+            p: 3,
           }}
         >
           <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
             <ProductSearch size={"medium"} />
           </FormProvider>
+          <Button
+            variant="contained"
+            color="success"
+            startIcon={<AddIcon />}
+            onClick={handleClickCreate}
+          >
+            New Product
+          </Button>
         </Box>
+        <Divider sx={{ mx: 3, mb: 2 }} />
+        <Container maxWidth="lg">
+          <Card sx={{ boxShadow: "none" }}>
+            <TableContainer sx={{ width: 1, borderRadius: 1, pb: 3 }}>
+              <Table>
+                <TableHead>
+                  <HeadTable
+                    TABLE_HEAD={TABLE_HEAD}
+                    route={route}
+                    order={order}
+                    setOrder={setOrder}
+                    orderBy={orderBy}
+                    setOrderBy={setOrderBy}
+                  />
+                </TableHead>
 
-        <TableContainer sx={{ minWidth: 800 }}>
-          <Table>
-            <TableHead>
-              <HeadTable
-                TABLE_HEAD={TABLE_HEAD}
-                route={route}
-                order={order}
-                setOrder={setOrder}
-                orderBy={orderBy}
-                setOrderBy={setOrderBy}
-              />
-            </TableHead>
+                <BodyTable
+                  products={products}
+                  handleOpenPopover={handleOpenPopover}
+                />
+              </Table>
+            </TableContainer>
 
-            <BodyTable
-              products={products}
-              handleOpenPopover={handleOpenPopover}
+            <TablePaginations
+              count={count}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              handleChangePage={handleChangePage}
+              handleChangeRowsPerPage={handleChangeRowsPerPage}
             />
-          </Table>
-        </TableContainer>
-
-        <TablePaginations
-          count={count}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          handleChangePage={handleChangePage}
-          handleChangeRowsPerPage={handleChangeRowsPerPage}
-        />
+          </Card>
+        </Container>
       </Card>
       <PopoverMenu
         openPopover={openPopover}

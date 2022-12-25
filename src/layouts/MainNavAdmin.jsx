@@ -11,9 +11,11 @@ import ShowChartIcon from "@mui/icons-material/ShowChart";
 import TocIcon from "@mui/icons-material/Toc";
 import PropaneIcon from "@mui/icons-material/Propane";
 import AirplaneTicketIcon from "@mui/icons-material/AirplaneTicket";
+import CategoryIcon from "@mui/icons-material/Category";
 // components
 import Logo from "../components/Logo";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 // ----------------------------------------------------------------------
 
@@ -40,6 +42,11 @@ const NAV_LIST = [
     icon: <AirplaneTicketIcon />,
     to: "/ingredient",
   },
+  {
+    name: "Categories",
+    icon: <CategoryIcon />,
+    to: "/category",
+  },
 ];
 
 // ----------------------------------------------------------------------
@@ -50,6 +57,9 @@ MainNavAdmin.propTypes = {
 };
 
 function MainNavAdmin({ openNav, onCloseNav }) {
+  const location = useLocation();
+  const myparam = location.state || 0;
+
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const mediumViewport = useMediaQuery("(min-width:1200px)");
   const navigate = useNavigate();
@@ -57,6 +67,10 @@ function MainNavAdmin({ openNav, onCloseNav }) {
     navigate(to);
     setSelectedIndex(index);
   };
+
+  useEffect(() => {
+    setSelectedIndex(myparam);
+  }, [myparam]);
 
   const renderContent = (
     <Box>

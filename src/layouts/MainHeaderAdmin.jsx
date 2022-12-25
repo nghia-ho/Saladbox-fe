@@ -108,7 +108,7 @@ export default function MainHeaderAdmin({ onOpenNav }) {
                 sx={{ mx: 1 }}
                 onClick={() =>
                   auth.logout(() => {
-                    navigate("/", { replace: true });
+                    navigate("/login", { replace: true });
                   })
                 }
               >

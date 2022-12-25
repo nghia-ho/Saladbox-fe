@@ -14,9 +14,10 @@ import LoadingScreen from "../components/LoadingScreen";
 import { Alert } from "@mui/material";
 import { getProductById } from "../features/product/productSlice";
 import { useDispatch, useSelector } from "react-redux";
-import InforProduct from "../components/detailProduct/InforProduct";
-import InfoIngredient from "../components/detailProduct/InfoIngredient";
-import InfoCommitShop from "../components/detailProduct/InfoCommitShop";
+import CurrentQuestion from "../features/product/detailProduct/CurrentQuestion";
+import InforProduct from "../features/product/detailProduct/InforProduct";
+import InfoIngredient from "../features/product/detailProduct/InfoIngredient";
+import InfoCommitShop from "../features/product/detailProduct/InfoCommitShop";
 
 function DetailPage() {
   let { id } = useParams();
@@ -28,6 +29,7 @@ function DetailPage() {
   const { product, isLoading, errorMessage } = useSelector(
     (state) => state.products
   );
+
   return (
     <Container sx={{ my: 3 }} maxWidth="lg">
       <Box>
@@ -66,18 +68,35 @@ function DetailPage() {
                 )}
               </>
             )}
+
             <Grid
               container
               spacing={3}
               mt={3}
               sx={{ display: "flex", alignItems: "center" }}
             >
-              <Grid item xs={12} md={7}>
-                <InfoIngredient />
-              </Grid>
-              <Grid item xs={12} md={5}>
-                <InfoCommitShop />
-              </Grid>
+              {product?.ingredients?.length !== 0 ? (
+                <>
+                  <Grid item xs={12} md={7}>
+                    <InfoIngredient product={product} />
+                  </Grid>
+                  <Grid item xs={12} md={5}>
+                    <InfoCommitShop />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <CurrentQuestion />
+                  </Grid>
+                </>
+              ) : (
+                <>
+                  <Grid item xs={12} md={6}>
+                    <InfoCommitShop />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <CurrentQuestion />
+                  </Grid>
+                </>
+              )}
             </Grid>
           </>
         )}

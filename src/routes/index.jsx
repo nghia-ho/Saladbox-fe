@@ -11,9 +11,9 @@ import DetailPage from "../pages/DetailPage";
 import AuthRequire from "./AuthRequire";
 import MenuPage from "../pages/MenuPage";
 import CartPage from "../pages/CartPage";
-import ShippingAddress from "../components/ShippingAddress";
-import Payment from "../components/Payment";
-import PlaceOrder from "../components/PlaceOrder";
+import ShippingAddress from "../pages/ShippingAddress";
+import Payment from "../pages/Payment";
+import PlaceOrder from "../pages/PlaceOrder";
 import OrderPage from "../pages/OrderPage";
 import CustomMealPage from "../pages/CustomMealPage";
 
@@ -26,6 +26,8 @@ import IngredientPage from "../pages/admin-pages/IngredientPage";
 import OrderDeTailPage from "../pages/admin-pages/OrderDetailPage";
 import CustomMealsPage from "../pages/CustomMealsPage";
 import CartPageCustom from "../pages/CartPageCustom";
+import OrderList from "../features/order/OrderList";
+import CategoryPage from "../pages/admin-pages/CategoryPage";
 
 const Router = () => {
   return (
@@ -50,10 +52,12 @@ const Router = () => {
         }
       >
         <Route path="account" element={<AccountPage />} />
+        <Route path="order" element={<OrderList />} />
         <Route path="shipping" element={<ShippingAddress />} />
         <Route path="payment" element={<Payment />} />
         <Route path="placeorder" element={<PlaceOrder />} />
         <Route path="order/:id" element={<OrderPage />} />
+        <Route path="order/" element={<OrderList />} />
       </Route>
       {/* // protect route for admin*/}
 
@@ -69,6 +73,7 @@ const Router = () => {
         <Route path="orders" element={<AdminOrderPage />} />
         <Route path="orders/:id" element={<OrderDeTailPage />} />
         <Route path="product" element={<AdminProductPage />} />
+        <Route path="category" element={<CategoryPage />} />
         <Route path="ingredient" element={<IngredientPage />} />
       </Route>
 
