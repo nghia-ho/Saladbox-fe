@@ -24,6 +24,10 @@ import * as Yup from "yup";
 const FormProductSchema = Yup.object().shape({
   name: Yup.string().required("Name of product is required"),
   decription: Yup.string().required("Decription is required"),
+  image: Yup.mixed().test("type", "We only support file", (file) => {
+    if (file) return true;
+    return false;
+  }),
   category: Yup.string().required("Category is required"),
 });
 
@@ -46,13 +50,15 @@ function FormModalProduct({
       SetTime(errorMessage);
       setTimeout(() => {
         SetTime("");
-      }, 3000);
+      }, 5000);
     }
   }, [errorMessage]);
 
   const dispatch = useDispatch();
 
   const defaultValues = {
+    calo: 0,
+    price: 0,
     name: "",
     decription: "",
     category: categories[0]?._id || "",
@@ -102,8 +108,7 @@ function FormModalProduct({
             type: data.type,
           })
         );
-
-        if (product.payload) handleClose();
+        if (product.payload.success) handleClose();
       } else {
         const product = await dispatch(
           createProduct({
@@ -146,7 +151,7 @@ function FormModalProduct({
     (i) => i.step === 2 && i.type === "Fruit" && !i.isDeleted
   );
   const step2_5 = ingredients?.filter(
-    (i) => i.step === 2 && i.type === "Cheeze" && !i.isDeleted
+    (i) => i.step === 2 && i.type === "NutsSeeds" && !i.isDeleted
   );
   const step3 = ingredients?.filter((e) => e.step === 3 && !e.isDeleted);
 
@@ -156,7 +161,7 @@ function FormModalProduct({
     if (mode === "edit") reset(selectedItem);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedItem, reset, mode]);
+  }, [selectedItem, mode]);
 
   const handleDrop = useCallback(
     (acceptedFiles) => {
@@ -174,7 +179,7 @@ function FormModalProduct({
     [setValue]
   );
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog open={open} onClose={handleClose} maxWidth="md">
       {/* modal create category */}
       <Modal
         open={openCreateCate}
@@ -213,7 +218,7 @@ function FormModalProduct({
         </DialogTitle>
         <DialogContent>
           <Stack spacing={2}>
-            {time && <Alert severity="info">{time}</Alert>}
+            {time && <Alert severity="warning">{time}</Alert>}
             <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
               <Stack spacing={1} my={1}>
                 <FUploadAvatar
@@ -230,6 +235,15 @@ function FormModalProduct({
                   multiline
                   rows={2}
                 />
+
+                {mode === "edit" && (
+                  <>
+                    <FTextField name="calo" label="Calo" multiline rows={2} />
+
+                    <FTextField name="price" label="Price" multiline rows={2} />
+                  </>
+                )}
+
                 <Stack direction={"row"} alignItems="center">
                   <FSelect name="category" label="Category" select>
                     {categories?.map((item) => (
@@ -301,7 +315,7 @@ function FormModalProduct({
                   />
                   <FAutocomplete
                     name={"ingredientStep2_5"}
-                    label={"Cheeze"}
+                    label={"NutsSeeds"}
                     options={step2_5}
                     defaultValue={defaultValues.ingredientStep2_5}
                     getOptionLabel={(step2_5) => step2_5.name}

@@ -13,6 +13,8 @@ import {
   Paper,
   Grid,
   LinearProgress,
+  Alert,
+  AlertTitle,
 } from "@mui/material";
 
 import React, { useEffect, useState } from "react";
@@ -129,7 +131,7 @@ function OrderPageDetail() {
 
             <Grid container spacing={1}>
               <Grid item xs={12} md={9}>
-                <TableContainer component={Paper}>
+                <TableContainer component={Paper} sx={{ height: 1 }}>
                   <Table sx={{ minWidth: 300 }} aria-label="spanning table">
                     <TableHead>
                       <TableRow>
@@ -167,7 +169,7 @@ function OrderPageDetail() {
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell colSpan={3}>Tax</TableCell>
+                        <TableCell colSpan={3}>Shipping fee</TableCell>
                         <TableCell colSpan={2} align="center">
                           <Typography noWrap variant="subtitle2">
                             {order.shippingPrice.toLocaleString()}
@@ -182,26 +184,36 @@ function OrderPageDetail() {
                       </TableRow>
                       <TableRow>
                         <TableCell colSpan={4}>
-                          {order.paymentMethod === "paypal" && !order.isPaid ? (
-                            <Box>
-                              {isLoading && <LoadingScreen />}
-                              {!sdkReady ? (
-                                <LoadingScreen />
-                              ) : (
-                                <PayPalButton
-                                  amount={order.totalPrice}
-                                  onSuccess={successPaymentHandler}
-                                  disabled={false}
-                                  fundingSource={"paypal"}
-                                />
-                              )}
-                            </Box>
+                          {order.isDeleted ? (
+                            <Alert severity="error">
+                              <AlertTitle>Canceled</AlertTitle>
+                              Order is Canceled
+                            </Alert>
                           ) : (
-                            <Stack>
-                              <Button variant="outlined" disableTouchRipple>
-                                {order?.isPaid ? "Completed" : "UnPaid"}
-                              </Button>
-                            </Stack>
+                            <>
+                              {order.paymentMethod === "paypal" &&
+                              !order.isPaid ? (
+                                <Box>
+                                  {isLoading && <LoadingScreen />}
+                                  {!sdkReady ? (
+                                    <LoadingScreen />
+                                  ) : (
+                                    <PayPalButton
+                                      amount={order.totalPrice}
+                                      onSuccess={successPaymentHandler}
+                                      disabled={false}
+                                      fundingSource={"paypal"}
+                                    />
+                                  )}
+                                </Box>
+                              ) : (
+                                <Stack>
+                                  <Button variant="outlined" disableTouchRipple>
+                                    {order?.isPaid ? "Completed" : "UnPaid"}
+                                  </Button>
+                                </Stack>
+                              )}
+                            </>
                           )}
                         </TableCell>
                       </TableRow>

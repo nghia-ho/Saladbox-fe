@@ -83,33 +83,30 @@ export const customProduct = createAsyncThunk(
 );
 export const editProduct = createAsyncThunk(
   "product/edit",
-  async ({
-    id,
-    name,
-    decription,
-    image,
-    category,
-    price,
-    calo,
-    type,
-    ingredients,
-  }) => {
-    const data = {
-      name,
-      decription,
-      image,
-      category,
-      price,
-      calo,
-      type,
-      ingredients,
-    };
-    if (image instanceof File) {
-      const imageUrl = await cloudinaryUpload(image);
-      data.image = imageUrl;
+  async (
+    { id, name, decription, image, category, price, calo, type, ingredients },
+    { rejectWithValue }
+  ) => {
+    try {
+      const data = {
+        name,
+        decription,
+        image,
+        category,
+        price,
+        calo,
+        type,
+        ingredients,
+      };
+      if (image instanceof File) {
+        const imageUrl = await cloudinaryUpload(image);
+        data.image = imageUrl;
+      }
+      const response = await apiService.put(`/product/${id}`, data);
+      return response.data;
+    } catch (error) {
+      throw rejectWithValue(error);
     }
-    const response = await apiService.put(`/product/${id}`, data);
-    return response.data.data;
   }
 );
 export const createProduct = createAsyncThunk(
@@ -285,15 +282,16 @@ const productSlice = createSlice({
     },
     [editProduct.fulfilled]: (state, action) => {
       state.isLoading = false;
+      state.errorMessage = action.payload.messagge;
       const index = state.products.findIndex(
-        (e) => e._id === action.payload._id
+        (e) => e._id === action.payload.data._id
       );
-      state.products[index] = action.payload;
+      state.products[index] = action.payload.data;
     },
     [editProduct.rejected]: (state, action) => {
       state.isLoading = false;
       if (action.payload) {
-        state.errorMessage = action.payload.message;
+        state.errorMessage = action.payload.messagge;
       } else {
         state.errorMessage = action.error.message;
       }

@@ -21,17 +21,23 @@ function FAutocomplete({
         <Autocomplete
           multiple
           disableCloseOnSelect
-          limitTags={2}
+          limitTags={1}
           id="multiple-limit-tags"
           options={options}
           isOptionEqualToValue={isOptionEqualToValue}
           defaultValue={defaultValue}
           getOptionLabel={getOptionLabel}
+          renderOption={(props, option) => (
+            <li {...props} key={option._id}>
+              {option.name}
+            </li>
+          )}
           renderInput={(params) => (
             <TextField
               {...params}
               label={label}
-              placeholder="Choose Ingredient"
+              key={(options) => options.id}
+              placeholder="Add Ingredient"
               fullWidth
               error={!!error}
               helperText={error?.message}

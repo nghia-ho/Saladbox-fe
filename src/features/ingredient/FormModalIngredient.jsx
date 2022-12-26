@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Stack, Box } from "@mui/material";
+import { Stack, Box, Alert } from "@mui/material";
 import {
   FTextField,
   FormProvider,
@@ -21,7 +21,10 @@ import * as Yup from "yup";
 const FormIngredientSchema = Yup.object().shape({
   type: Yup.string().required("Type is required"),
   name: Yup.string().required("Name is required"),
-
+  image: Yup.mixed().test("type", "We only support file", (file) => {
+    if (file) return true;
+    return false;
+  }),
   price: Yup.number().positive().required("Price is required"),
   calo: Yup.number().positive().required("Calo is required"),
 });
@@ -32,8 +35,20 @@ function FormModalIngredient({
   mode,
   type,
   selectedProduct,
+  error,
 }) {
   const dispatch = useDispatch();
+  const [time, SetTime] = useState("");
+
+  useEffect(() => {
+    if (error?.messagge) {
+      SetTime(error?.messagge);
+      setTimeout(() => {
+        SetTime("");
+      }, 3000);
+    }
+  }, [error]);
+
   const defaultValues = {
     type: "Cheeze",
     name: "",
@@ -50,7 +65,7 @@ function FormModalIngredient({
 
   const onSubmit = async (data) => {
     if (mode === "edit") {
-      dispatch(
+      const response = await dispatch(
         editIngredient({
           id: data._id,
           name: data.name,
@@ -60,8 +75,9 @@ function FormModalIngredient({
           type: data.type,
         })
       );
+      if (response?.success) handleClose();
     } else {
-      dispatch(
+      const response = await dispatch(
         createIngredient({
           name: data.name,
           image: data.image,
@@ -70,11 +86,10 @@ function FormModalIngredient({
           type: data.type,
         })
       );
+      if (response?.success) handleClose();
     }
     // console.log(data);
-    handleClose(false);
   };
-
   // reset defaultValue
   useEffect(() => {
     if (selectedProduct) reset(selectedProduct);
@@ -118,6 +133,11 @@ function FormModalIngredient({
                     onDrop={handleDrop}
                   />
                 </Box>
+                {time && (
+                  <Alert severity={time === "Success" ? "success" : "warning"}>
+                    {time}
+                  </Alert>
+                )}
                 <FTextField name="name" label="Ingredient Name" />
                 <FSelect name="type" label="Type" select>
                   {type?.map((item) => (

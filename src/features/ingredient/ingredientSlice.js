@@ -18,7 +18,7 @@ const ingredientSlice = createSlice({
       state.isLoading = true;
     },
     hasError: (state, action) => {
-      state.isLoading = true;
+      state.isLoading = false;
       state.error = action.payload;
     },
     getIngredientsSuccess: (state, action) => {
@@ -27,9 +27,11 @@ const ingredientSlice = createSlice({
       state.count = action.payload.count;
       state.totalPage = action.payload.totalPage;
       state.type = action.payload.type;
+      state.error = null;
     },
     addIngredientsCustomSuccess: (state, action) => {
       state.isLoading = false;
+      state.error = null;
       const duplicate = state.ingredientsCustom.find(
         (ingredient) => ingredient._id === action.payload._id
       );
@@ -46,6 +48,7 @@ const ingredientSlice = createSlice({
     },
     subtractIngredientsCustomSuccess: (state, action) => {
       state.isLoading = false;
+      state.error = null;
       state.ingredientsCustom.map((ingredient) =>
         ingredient._id === action.payload._id
           ? { ...ingredient, amount: ingredient.amount-- }
@@ -57,6 +60,7 @@ const ingredientSlice = createSlice({
     },
     removeFromCustomBoardSuccess: (state, action) => {
       state.isLoading = false;
+      state.error = null;
       state.ingredientsCustom = state.ingredientsCustom.filter(
         (ingredient) => ingredient._id !== action.payload._id
       );
@@ -64,6 +68,7 @@ const ingredientSlice = createSlice({
 
     editIngredientSuccess: (state, action) => {
       state.isLoading = false;
+      state.error = null;
       // console.log(action.payload);
       const index = state.ingredients.findIndex(
         (i) => i._id === action.payload._id
@@ -72,6 +77,7 @@ const ingredientSlice = createSlice({
       state.ingredients[index] = action.payload;
     },
     deleteIngredientSuccess: (state, action) => {
+      state.error = null;
       state.isLoading = false;
       const index = state.ingredients.findIndex(
         (i) => i._id === action.payload._id
@@ -79,6 +85,7 @@ const ingredientSlice = createSlice({
       state.ingredients[index] = action.payload;
     },
     createIngredientSuccess: (state, action) => {
+      state.error = null;
       state.isLoading = false;
       state.ingredients.unshift(action.payload);
     },
@@ -147,6 +154,7 @@ export const createIngredient =
       dispatch(
         ingredientSlice.actions.createIngredientSuccess(response.data.data)
       );
+      return response.data;
     } catch (error) {
       dispatch(ingredientSlice.actions.hasError(error));
     }
@@ -165,6 +173,7 @@ export const editIngredient =
       dispatch(
         ingredientSlice.actions.editIngredientSuccess(response.data.data)
       );
+      return response.data;
     } catch (error) {
       dispatch(ingredientSlice.actions.hasError(error));
     }

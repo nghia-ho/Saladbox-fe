@@ -20,7 +20,7 @@ function ProductSort({ setSort }) {
   };
   const handleClose = (value) => {
     setAnchorEl(null);
-    console.log(value);
+    // console.log(value);
     setSort(value);
   };
 

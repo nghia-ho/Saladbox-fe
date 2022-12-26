@@ -86,7 +86,7 @@ function IngredientPage() {
     );
   }, [filterName, page, dispatch, orderBy, order, rowsPerPage]);
 
-  const { ingredients, count, type, isLoading } = useSelector(
+  const { ingredients, count, type, isLoading, error } = useSelector(
     (state) => state.ingredient
   );
 
@@ -124,6 +124,7 @@ function IngredientPage() {
         selectedProduct={selectedItem}
         setSelectedItem={setSelectedItem}
         type={type}
+        error={error}
       />
       <DeleteModal
         selectedItem={selectedItem}

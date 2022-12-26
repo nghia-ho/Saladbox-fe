@@ -24,7 +24,7 @@ const MainBanner = () => {
         </Grid>
         <Grid item lg={6} md={6} sm={12} xs={12}>
           <Grid container spacing={0.5}>
-            <Grid item sm={6} xs={6} md={12} lg={12}>
+            <Grid item sm={6} xs={12} md={12} lg={12}>
               <Banner
                 sxBackground={{
                   backgroundImage: `url(${url3})`,
@@ -34,7 +34,7 @@ const MainBanner = () => {
                 sx={{ height: { xs: `25vh`, md: `${25 - 0.5}vh` } }}
               />
             </Grid>
-            <Grid item sm={6} xs={6} md={12} lg={12}>
+            <Grid item sm={6} xs={12} md={12} lg={12}>
               <Banner
                 sxBackground={{
                   backgroundImage: `url(${url1})`,

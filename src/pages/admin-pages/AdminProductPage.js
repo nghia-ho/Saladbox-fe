@@ -110,7 +110,7 @@ function AdminProductPage() {
       (i) => i.step === 2 && i.type === "Fruit"
     );
     let step2_5 = value.ingredients.filter(
-      (i) => i.step === 2 && i.type === "Cheeze"
+      (i) => i.step === 2 && i.type === "NutsSeeds"
     );
     let step3 = value.ingredients.filter((i) => i.step === 3);
 

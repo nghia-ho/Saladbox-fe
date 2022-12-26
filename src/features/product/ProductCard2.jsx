@@ -110,7 +110,10 @@ const ProductCard2 = ({ product }) => {
               </Grid>
               {/* GRID ITEM */}
               <Grid item xs={12} sm={12} md={9} lg={9} xl={9}>
-                <Stack sx={{ px: 2, height: 1 }} justifyContent="space-around">
+                <Stack
+                  sx={{ px: { xs: 0, sm: 2 }, height: 1, mt: { xs: 2, sm: 0 } }}
+                  justifyContent="space-around"
+                >
                   <Box>
                     <Typography
                       variant="subtitle2"
@@ -142,7 +145,7 @@ const ProductCard2 = ({ product }) => {
                   </Stack>
                   <Grid container spacing={1}>
                     {product?.ingredients?.map((ingredient, index) => (
-                      <Grid key={index} item xs={1}>
+                      <Grid key={index} item xs={2} sm={2} lg={1}>
                         {ingredient.image && (
                           <Box sx={{ m: 0 }}>
                             <Box
@@ -166,7 +169,7 @@ const ProductCard2 = ({ product }) => {
                                 }
                                 alt={ingredient?._id}
                                 sx={{
-                                  width: 1 / 2,
+                                  width: { lg: 1 / 1.5, xs: 1 },
                                 }}
                               />
                             </Box>
@@ -179,7 +182,8 @@ const ProductCard2 = ({ product }) => {
                   <Box
                     sx={{
                       display: "flex",
-                      justifyContent: "start",
+                      justifyContent: { xs: "center", sm: "start" },
+                      mt: 1,
                     }}
                   >
                     <Button
