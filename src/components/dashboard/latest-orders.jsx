@@ -17,7 +17,7 @@ import { SeverityPill } from "../severity-pill";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 
-export const LatestOrders = ({ orders, sx }) => {
+export const LatestOrders = ({ orders, sx, ordersCustomList }) => {
   const navigate = useNavigate();
   return (
     <Card {...sx}>
@@ -34,7 +34,21 @@ export const LatestOrders = ({ orders, sx }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {orders.slice(0, 5).map((order) => (
+              {orders?.slice(0, 5).map((order) => (
+                <TableRow hover key={order._id}>
+                  <TableCell>{order._id}</TableCell>
+                  <TableCell>{order.user.name}</TableCell>
+                  <TableCell>{moment(order.createdAt).calendar()}</TableCell>
+                  <TableCell>
+                    <SeverityPill
+                      color={order.isDeliverd ? "primary" : "error"}
+                    >
+                      {order.isDeliverd ? "Success" : "Pending"}
+                    </SeverityPill>
+                  </TableCell>
+                </TableRow>
+              ))}
+              {ordersCustomList?.slice(0, 5).map((order) => (
                 <TableRow hover key={order._id}>
                   <TableCell>{order._id}</TableCell>
                   <TableCell>{order.user.name}</TableCell>

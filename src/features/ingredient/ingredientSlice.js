@@ -61,13 +61,26 @@ const ingredientSlice = createSlice({
         (ingredient) => ingredient._id !== action.payload._id
       );
     },
+
+    editIngredientSuccess: (state, action) => {
+      state.isLoading = false;
+      // console.log(action.payload);
+      const index = state.ingredients.findIndex(
+        (i) => i._id === action.payload._id
+      );
+      // console.log(index);
+      state.ingredients[index] = action.payload;
+    },
+    deleteIngredientSuccess: (state, action) => {
+      state.isLoading = false;
+      const index = state.ingredients.findIndex(
+        (i) => i._id === action.payload._id
+      );
+      state.ingredients[index] = action.payload;
+    },
     createIngredientSuccess: (state, action) => {
       state.isLoading = false;
       state.ingredients.unshift(action.payload);
-    },
-    editIngredientSuccess: (state, action) => {
-      state.isLoading = false;
-      state.ingredients = action.payload;
     },
   },
 });
@@ -124,7 +137,7 @@ export const createIngredient =
     dispatch(ingredientSlice.actions.startLoading());
     try {
       const data = { name, image, price, calo, type };
-      console.log(type);
+      // console.log(type);
       if (image instanceof File) {
         const imageUrl = await cloudinaryUpload(image);
         data.image = imageUrl;
@@ -139,7 +152,7 @@ export const createIngredient =
     }
   };
 export const editIngredient =
-  ({ id, name, image, price, calo, type, filterName, sort, limit, page }) =>
+  ({ id, name, image, price, calo, type }) =>
   async (dispatch) => {
     dispatch(ingredientSlice.actions.startLoading());
     try {
@@ -148,20 +161,23 @@ export const editIngredient =
         const imageUrl = await cloudinaryUpload(image);
         data.image = imageUrl;
       }
-      await apiService.put(`/ingredient/${id}`, data);
-      dispatch(getIngredients({ sort, name: filterName, limit, page }));
+      const response = await apiService.put(`/ingredient/${id}`, data);
+      dispatch(
+        ingredientSlice.actions.editIngredientSuccess(response.data.data)
+      );
     } catch (error) {
       dispatch(ingredientSlice.actions.hasError(error));
     }
   };
 export const deleteIngredient =
-  ({ id, sort, name, limit, page }) =>
+  ({ id }) =>
   async (dispatch) => {
     dispatch(ingredientSlice.actions.startLoading());
     try {
-      await apiService.delete(`/ingredient/${id}`);
-
-      dispatch(getIngredients({ sort, name, limit, page }));
+      const response = await apiService.delete(`/ingredient/${id}`);
+      dispatch(
+        ingredientSlice.actions.deleteIngredientSuccess(response.data.data)
+      );
     } catch (error) {
       dispatch(ingredientSlice.actions.hasError(error));
     }

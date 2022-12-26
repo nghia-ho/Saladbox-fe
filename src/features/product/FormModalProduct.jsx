@@ -5,7 +5,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Stack, Box, Modal } from "@mui/material";
+import { Stack, Box, Modal, Grid, Alert, TextField } from "@mui/material";
 import {
   FTextField,
   FormProvider,
@@ -25,9 +25,6 @@ const FormProductSchema = Yup.object().shape({
   name: Yup.string().required("Name of product is required"),
   decription: Yup.string().required("Decription is required"),
   category: Yup.string().required("Category is required"),
-  // ingredientStep1: Yup.array().min(1, "Ingredient should have at least one"),
-  // ingredientStep2: Yup.array().min(1, "Ingredient should have at least one"),
-  // ingredientStep3: Yup.array().min(1, "Ingredient should have at least one"),
 });
 
 function FormModalProduct({
@@ -38,16 +35,34 @@ function FormModalProduct({
   ingredients,
   isLoading,
   selectedItem,
+  errorMessage,
 }) {
   const [openCreateCate, setOpenCreateCate] = useState(false);
+  const [time, SetTime] = useState("");
+  const [name, setName] = useState("");
+
+  useEffect(() => {
+    if (errorMessage) {
+      SetTime(errorMessage);
+      setTimeout(() => {
+        SetTime("");
+      }, 3000);
+    }
+  }, [errorMessage]);
+
   const dispatch = useDispatch();
+
   const defaultValues = {
     name: "",
     decription: "",
-    category: "",
+    category: categories[0]?._id || "",
     image: "",
     ingredientStep1: mode === "edit" ? selectedItem.ingredientStep1 : [],
-    ingredientStep2: mode === "edit" ? selectedItem.ingredientStep2 : [],
+    ingredientStep2_5: mode === "edit" ? selectedItem.ingredientStep2_5 : [],
+    ingredientStep2_1: mode === "edit" ? selectedItem.ingredientStep2_1 : [],
+    ingredientStep2_2: mode === "edit" ? selectedItem.ingredientStep2_2 : [],
+    ingredientStep2_3: mode === "edit" ? selectedItem.ingredientStep2_3 : [],
+    ingredientStep2_4: mode === "edit" ? selectedItem.ingredientStep2_4 : [],
     ingredientStep3: mode === "edit" ? selectedItem.ingredientStep3 : [],
   };
   const methods = useForm({
@@ -59,51 +74,81 @@ function FormModalProduct({
     reset,
     setValue,
     formState: { isSubmitting },
+    setError,
   } = methods;
   const onSubmit = async (data) => {
-    const ingredients = [
-      ...data.ingredientStep1.map((e) => e._id),
-      ...data.ingredientStep2.map((e) => e._id),
-      ...data.ingredientStep3.map((e) => e._id),
-    ];
-    if (mode === "edit") {
-      dispatch(
-        editProduct({
-          id: data._id,
-          name: data.name,
-          ingredients: ingredients,
-          decription: data.decription,
-          image: data.image,
-          category: data.category,
-          price: data.price,
-          calo: data.calo,
-          type: data.type,
-        })
-      );
-      handleClose();
-    } else {
-      dispatch(
-        createProduct({
-          name: data.name,
-          decription: data.decription,
-          ingredients,
-          image: data.image,
-          category: data.category,
-          price: data.price,
-          calo: data.calo,
-          type: data.type,
-        })
-      );
-      handleClose();
+    try {
+      const ingredients = [
+        ...data.ingredientStep1.map((e) => e._id),
+        ...data.ingredientStep2_5.map((e) => e._id),
+        ...data.ingredientStep2_1.map((e) => e._id),
+        ...data.ingredientStep2_2.map((e) => e._id),
+        ...data.ingredientStep2_3.map((e) => e._id),
+        ...data.ingredientStep2_4.map((e) => e._id),
+        ...data.ingredientStep3.map((e) => e._id),
+      ];
+
+      if (mode === "edit") {
+        const product = await dispatch(
+          editProduct({
+            id: data._id,
+            name: data.name,
+            ingredients: ingredients,
+            decription: data.decription,
+            image: data.image,
+            category: data.category,
+            price: data.price,
+            calo: data.calo,
+            type: data.type,
+          })
+        );
+
+        if (product.payload) handleClose();
+      } else {
+        const product = await dispatch(
+          createProduct({
+            name: data.name,
+            decription: data.decription,
+            ingredients,
+            image: data.image,
+            category: data.category,
+            price: data.price,
+            calo: data.calo,
+            type: data.type,
+          })
+        );
+        if (product.payload.success) handleClose();
+      }
+    } catch (error) {
+      setError("responseError", error);
     }
   };
-  const onSubmitCreateCate = async (data) => {
-    dispatch(createCategory(data.newCategory));
-    setOpenCreateCate(false);
+
+  const handleChange = (event) => {
+    setName(event.target.value);
   };
-  const step1 = ingredients?.filter((e) => e.step === 1);
-  const step2 = ingredients?.filter((e) => e.step === 2);
-  const step3 = ingredients?.filter((e) => e.step === 3);
+
+  const onSubmitCreateCate = async () => {
+    const result = dispatch(createCategory(name));
+    if (result) setOpenCreateCate(false);
+  };
+  const step1 = ingredients?.filter((e) => e.step === 1 && !e.isDeleted);
+  const step2_1 = ingredients?.filter(
+    (i) => i.step === 2 && i.type === "Vegetable" && !i.isDeleted
+  );
+  const step2_2 = ingredients?.filter(
+    (i) => i.step === 2 && i.type === "Protein" && !i.isDeleted
+  );
+  const step2_3 = ingredients?.filter(
+    (i) => i.step === 2 && i.type === "Cheeze" && !i.isDeleted
+  );
+  const step2_4 = ingredients?.filter(
+    (i) => i.step === 2 && i.type === "Fruit" && !i.isDeleted
+  );
+  const step2_5 = ingredients?.filter(
+    (i) => i.step === 2 && i.type === "Cheeze" && !i.isDeleted
+  );
+  const step3 = ingredients?.filter((e) => e.step === 3 && !e.isDeleted);
 
   // reset defaultValue
   useEffect(() => {
@@ -128,7 +173,6 @@ function FormModalProduct({
     },
     [setValue]
   );
-
   return (
     <Dialog open={open} onClose={handleClose}>
       {/* modal create category */}
@@ -151,22 +195,25 @@ function FormModalProduct({
             p: 6,
           }}
         >
-          <FormProvider
-            methods={methods}
-            onSubmit={handleSubmit(onSubmitCreateCate)}
-          >
-            <FTextField name="newCategory" label="New Category Is: " />
-            <Button type="submit">Create</Button>
-          </FormProvider>
+          <TextField
+            id="outlined-name"
+            label="NEW CATEGORY"
+            value={name}
+            onChange={handleChange}
+          />
+          <Button type="submit" onClick={onSubmitCreateCate}>
+            Create
+          </Button>
         </Box>
       </Modal>
 
-      <Box sx={{ width: { md: 500, lg: 600 }, p: 2 }}>
+      <Box sx={{ width: 1, p: 2 }}>
         <DialogTitle sx={{ fontWeight: "600" }}>
           {mode === "create" ? "CREATE A NEW PRODUCT" : "EDIT PRODUCT"}
         </DialogTitle>
         <DialogContent>
           <Stack spacing={2}>
+            {time && <Alert severity="info">{time}</Alert>}
             <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
               <Stack spacing={1} my={1}>
                 <FUploadAvatar
@@ -196,44 +243,85 @@ function FormModalProduct({
                     Create new category
                   </Button>
                 </Stack>
-                {(selectedItem?.category === "637464ef3c08c345541890f2" ||
-                  mode === "create") && (
-                  <Stack direction="row">
-                    <FAutocomplete
-                      name={"ingredientStep1"}
-                      label={"Green"}
-                      options={step1}
-                      defaultValue={defaultValues.ingredientStep1}
-                      isOptionEqualToValue={(option, newValue) => {
-                        return option.name === newValue.name;
-                      }}
-                      getOptionLabel={(step1) => step1.name}
-                      width={1 / 3}
-                    />
-                    <FAutocomplete
-                      name={"ingredientStep2"}
-                      label={"Veggie & Topping"}
-                      options={step2}
-                      defaultValue={defaultValues.ingredientStep2}
-                      getOptionLabel={(step2) => step2.name}
-                      isOptionEqualToValue={(option, newValue) => {
-                        return option.name === newValue.name;
-                      }}
-                      width={1 / 3}
-                    />
-                    <FAutocomplete
-                      name={"ingredientStep3"}
-                      label={"Sauce"}
-                      options={step3}
-                      defaultValue={defaultValues.ingredientStep3}
-                      getOptionLabel={(step3) => step3.name}
-                      isOptionEqualToValue={(option, newValue) => {
-                        return option.name === newValue.name;
-                      }}
-                      width={1 / 3}
-                    />
-                  </Stack>
-                )}
+                <Grid container>
+                  <FAutocomplete
+                    name={"ingredientStep1"}
+                    label={"Green"}
+                    options={step1}
+                    defaultValue={defaultValues.ingredientStep1}
+                    isOptionEqualToValue={(option, newValue) => {
+                      return option.name === newValue.name;
+                    }}
+                    getOptionLabel={(step1) => step1.name}
+                    width={1 / 2}
+                  />
+                  <FAutocomplete
+                    name={"ingredientStep2_1"}
+                    label={"Vegetable"}
+                    options={step2_1}
+                    defaultValue={defaultValues.ingredientStep2_1}
+                    getOptionLabel={(step2_1) => step2_1.name}
+                    isOptionEqualToValue={(option, newValue) => {
+                      return option.name === newValue.name;
+                    }}
+                    width={1 / 2}
+                  />
+                  <FAutocomplete
+                    name={"ingredientStep2_2"}
+                    label={"Protein"}
+                    options={step2_2}
+                    defaultValue={defaultValues.ingredientStep2_2}
+                    getOptionLabel={(step2_2) => step2_2.name}
+                    isOptionEqualToValue={(option, newValue) => {
+                      return option.name === newValue.name;
+                    }}
+                    width={1 / 2}
+                  />
+                  <FAutocomplete
+                    name={"ingredientStep2_3"}
+                    label={"Cheeze"}
+                    options={step2_3}
+                    defaultValue={defaultValues.ingredientStep2_3}
+                    getOptionLabel={(step2_3) => step2_3.name}
+                    isOptionEqualToValue={(option, newValue) => {
+                      return option.name === newValue.name;
+                    }}
+                    width={1 / 2}
+                  />
+                  <FAutocomplete
+                    name={"ingredientStep2_4"}
+                    label={"Fruit"}
+                    options={step2_4}
+                    defaultValue={defaultValues.ingredientStep2_4}
+                    getOptionLabel={(step2_4) => step2_4.name}
+                    isOptionEqualToValue={(option, newValue) => {
+                      return option.name === newValue.name;
+                    }}
+                    width={1 / 2}
+                  />
+                  <FAutocomplete
+                    name={"ingredientStep2_5"}
+                    label={"Cheeze"}
+                    options={step2_5}
+                    defaultValue={defaultValues.ingredientStep2_5}
+                    getOptionLabel={(step2_5) => step2_5.name}
+                    isOptionEqualToValue={(option, newValue) => {
+                      return option.name === newValue.name;
+                    }}
+                    width={1 / 2}
+                  />
+                  <FAutocomplete
+                    name={"ingredientStep3"}
+                    label={"Sauce"}
+                    options={step3}
+                    defaultValue={defaultValues.ingredientStep3}
+                    getOptionLabel={(step3) => step3.name}
+                    isOptionEqualToValue={(option, newValue) => {
+                      return option.name === newValue.name;
+                    }}
+                    width={1 / 2}
+                  />
+                </Grid>
               </Stack>
 
               <DialogActions>

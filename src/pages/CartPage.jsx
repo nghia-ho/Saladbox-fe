@@ -27,6 +27,8 @@ import {
 } from "../features/cart/cartSlice";
 import { isString } from "lodash";
 
+import { BASE_URL } from "../app/config";
+
 function priceRow(qty, unit) {
   return qty * unit;
 }
@@ -95,7 +97,7 @@ function CartPage() {
                 </TableHead>
                 <TableBody>
                   {rows.map((row) => (
-                    <TableRow key={row.desc}>
+                    <TableRow key={row._id}>
                       <TableCell align="center">
                         <Stack direction="row">
                           <Box
@@ -116,7 +118,7 @@ function CartPage() {
                                   row?.image.includes("cloudinary")
                                     ? row?.image
                                     : row?.image
-                                    ? `http://localhost:8000${row?.image}`
+                                    ? `${BASE_URL}${row?.image}`
                                     : "/saladcustom.png"
                                 }
                                 alt={row.desc}

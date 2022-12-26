@@ -3,12 +3,11 @@ import React from "react";
 
 import Banner from "./Banner";
 
-const url1 =
-  "https://images.unsplash.com/photo-1561043433-aaf687c4cf04?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80";
-const url2 =
-  "https://plus.unsplash.com/premium_photo-1661507186274-da9111b2abb3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1469&q=80";
+const url1 = "/GreenHealthyFoodLoseWeight.png";
+
+const url2 = "/GreenHealthyIngredients.png";
 const url3 =
-  "https://images.unsplash.com/photo-1572449043416-55f4685c9bb7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80";
+  "https://img.freepik.com/free-photo/takeaway-vegan-poke-bowl-photography_53876-124222.jpg?w=1380&t=st=1672050741~exp=1672051341~hmac=b98d019bcc4f832e9ed627f2c3c73a20b43ed06f91f54514c0ff8a2bd1bfa36a";
 
 const MainBanner = () => {
   return (
@@ -17,7 +16,7 @@ const MainBanner = () => {
         <Grid item lg={6} md={6} sm={12} xs={12}>
           <Banner
             sxBackground={{
-              backgroundImage: `url(${url1})`,
+              backgroundImage: `url(${url2})`,
               backgroundColor: "#7fc7d9", // Average color of the background image.
               backgroundPosition: "center",
             }}
@@ -28,7 +27,7 @@ const MainBanner = () => {
             <Grid item sm={6} xs={6} md={12} lg={12}>
               <Banner
                 sxBackground={{
-                  backgroundImage: `url(${url2})`,
+                  backgroundImage: `url(${url3})`,
                   backgroundColor: "#7fc7d9", // Average color of the background image.
                   backgroundPosition: "center",
                 }}
@@ -38,7 +37,7 @@ const MainBanner = () => {
             <Grid item sm={6} xs={6} md={12} lg={12}>
               <Banner
                 sxBackground={{
-                  backgroundImage: `url(${url3})`,
+                  backgroundImage: `url(${url1})`,
                   backgroundColor: "#7fc7d9", // Average color of the background image.
                   backgroundPosition: "center",
                 }}

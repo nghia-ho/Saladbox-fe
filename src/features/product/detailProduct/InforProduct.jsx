@@ -13,6 +13,8 @@ import { isString } from "lodash";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCard } from "../../cart/cartSlice";
 
+import { BASE_URL } from "../../../app/config";
+
 const InforProduct = () => {
   const dispatch = useDispatch();
   const { product } = useSelector((state) => state.products);
@@ -35,7 +37,7 @@ const InforProduct = () => {
                   product?.image.includes("cloudinary")
                     ? product?.image
                     : product?.image
-                    ? `http://localhost:8000${product?.image}`
+                    ? `${BASE_URL}${product?.image}`
                     : "/saladcustom.png"
                 }
                 alt={product?.bame}

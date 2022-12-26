@@ -12,6 +12,8 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { addIngredientsCustom } from "./ingredientSlice";
 
+import { BASE_URL } from "../../app/config";
+
 const IngredientCard = ({ ingredient }) => {
   const dispatch = useDispatch();
 
@@ -22,12 +24,12 @@ const IngredientCard = ({ ingredient }) => {
           <CardActionArea>
             <CardMedia
               component="img"
-              // image={`http://localhost:8000${ingredient.image}`}
+              // image={`${BASE_URL}${ingredient.image}`}
               image={
                 isString(ingredient.image) &&
                 ingredient.image.includes("cloudinary")
                   ? ingredient.image
-                  : `http://localhost:8000${ingredient.image}`
+                  : `${BASE_URL}${ingredient.image}`
               }
               alt={ingredient.name}
             />

@@ -17,16 +17,26 @@ export const getProducts = createAsyncThunk(
     return response.data.data;
   }
 );
+export const getProductsByAdmin = createAsyncThunk(
+  "product/getProducts",
+  async ({ page = 1, limit = 12, name, price, sortBy, sort }) => {
+    const params = { page, limit };
+
+    if (name) params.name = name;
+    if (price) params.price = price;
+    if (sortBy) params.sortBy = sortBy;
+    if (sort) params.sort = sort;
+
+    const response = await apiService.get(`/product/admin`, { params });
+    return response.data.data;
+  }
+);
 export const getProductById = createAsyncThunk(
   "product/getProductById",
   async (id) => {
-    try {
-      let url = `/product/${id}`;
-      const response = await apiService.get(url);
-      return response.data.data;
-    } catch (error) {
-      console.log(error);
-    }
+    let url = `/product/${id}`;
+    const response = await apiService.get(url);
+    return response.data.data;
   }
 );
 
@@ -34,57 +44,41 @@ export const getfavoriteProduct = createAsyncThunk(
   "favorite/favorites",
   async ({ page, limit = 5 }) => {
     const params = { page, limit };
-    try {
-      const response = await apiService.get(`/favorite`, { params });
-      console.log(response);
-      return response.data.data;
-    } catch (error) {
-      console.log(error);
-    }
+
+    const response = await apiService.get(`/favorite`, { params });
+    return response.data.data;
   }
 );
 export const createfavoriteProduct = createAsyncThunk(
   "favorite/createFavorites",
   async ({ id, type }) => {
-    try {
-      let url = `/favorite`;
-      const response = await apiService.post(url, { productId: id, type });
-      return response.data.data;
-    } catch (error) {
-      console.log(error);
-    }
+    let url = `/favorite`;
+    const response = await apiService.post(url, { productId: id, type });
+    return response.data.data;
   }
 );
 export const removefavoriteProduct = createAsyncThunk(
   "favorite/createFavorites",
   async (id) => {
-    try {
-      let url = `/favorite/${id}`;
-      const response = await apiService.delete(url);
-      return response.data.data;
-    } catch (error) {
-      console.log(error);
-    }
+    let url = `/favorite/${id}`;
+    const response = await apiService.delete(url);
+    return response.data.data;
   }
 );
 export const customProduct = createAsyncThunk(
   "product/custom",
   async ({
-    name = "Salad Custom",
+    name,
     ingredients,
     price,
     calo,
     type = "custom",
     image = "/custom/custom.png",
   }) => {
-    try {
-      const data = { name, ingredients, price, calo, type, image };
-      let url = `/product/custom`;
-      const response = await apiService.post(url, data);
-      return response.data.data;
-    } catch (error) {
-      console.log(error);
-    }
+    const data = { name, ingredients, price, calo, type, image };
+    let url = `/product/custom`;
+    const response = await apiService.post(url, data);
+    return response.data.data;
   }
 );
 export const editProduct = createAsyncThunk(
@@ -100,34 +94,30 @@ export const editProduct = createAsyncThunk(
     type,
     ingredients,
   }) => {
-    try {
-      const data = {
-        name,
-        decription,
-        image,
-        category,
-        price,
-        calo,
-        type,
-        ingredients,
-      };
-      if (image instanceof File) {
-        const imageUrl = await cloudinaryUpload(image);
-        data.image = imageUrl;
-      }
-
-      let url = `/product/${id}`;
-      await apiService.put(url, data);
-      const response = await apiService.get(`/product?page=1`);
-      return response.data.data;
-    } catch (error) {
-      console.log(error);
+    const data = {
+      name,
+      decription,
+      image,
+      category,
+      price,
+      calo,
+      type,
+      ingredients,
+    };
+    if (image instanceof File) {
+      const imageUrl = await cloudinaryUpload(image);
+      data.image = imageUrl;
     }
+    const response = await apiService.put(`/product/${id}`, data);
+    return response.data.data;
   }
 );
 export const createProduct = createAsyncThunk(
   "product/create",
-  async ({ name, decription, image, category, type, ingredients }) => {
+  async (
+    { name, decription, image, category, type, ingredients },
+    { rejectWithValue }
+  ) => {
     try {
       const data = { name, decription, image, category, type, ingredients };
       if (image instanceof File) {
@@ -135,28 +125,18 @@ export const createProduct = createAsyncThunk(
         data.image = imageUrl;
       }
       const response = await apiService.post(`/product`, data);
-      return response.data.data;
+      return response.data;
     } catch (error) {
-      console.log(error);
+      rejectWithValue(error);
+      return error;
     }
   }
 );
 export const deleteProduct = createAsyncThunk(
   "product/delete",
-  async ({ id, page, limit, name, sort }) => {
-    try {
-      await apiService.delete(`/product/${id}`);
-
-      const params = { page, limit };
-
-      if (name) params.name = name;
-      if (sort) params.sort = sort;
-
-      const response = await apiService.get(`/product`, { params });
-      return response.data.data;
-    } catch (error) {
-      console.log(error);
-    }
+  async ({ id }) => {
+    const response = await apiService.delete(`/product/${id}`);
+    return response.data.data;
   }
 );
 
@@ -199,6 +179,24 @@ const productSlice = createSlice({
         state.errorMessage = action.error.message;
       }
     },
+    [getProductsByAdmin.pending]: (state, action) => {
+      state.isLoading = true;
+      state.errorMessage = "";
+    },
+    [getProductsByAdmin.fulfilled]: (state, action) => {
+      state.isLoading = false;
+      state.products = action.payload.product;
+      state.totalPage = action.payload.totalPage;
+      state.count = action.payload.count;
+    },
+    [getProductsByAdmin.rejected]: (state, action) => {
+      state.isLoading = false;
+      if (action.payload) {
+        state.errorMessage = action.payload.message;
+      } else {
+        state.errorMessage = action.error.message;
+      }
+    },
     [getProductById.pending]: (state, action) => {
       state.isLoading = true;
       state.errorMessage = "";
@@ -217,15 +215,15 @@ const productSlice = createSlice({
     },
 
     [getfavoriteProduct.pending]: (state, action) => {
-      state.isLoading = true;
+      // state.isLoading = true;
       state.errorMessage = "";
     },
     [getfavoriteProduct.fulfilled]: (state, action) => {
-      state.isLoading = false;
+      // state.isLoading = false;
       state.favorite = action.payload;
     },
     [getfavoriteProduct.rejected]: (state, action) => {
-      state.isLoading = false;
+      // state.isLoading = false;
       if (action.payload) {
         state.errorMessage = action.payload.message;
       } else {
@@ -233,7 +231,7 @@ const productSlice = createSlice({
       }
     },
     [createfavoriteProduct.pending]: (state, action) => {
-      state.isLoading = true;
+      // state.isLoading = true;
       state.errorMessage = "";
     },
     [createfavoriteProduct.fulfilled]: (state, action) => {
@@ -242,14 +240,15 @@ const productSlice = createSlice({
     },
     [createfavoriteProduct.rejected]: (state, action) => {
       state.isLoading = false;
+
       if (action.payload) {
-        state.errorMessage = action.payload.message;
+        state.errorMessage = action.payload;
       } else {
         state.errorMessage = action.error.message;
       }
     },
     [removefavoriteProduct.pending]: (state, action) => {
-      state.isLoading = true;
+      // state.isLoading = true;
       state.errorMessage = "";
     },
     [removefavoriteProduct.fulfilled]: (state, action) => {
@@ -286,8 +285,10 @@ const productSlice = createSlice({
     },
     [editProduct.fulfilled]: (state, action) => {
       state.isLoading = false;
-      // state.product = action.payload;
-      state.products = action.payload.product;
+      const index = state.products.findIndex(
+        (e) => e._id === action.payload._id
+      );
+      state.products[index] = action.payload;
     },
     [editProduct.rejected]: (state, action) => {
       state.isLoading = false;
@@ -303,13 +304,19 @@ const productSlice = createSlice({
     },
     [createProduct.fulfilled]: (state, action) => {
       state.isLoading = false;
-      state.product = action.payload;
-      state.products.unshift(action.payload);
+
+      state.errorMessage = action.payload.messagge;
+
+      state.product = action.payload.data;
+      if (action.payload.data) {
+        state.products.unshift(action.payload.data);
+        state.errorMessage = null;
+      }
     },
     [createProduct.rejected]: (state, action) => {
       state.isLoading = false;
       if (action.payload) {
-        state.errorMessage = action.payload.message;
+        state.errorMessage = action.payload;
       } else {
         state.errorMessage = action.error.message;
       }
@@ -320,8 +327,11 @@ const productSlice = createSlice({
     },
     [deleteProduct.fulfilled]: (state, action) => {
       state.isLoading = false;
-      state.products = action.payload.product;
       state.totalPage = action.payload.totalPage;
+      const index = state.products.findIndex(
+        (e) => e._id === action.payload._id
+      );
+      state.products[index] = action.payload;
     },
     [deleteProduct.rejected]: (state, action) => {
       state.isLoading = false;

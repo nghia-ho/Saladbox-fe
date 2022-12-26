@@ -7,6 +7,7 @@ import {
   Divider,
   Grid,
   IconButton,
+  LinearProgress,
   Modal,
   Stack,
   Typography,
@@ -34,7 +35,9 @@ function CategoryPage() {
     dispatch(getCategory());
   }, [dispatch]);
 
-  const { categories, isLoading } = useSelector((state) => state.category);
+  const { categories, isLoading, error } = useSelector(
+    (state) => state.category
+  );
 
   const handleClickEdit = (cate) => {
     setOpen(true);
@@ -54,7 +57,6 @@ function CategoryPage() {
   const handleClose = () => {
     setOpen(false);
   };
-
   return (
     <Container maxWidth="lg">
       <ModalCate
@@ -62,6 +64,7 @@ function CategoryPage() {
         cateSelected={cateSelected}
         open={open}
         mode={mode}
+        error={error?.messagge}
         isLoading={isLoading}
       />
       <Modal open={openModalDelete} onClose={() => setopenModalDelete(false)}>
@@ -80,15 +83,18 @@ function CategoryPage() {
         >
           <Stack>
             <Typography variant="h6" fontWeight="600">
-              Delete?
+              {!cateSelected?.isDeleted ? "Delete?" : "Undo?"}
             </Typography>
             <Typography sx={{ mt: 2 }}>
-              This cannot be undone and it will be deleted
+              {!cateSelected?.isDeleted
+                ? "This cannot be undone and it will be deleted?"
+                : ""}
             </Typography>
             <Stack direction="row" justifyContent="end">
               <Button onClick={() => setopenModalDelete(false)}>Cancel</Button>
+
               <Button onClick={handleClickDelete} variant="contained">
-                Delete
+                {!cateSelected?.isDeleted ? "Delete" : "Undo"}
               </Button>
             </Stack>
           </Stack>
@@ -104,13 +110,14 @@ function CategoryPage() {
         <Typography fontWeight="600" variant="h5">
           Category | SaladBox
         </Typography>
+
         <Button
           variant="contained"
           color="success"
           startIcon={<AddIcon />}
           onClick={handleClickCreate}
         >
-          New Product
+          New Category
         </Button>
       </Stack>
 
@@ -122,6 +129,11 @@ function CategoryPage() {
           minHeight: 500,
         }}
       >
+        {isLoading && (
+          <Box sx={{ width: 1, px: 1 }}>
+            <LinearProgress color="success" />
+          </Box>
+        )}
         <Box
           component="main"
           sx={{
@@ -164,15 +176,26 @@ function CategoryPage() {
                         justifyContent="space-between"
                         alignItems="center"
                       >
-                        <Typography variant="caption">5 Products</Typography>
-                        <IconButton
-                          onClick={() => {
-                            setCateSelected(e);
-                            setopenModalDelete(true);
-                          }}
-                        >
-                          <HighlightOffIcon fontSize="small" color="error" />
-                        </IconButton>
+                        <Typography variant="caption"></Typography>
+                        {!e.isDeleted ? (
+                          <IconButton
+                            onClick={() => {
+                              setCateSelected(e);
+                              setopenModalDelete(true);
+                            }}
+                          >
+                            <HighlightOffIcon fontSize="small" color="error" />
+                          </IconButton>
+                        ) : (
+                          <Button
+                            onClick={() => {
+                              setCateSelected(e);
+                              setopenModalDelete(true);
+                            }}
+                          >
+                            undo
+                          </Button>
+                        )}
                       </Stack>
 
                       <Divider sx={{ mt: 1 }} />

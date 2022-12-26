@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Box, Chip, Divider, Grid, Stack, Typography } from "@mui/material";
+import { Box, Chip, Grid, Stack, Typography } from "@mui/material";
 import React from "react";
 import PersonIcon from "@mui/icons-material/Person";
 import PlaceIcon from "@mui/icons-material/Place";

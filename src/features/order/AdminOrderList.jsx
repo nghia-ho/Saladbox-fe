@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 //mui
 import {
@@ -7,20 +8,18 @@ import {
   TableContainer,
   Table,
   TableHead,
+  Box,
+  LinearProgress,
 } from "@mui/material";
-
-import { useDispatch, useSelector } from "react-redux";
-// framework
 
 //component
 import DeleteModal from "../../components/DeleteModal";
 import PopoverMenu from "../../components/Popover";
-
-// feature
-import { getOrders } from "../../features/order/orderSlice";
 import HeadTable from "../../components/HeadTable";
-import BodyTable from "./BodyTable";
 import TablePaginations from "../../components/TablePaginations";
+import BodyTable from "./BodyTable";
+
+import { getOrders } from "../../features/order/orderSlice";
 
 const TABLE_HEAD = [
   { id: "_id", label: "Order ID" },
@@ -29,6 +28,7 @@ const TABLE_HEAD = [
   { id: "isPaid", label: "Payment" },
   { id: "totalPrice", label: "Total" },
   { id: "isDeliverd", label: "Status" },
+  { id: "payment method", label: "Payment Method" },
   { id: "more", label: "More" },
 ];
 
@@ -46,12 +46,6 @@ function AdminOrderList({ filterName, type }) {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
 
-  // Close modal edit
-  // const handleCloseEdit = () => {
-  //   setOpenModal(false);
-  //   setRoute(null);
-  // };
-  // Close modal form confirm delete
   const handleCloseDelete = () => {
     setopenModalDelete(false);
     setRoute(null);
@@ -69,7 +63,7 @@ function AdminOrderList({ filterName, type }) {
     );
   }, [dispatch, filterName, orderBy, order, page, rowsPerPage]);
 
-  const { ordersList, count } = useSelector((state) => state.order);
+  const { ordersList, count, isLoading } = useSelector((state) => state.order);
 
   // Open menu popover edit & delete
   const handleOpenPopover = (event, value) => {
@@ -106,6 +100,11 @@ function AdminOrderList({ filterName, type }) {
             borderRadius: 1,
           }}
         >
+          {isLoading && (
+            <Box sx={{ width: 1 }}>
+              <LinearProgress color="success" />
+            </Box>
+          )}
           <Table>
             <TableHead>
               <HeadTable

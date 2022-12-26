@@ -25,7 +25,6 @@ function ModalEditInfo({ open, handleClose, order }) {
     address: order?.shippingAddress.address || "",
     district: order?.shippingAddress.district || "",
   };
-
   const methods = useForm({
     defaultValues,
   });
@@ -50,8 +49,8 @@ function ModalEditInfo({ open, handleClose, order }) {
           district: data.district,
         })
       );
+      handleClose();
     }
-    handleClose();
   };
 
   useEffect(() => {

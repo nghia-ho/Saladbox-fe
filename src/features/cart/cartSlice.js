@@ -109,7 +109,7 @@ export const getCart = () => async (dispatch) => {
 
 export const subtractToCart = (product) => async (dispatch) => {
   dispatch(cartSlice.actions.startLoading());
-  console.log(product);
+  // console.log(product);
   try {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
 

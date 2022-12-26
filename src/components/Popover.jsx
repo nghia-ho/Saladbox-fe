@@ -14,7 +14,6 @@ function PopoverMenu({
   type,
 }) {
   const navigate = useNavigate();
-
   const handleEdit = () => {
     if (route === "order") {
       navigate(`/orders/${selectedItem._id}`, { state: type });
@@ -27,7 +26,6 @@ function PopoverMenu({
     setopenModalDelete(true);
     setOpenPopover(null);
   };
-
   return (
     <Popover
       open={Boolean(openPopover)}
@@ -55,13 +53,16 @@ function PopoverMenu({
         </IconButton>
         Edit
       </MenuItem>
-
-      <MenuItem onClick={handleDelete}>
-        <IconButton>
-          <DeleteIcon />
-        </IconButton>
-        Delete
-      </MenuItem>
+      {!selectedItem?.isDeliverd && !selectedItem?.isDeleted ? (
+        <MenuItem onClick={handleDelete}>
+          <IconButton>
+            <DeleteIcon />
+          </IconButton>
+          Delete
+        </MenuItem>
+      ) : (
+        <></>
+      )}
     </Popover>
   );
 }

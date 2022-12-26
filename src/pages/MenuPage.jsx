@@ -19,6 +19,8 @@ import ProductFilter from "../features/product/ProductFilter";
 import useAuth from "../hooks/useAuth";
 import ProductView from "../features/product/ProductView";
 import Pagination from "../components/Panigation";
+import LoadingScreen from "../components/LoadingScreen";
+
 import { useLocation } from "react-router-dom";
 
 const MenuPage = () => {
@@ -47,7 +49,7 @@ const MenuPage = () => {
 
   const dispatch = useDispatch();
   const { user } = useAuth();
-  const { totalPage } = useSelector((state) => state.products);
+  const { totalPage, isLoading } = useSelector((state) => state.products);
   useEffect(() => {
     dispatch(
       getProducts({
@@ -154,8 +156,13 @@ const MenuPage = () => {
               </Paper>
             </Stack>
           </Grid>
-          <Grid item xs={12} md={10} sx={{ position: "relative" }}>
-            <ProductList view={view} />
+          <Grid
+            item
+            xs={12}
+            md={10}
+            sx={{ position: "relative", mt: { xs: 0, md: 3 } }}
+          >
+            {isLoading ? <LoadingScreen /> : <ProductList view={view} />}
             <Stack alignItems="center" justifyContent="end">
               <Pagination count={totalPage} page={page} setPage={setPage} />
             </Stack>

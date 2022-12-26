@@ -1,7 +1,6 @@
 import React from "react";
 import { Box } from "@mui/system";
-import LoadingScreen from "../../components/LoadingScreen";
-import { Button, IconButton, Typography } from "@mui/material";
+import { Button, IconButton, LinearProgress, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -83,10 +82,8 @@ function Order({ isLoading, ordersList }) {
     dispatch(getSingleOrder(order.orderId));
     navigate(`/order/${order.orderId}`);
   };
-  console.log(rows);
   return (
     <Box sx={{ width: 1 }}>
-      {isLoading && <LoadingScreen />}
       {(ordersList.length === 0 || !ordersList) && (
         <Box sx={{ maxWidth: 480, margin: "auto", textAlign: "center", mb: 3 }}>
           <Typography variant="h4" paragraph>
@@ -98,6 +95,11 @@ function Order({ isLoading, ordersList }) {
         </Box>
       )}
       <TableContainer component={Paper}>
+        {isLoading && (
+          <Box sx={{ width: 1 }}>
+            <LinearProgress />
+          </Box>
+        )}
         <Table
           sx={{ minWidth: { xs: 10, sm: 600, md: 700 } }}
           aria-label="customized table"
@@ -115,6 +117,7 @@ function Order({ isLoading, ordersList }) {
               <StyledTableCell align="center">Cancel</StyledTableCell>
             </TableRow>
           </TableHead>
+
           <TableBody>
             {rows.map((row) => (
               <StyledTableRow key={row.orderId}>

@@ -14,8 +14,9 @@ import CartPage from "../pages/CartPage";
 import ShippingAddress from "../pages/ShippingAddress";
 import Payment from "../pages/Payment";
 import PlaceOrder from "../pages/PlaceOrder";
-import OrderPage from "../pages/OrderPage";
+import OrderPageDetail from "../pages/OrderPageDetail";
 import CustomMealPage from "../pages/CustomMealPage";
+import OrderPage from "../pages/OrderPage";
 
 //admin page and layout
 import MainLayoutAdmin from "../layouts/MainLayoutAdmin";
@@ -26,7 +27,6 @@ import IngredientPage from "../pages/admin-pages/IngredientPage";
 import OrderDeTailPage from "../pages/admin-pages/OrderDetailPage";
 import CustomMealsPage from "../pages/CustomMealsPage";
 import CartPageCustom from "../pages/CartPageCustom";
-import OrderList from "../features/order/OrderList";
 import CategoryPage from "../pages/admin-pages/CategoryPage";
 
 const Router = () => {
@@ -42,7 +42,8 @@ const Router = () => {
         <Route path="custom" element={<CustomMealPage />} />
         <Route path="weeklymealplan" element={<CustomMealsPage />} />
       </Route>
-      {/* // protect route for user*/}
+
+      {/* // Protect route User*/}
       <Route
         path="/"
         element={
@@ -52,15 +53,14 @@ const Router = () => {
         }
       >
         <Route path="account" element={<AccountPage />} />
-        <Route path="order" element={<OrderList />} />
+        <Route path="order" element={<OrderPage />} />
         <Route path="shipping" element={<ShippingAddress />} />
         <Route path="payment" element={<Payment />} />
         <Route path="placeorder" element={<PlaceOrder />} />
-        <Route path="order/:id" element={<OrderPage />} />
-        <Route path="order/" element={<OrderList />} />
+        <Route path="order/:id" element={<OrderPageDetail />} />
       </Route>
-      {/* // protect route for admin*/}
 
+      {/* // Protect route Admin*/}
       <Route
         path="/"
         element={

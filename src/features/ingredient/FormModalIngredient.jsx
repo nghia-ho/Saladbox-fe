@@ -32,15 +32,10 @@ function FormModalIngredient({
   mode,
   type,
   selectedProduct,
-  page,
-  rowsPerPage,
-  filterName,
-  order,
-  orderBy,
 }) {
   const dispatch = useDispatch();
   const defaultValues = {
-    type: "",
+    type: "Cheeze",
     name: "",
     image: "",
     price: "",
@@ -63,10 +58,6 @@ function FormModalIngredient({
           price: data.price,
           calo: data.calo,
           type: data.type,
-          filterName: filterName,
-          sort: { orderBy, order },
-          page: page + 1,
-          limit: rowsPerPage,
         })
       );
     } else {
@@ -80,7 +71,7 @@ function FormModalIngredient({
         })
       );
     }
-    console.log(data);
+    // console.log(data);
     handleClose(false);
   };
 

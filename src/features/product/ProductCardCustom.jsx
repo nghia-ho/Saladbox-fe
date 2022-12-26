@@ -11,7 +11,9 @@ import {
 import { Stack } from "@mui/system";
 import { isString } from "lodash";
 import React from "react";
-import { useNavigate } from "react-router-dom";
+
+import { BASE_URL } from "../../app/config";
+
 const ProductCardCustom = ({ product, handleAdd }) => {
   return (
     <>
@@ -32,7 +34,7 @@ const ProductCardCustom = ({ product, handleAdd }) => {
                   product?.image.includes("cloudinary")
                     ? product?.image
                     : product?.image
-                    ? `http://localhost:8000${product?.image}`
+                    ? `${BASE_URL}${product?.image}`
                     : "/saladcustom.png"
                 }
                 alt={product?.name}

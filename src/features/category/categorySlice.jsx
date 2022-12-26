@@ -47,7 +47,9 @@ export const createCategory = (name) => async (dispatch) => {
   dispatch(categorySlice.actions.startLoading());
   try {
     const response = await apiService.post("/category", { name });
+
     dispatch(categorySlice.actions.createCategorySuccess(response.data.data));
+    return response.data.data;
   } catch (error) {
     dispatch(categorySlice.actions.hasError(error));
   }
@@ -57,8 +59,9 @@ export const editCategory =
   async (dispatch) => {
     dispatch(categorySlice.actions.startLoading());
     try {
-      await apiService.put(`/category/${id}`, { name });
+      const response = await apiService.put(`/category/${id}`, { name });
       dispatch(getCategory());
+      return response.data.data;
     } catch (error) {
       dispatch(categorySlice.actions.hasError(error));
     }

@@ -11,11 +11,6 @@ function DeleteModal({
   openModalDelete,
   handleCloseDelete,
   route,
-  page,
-  rowsPerPage,
-  orderBy,
-  order,
-  name,
 }) {
   const dispatch = useDispatch();
   const handleDelete = () => {
@@ -25,10 +20,6 @@ function DeleteModal({
       dispatch(
         deleteProduct({
           id: selectedItem?._id,
-          sort: { orderBy, order },
-          name,
-          limit: rowsPerPage,
-          page: page + 1,
         })
       );
 
@@ -36,10 +27,6 @@ function DeleteModal({
       dispatch(
         deleteIngredient({
           id: selectedItem?._id,
-          sort: { orderBy, order },
-          name,
-          limit: rowsPerPage,
-          page: page + 1,
         })
       );
 

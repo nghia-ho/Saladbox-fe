@@ -18,6 +18,8 @@ import { CardMedia } from "@mui/material";
 import { useSelector } from "react-redux";
 import { isString } from "lodash";
 
+import { BASE_URL } from "../app/config";
+
 function priceRow(qty, unit) {
   return qty * unit;
 }
@@ -107,7 +109,7 @@ function CartPageCustom() {
                                 row?.image.includes("cloudinary")
                                   ? row?.image
                                   : row?.image
-                                  ? `http://localhost:8000${row?.image}`
+                                  ? `${BASE_URL}${row?.image}`
                                   : "/saladcustom.png"
                               }
                               alt={row.desc}

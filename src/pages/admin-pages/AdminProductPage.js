@@ -10,12 +10,13 @@ import {
   TableHead,
   Box,
   Divider,
+  LinearProgress,
 } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
 
 import { useDispatch, useSelector } from "react-redux";
-import { getProducts } from "../../features/product/productSlice";
+import { getProductsByAdmin } from "../../features/product/productSlice";
 import FormModalProduct from "../../features/product/FormModalProduct";
 import { getCategory } from "../../features/category/categorySlice";
 import { getIngredients } from "../../features/ingredient/ingredientSlice";
@@ -69,10 +70,6 @@ function AdminProductPage() {
     setOpenModal(false);
   };
 
-  // const handleClickDelete = () => {
-  //   setOpenPopover(null);
-  //   setopenModalDelete(true);
-  // };
   const handleCloseDelete = () => {
     setopenModalDelete(false);
   };
@@ -80,7 +77,7 @@ function AdminProductPage() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(
-      getProducts({
+      getProductsByAdmin({
         name: filterName,
         sort: { orderBy, order },
         page: page + 1,
@@ -91,18 +88,40 @@ function AdminProductPage() {
     dispatch(getIngredients({ limit: 1000 }));
   }, [filterName, page, dispatch, orderBy, order, rowsPerPage]);
 
-  const { products, count, isLoading } = useSelector((state) => state.products);
+  const { products, count, isLoading, errorMessage } = useSelector(
+    (state) => state.products
+  );
   const categories = useSelector((state) => state.category.categories);
   const ingredients = useSelector((state) => state.ingredient.ingredients);
   const handleOpenPopover = (event, value) => {
     setOpenPopover(event.currentTarget);
+
     let step1 = value.ingredients.filter((i) => i.step === 1);
-    let step2 = value.ingredients.filter((i) => i.step === 2);
+    let step2_1 = value.ingredients.filter(
+      (i) => i.step === 2 && i.type === "Vegetable"
+    );
+    let step2_2 = value.ingredients.filter(
+      (i) => i.step === 2 && i.type === "Protein"
+    );
+    let step2_3 = value.ingredients.filter(
+      (i) => i.step === 2 && i.type === "Cheeze"
+    );
+    let step2_4 = value.ingredients.filter(
+      (i) => i.step === 2 && i.type === "Fruit"
+    );
+    let step2_5 = value.ingredients.filter(
+      (i) => i.step === 2 && i.type === "Cheeze"
+    );
     let step3 = value.ingredients.filter((i) => i.step === 3);
 
     const newValue = { ...value };
+
     newValue.ingredientStep1 = step1;
-    newValue.ingredientStep2 = step2;
+    newValue.ingredientStep2_1 = step2_1;
+    newValue.ingredientStep2_2 = step2_2;
+    newValue.ingredientStep2_3 = step2_3;
+    newValue.ingredientStep2_4 = step2_4;
+    newValue.ingredientStep2_5 = step2_5;
     newValue.ingredientStep3 = step3;
 
     setSelectedItem(newValue);
@@ -117,8 +136,6 @@ function AdminProductPage() {
     setPage(0);
     setRowsPerPage(parseInt(event.target.value, 10));
   };
-
-  //--------------------------------------------------------------
 
   const defaultValues = {
     nameQuery: filterName,
@@ -145,26 +162,24 @@ function AdminProductPage() {
   };
   return (
     <Container maxWidth="lg">
-      <FormModalProduct
-        open={openModal}
-        handleClose={handleClose}
-        categories={newCategory}
-        ingredients={ingredients}
-        selectedItem={newSelectedItem}
-        mode={mode}
-        isLoading={isLoading}
-      />
-      <DeleteModal
-        selectedItem={selectedItem}
-        openModalDelete={openModalDelete}
-        handleCloseDelete={handleCloseDelete}
-        route={route}
-        page={page}
-        rowsPerPage={rowsPerPage}
-        name={filterName}
-        orderBy={orderBy}
-        order={order}
-      />
+      <Box sx={{ width: 1 }}>
+        <FormModalProduct
+          errorMessage={errorMessage}
+          open={openModal}
+          handleClose={handleClose}
+          categories={newCategory}
+          ingredients={ingredients}
+          selectedItem={newSelectedItem}
+          mode={mode}
+          isLoading={isLoading}
+        />
+        <DeleteModal
+          selectedItem={selectedItem}
+          openModalDelete={openModalDelete}
+          handleCloseDelete={handleCloseDelete}
+          route={route}
+        />
+      </Box>
 
       <Typography variant="h5" gutterBottom fontWeight={600}>
         Product
@@ -194,6 +209,11 @@ function AdminProductPage() {
         <Container maxWidth="lg">
           <Card sx={{ boxShadow: "none" }}>
             <TableContainer sx={{ width: 1, borderRadius: 1, pb: 3 }}>
+              {isLoading && (
+                <Box sx={{ width: 1 }}>
+                  <LinearProgress color="success" />
+                </Box>
+              )}
               <Table>
                 <TableHead>
                   <HeadTable

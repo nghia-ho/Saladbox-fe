@@ -21,6 +21,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import useAuth from "../../hooks/useAuth";
 import { addToCard } from "../cart/cartSlice";
 import { isString } from "lodash";
+import { BASE_URL } from "../../app/config";
 
 const ProductCard2 = ({ product }) => {
   const [count, setCount] = useState(0);
@@ -52,10 +53,11 @@ const ProductCard2 = ({ product }) => {
     <Paper variant="elevation" elevation={2}>
       <Card>
         <Box sx={{ p: 2 }}>
-          {/* GRID TONG */}
+          {/* GRID  */}
           <Grid container>
             <Stack
               sx={{
+                width: 1,
                 display: {
                   xs: "block",
                   sm: "flex",
@@ -66,7 +68,7 @@ const ProductCard2 = ({ product }) => {
               }}
               direction="row"
             >
-              {/* GRID ITEM OF TONG */}
+              {/* GRID ITEM */}
               <Grid item xs={12} sm={9} md={3} lg={3} xl={3}>
                 <Stack
                   direction="row"
@@ -86,11 +88,11 @@ const ProductCard2 = ({ product }) => {
                     sx={{ display: "flex" }}
                   >
                     <CardMedia
-                      sx={{ borderRadius: 1, width: 1, height: 1 }}
+                      sx={{ borderRadius: 1, width: 1 }}
                       component="img"
                       // image={
                       //   product?.image.length
-                      //     ? `http://localhost:8000${product?.image}`
+                      //     ? `${BASE_URL}${product?.image}`
                       //     : "/saladcustom.png"
                       // }
                       image={
@@ -98,15 +100,15 @@ const ProductCard2 = ({ product }) => {
                         product?.image.includes("cloudinary")
                           ? product?.image
                           : product?.image
-                          ? `http://localhost:8000${product?.image}`
-                          : "/salads/1.png"
+                          ? `${BASE_URL}${product?.image}`
+                          : `${BASE_URL}/salads/1.png`
                       }
                       alt={product?.name}
                     />
                   </CardActionArea>
                 </Stack>
               </Grid>
-              {/* GRID ITEM OF TONG */}
+              {/* GRID ITEM */}
               <Grid item xs={12} sm={12} md={9} lg={9} xl={9}>
                 <Stack sx={{ px: 2, height: 1 }} justifyContent="space-around">
                   <Box>
@@ -155,12 +157,12 @@ const ProductCard2 = ({ product }) => {
                             >
                               <Box
                                 component="img"
-                                // src={`http://localhost:8000${ingredient.image}`}
+                                // src={`${BASE_URL}${ingredient.image}`}
                                 src={
                                   isString(ingredient?.image) &&
                                   ingredient?.image.includes("cloudinary")
                                     ? ingredient?.image
-                                    : `http://localhost:8000${ingredient?.image}`
+                                    : `${BASE_URL}${ingredient?.image}`
                                 }
                                 alt={ingredient?._id}
                                 sx={{

@@ -10,6 +10,7 @@ import {
   TableHead,
   Box,
   Divider,
+  LinearProgress,
 } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
@@ -55,21 +56,19 @@ function IngredientPage() {
   const handleClickEdit = () => {
     setOpenModal(true);
     setMode("edit");
+    setOpenPopover(false);
   };
 
   const handleClickCreate = () => {
     setOpenModal(true);
     setMode("create");
+    setOpenPopover(false);
   };
 
   const handleClose = () => {
     setOpenModal(false);
   };
 
-  // const handleClickDelete = () => {
-  //   setOpenPopover(null);
-  //   setopenModalDelete(true);
-  // };
   const handleCloseDelete = () => {
     setopenModalDelete(false);
   };
@@ -87,7 +86,9 @@ function IngredientPage() {
     );
   }, [filterName, page, dispatch, orderBy, order, rowsPerPage]);
 
-  const { ingredients, count, type } = useSelector((state) => state.ingredient);
+  const { ingredients, count, type, isLoading } = useSelector(
+    (state) => state.ingredient
+  );
 
   const handleOpenPopover = (event, value) => {
     setOpenPopover(event.currentTarget);
@@ -123,22 +124,12 @@ function IngredientPage() {
         selectedProduct={selectedItem}
         setSelectedItem={setSelectedItem}
         type={type}
-        page={page}
-        rowsPerPage={rowsPerPage}
-        filterName={filterName}
-        order={order}
-        orderBy={orderBy}
       />
       <DeleteModal
         selectedItem={selectedItem}
         openModalDelete={openModalDelete}
         route={route}
         handleCloseDelete={handleCloseDelete}
-        page={page}
-        rowsPerPage={rowsPerPage}
-        name={filterName}
-        orderBy={orderBy}
-        order={order}
       />
 
       <Typography variant="h5" gutterBottom fontWeight={600}>
@@ -174,6 +165,11 @@ function IngredientPage() {
         <Container maxWidth="lg">
           <Card sx={{ boxShadow: "none" }}>
             <TableContainer sx={{ width: 1, borderRadius: 1, pb: 3 }}>
+              {isLoading && (
+                <Box sx={{ width: 1 }}>
+                  <LinearProgress color="success" />
+                </Box>
+              )}
               <Table>
                 <TableHead>
                   <HeadTable

@@ -3,6 +3,8 @@ import { isString } from "lodash";
 import React from "react";
 import "../detailProduct/index.css";
 
+import { BASE_URL } from "../../../app/config";
+
 function InfoIngredient({ product }) {
   return (
     <Card sx={{ p: 1 }}>
@@ -44,7 +46,7 @@ function InfoIngredient({ product }) {
                       isString(ingredient.image) &&
                       ingredient.image.includes("cloudinary")
                         ? ingredient.image
-                        : `http://localhost:8000${ingredient.image}`
+                        : `${BASE_URL}${ingredient.image}`
                     }
                     alt={ingredient?._id}
                     sx={{

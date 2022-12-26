@@ -45,7 +45,6 @@ const CategoryList = ({ selectValue, setSelectValue, setPage }) => {
       },
     },
   }));
-
   return (
     <Box sx={{ mt: 3, mr: 1, width: 1 }}>
       <Paper elevation={2} sx={{ p: 1 }}>
@@ -66,26 +65,28 @@ const CategoryList = ({ selectValue, setSelectValue, setPage }) => {
             p: 1,
           }}
         >
-          {categories.map((e) => (
-            <ToggleButton
-              key={e._id}
-              sx={{
-                my: 0.4,
-                p: 1,
-                color: "success.darker",
-                width: 1,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "start",
-              }}
-              value={e._id}
-              aria-label={e.name}
-              onClick={() => handleCate(e._id, e.name)}
-              fullWidth
-            >
-              {e.name}
-            </ToggleButton>
-          ))}
+          {categories
+            .filter((e) => !e.isDeleted)
+            .map((e) => (
+              <ToggleButton
+                key={e._id}
+                sx={{
+                  my: 0.4,
+                  p: 1,
+                  color: "success.darker",
+                  width: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "start",
+                }}
+                value={e._id}
+                aria-label={e.name}
+                onClick={() => handleCate(e._id, e.name)}
+                fullWidth
+              >
+                {e.name}
+              </ToggleButton>
+            ))}
         </StyledToggleButtonGroup>
       </Paper>
     </Box>

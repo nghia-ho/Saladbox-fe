@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -9,6 +9,7 @@ import {
   IconButton,
   List,
   Stack,
+  TextField,
   Typography,
 } from "@mui/material";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
@@ -26,9 +27,12 @@ import {
 } from "./ingredientSlice";
 import { addToCard } from "../cart/cartSlice";
 
+import { BASE_URL } from "../../app/config";
+
 import useAuth from "../../hooks/useAuth";
 
 function CustomBoard({ setModal, setModalAdd }) {
+  const [name, setName] = useState("Salad Custom");
   let { ingredientsCustom } = useSelector((state) => state.ingredient);
   const { user } = useAuth();
 
@@ -39,6 +43,9 @@ function CustomBoard({ setModal, setModalAdd }) {
     calories += ingredient.calo * ingredient.amount;
     price += ingredient.price * ingredient.amount;
   });
+  const handleChange = (event) => {
+    setName(event.target.value);
+  };
 
   const handleCustom = async (ingredients, price, calo) => {
     if (user) {
@@ -50,6 +57,7 @@ function CustomBoard({ setModal, setModalAdd }) {
           customProduct({
             ingredients: ingredient,
             price,
+            name,
             calo,
           })
         );
@@ -62,6 +70,13 @@ function CustomBoard({ setModal, setModalAdd }) {
 
   const map = (
     <Box my={1} sx={{ width: 1 }}>
+      <TextField
+        sx={{ width: 1, px: 1 }}
+        id="outlined-name"
+        label="Name"
+        value={name}
+        onChange={handleChange}
+      />
       {ingredientsCustom.map((ingredientItem) => (
         <Stack direction="row" sx={{ p: 1 }} key={ingredientItem._id}>
           <Card sx={{ width: 1 / 3 }}>
@@ -72,7 +87,7 @@ function CustomBoard({ setModal, setModalAdd }) {
                   isString(ingredientItem.image) &&
                   ingredientItem.image.includes("cloudinary")
                     ? ingredientItem.image
-                    : `http://localhost:8000${ingredientItem.image}`
+                    : `${BASE_URL}${ingredientItem.image}`
                 }
                 alt={ingredientItem.name}
               />
@@ -158,8 +173,8 @@ function CustomBoard({ setModal, setModalAdd }) {
           xs: 350,
           sm: 350,
           md: 800,
-          lg: 450,
-          xl: 559,
+          lg: 650,
+          xl: 650,
         },
       }}
     >
@@ -180,8 +195,8 @@ function CustomBoard({ setModal, setModalAdd }) {
               xs: 350,
               sm: 350,
               md: 800,
-              lg: 450,
-              xl: 500,
+              lg: 650,
+              xl: 650,
             },
             "& ul": { padding: 0 },
           }}

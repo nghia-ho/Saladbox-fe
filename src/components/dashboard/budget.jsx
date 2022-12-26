@@ -12,7 +12,7 @@ import MoneyIcon from "@mui/icons-material/Money";
 export const Budget = ({ totalSales, ...sx }) => (
   <Card>
     <CardContent>
-      <Grid container spacing={3} sx={{ justifyContent: "space-between" }}>
+      <Grid container spacing={1} sx={{ justifyContent: "space-between" }}>
         <Grid item>
           <Typography color="textSecondary" gutterBottom variant="overline">
             TOTAL SALES

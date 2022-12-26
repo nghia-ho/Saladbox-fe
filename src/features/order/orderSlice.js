@@ -7,6 +7,7 @@ const initialState = {
   order: null,
   orderPay: {},
   ordersList: [],
+  tab: "order",
 };
 
 const orderSlice = createSlice({
@@ -43,6 +44,25 @@ const orderSlice = createSlice({
       state.ordersCustomList = action.payload.orders;
       state.totalSaleCustom = action.payload.totalSale;
       state.count = action.payload.count;
+      state.isLoading = false;
+    },
+    deleteOrderSuccess: (state, action) => {
+      state.isLoading = false;
+      const index = state.ordersList?.findIndex(
+        (e) => e._id === action.payload.order._id
+      );
+      const index2 = state.ordersCustomList?.findIndex(
+        (e) => e._id === action.payload.order._id
+      );
+      if (index > -1 || index !== undefined) {
+        state.ordersList[index] = action.payload.order;
+      }
+      if (index2 > -1 || index2 !== undefined) {
+        state.ordersCustomList[index2] = action.payload.order;
+      }
+    },
+    saveTabSuccess: (state, action) => {
+      state.tab = action.payload;
       state.isLoading = false;
     },
   },
@@ -173,12 +193,15 @@ export const deleteOrder = (id) => async (dispatch) => {
   dispatch(orderSlice.actions.startLoading());
   try {
     const response = await apiService.delete(`/order/${id}`);
-    if (response.data.data.type === "order") {
-      dispatch(getOrders({}));
-    }
-    if (response.data.data.type === "speacialOrder") {
-      dispatch(getOrdersCustom({}));
-    }
+    dispatch(orderSlice.actions.deleteOrderSuccess(response.data.data));
+  } catch (error) {
+    dispatch(orderSlice.actions.hasError(error));
+  }
+};
+export const saveTab = (tab) => async (dispatch) => {
+  dispatch(orderSlice.actions.startLoading());
+  try {
+    dispatch(orderSlice.actions.saveTabSuccess(tab));
   } catch (error) {
     dispatch(orderSlice.actions.hasError(error));
   }

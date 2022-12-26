@@ -4,9 +4,11 @@ import {
   Box,
   Button,
   Card,
+  Chip,
   Divider,
   Grid,
   IconButton,
+  LinearProgress,
   Stack,
   Step,
   StepLabel,
@@ -44,7 +46,8 @@ function subtotal(items) {
 
 function OrderDeTailPage() {
   const location = useLocation();
-  const { order } = useSelector((state) => state.order);
+  // console.log(location);
+  const { order, isLoading } = useSelector((state) => state.order);
   const listDay = [
     order?.day1,
     order?.day2,
@@ -155,9 +158,15 @@ function OrderDeTailPage() {
                 <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
                   <Box sx={{ flex: "1 1 auto" }} />
 
-                  <Button onClick={handleNext}>
-                    {activeStep === steps.length - 1 ? "Finish" : "Next"}
-                  </Button>
+                  {order.isDeleted ? (
+                    <Chip color="error" label="Canceled" />
+                  ) : order?.isPaid ? (
+                    <Button onClick={handleNext}>
+                      {activeStep === steps.length - 1 ? "Finish" : "Next"}
+                    </Button>
+                  ) : (
+                    <Chip color="warning" label="Order UnPaid" />
+                  )}
                 </Box>
               </React.Fragment>
             )}
@@ -210,53 +219,59 @@ function OrderDeTailPage() {
               </TableContainer>
             </Card>
 
-            <Card sx={{ mt: 4, p: 2 }}>
-              <Stack
-                sx={{ mb: 3 }}
-                direction="row"
-                justifyContent="space-between"
-              >
-                <Typography variant="h6" fontWeight="600">
-                  Customer Infomation
-                </Typography>
-                <IconButton onClick={handleClickEdit}>
-                  <EditIcon />
-                </IconButton>
-              </Stack>
-
-              <Stack spacing={3}>
-                <Stack direction="row">
-                  <Typography sx={{ width: 1 }}>Customer name:</Typography>
-                  <Typography sx={{ width: 1 }} fontWeight="600">
-                    {order.user.name}
+            <Box sx={{ mt: 2 }}>
+              {isLoading && (
+                <Box sx={{ width: 1 }}>
+                  <LinearProgress color="success" />
+                </Box>
+              )}
+              <Card sx={{ p: 2 }}>
+                <Stack
+                  sx={{ mb: 3 }}
+                  direction="row"
+                  justifyContent="space-between"
+                >
+                  <Typography variant="h6" fontWeight="600">
+                    Customer Infomation
                   </Typography>
+                  <IconButton onClick={handleClickEdit}>
+                    <EditIcon />
+                  </IconButton>
                 </Stack>
-                <Divider />
-                <Stack direction="row">
-                  <Typography sx={{ width: 1 }}>
-                    Customer Phone Number:
-                  </Typography>
-                  <Typography sx={{ width: 1 }} fontWeight="600">
-                    {order.shippingAddress.phone}
-                  </Typography>
+                <Stack spacing={3}>
+                  <Stack direction="row">
+                    <Typography sx={{ width: 1 }}>Customer name:</Typography>
+                    <Typography sx={{ width: 1 }} fontWeight="600">
+                      {order.user.name}
+                    </Typography>
+                  </Stack>
+                  <Divider />
+                  <Stack direction="row">
+                    <Typography sx={{ width: 1 }}>
+                      Customer Phone Number:
+                    </Typography>
+                    <Typography sx={{ width: 1 }} fontWeight="600">
+                      {order.shippingAddress.phone}
+                    </Typography>
+                  </Stack>
+                  <Divider />
+                  <Stack direction="row">
+                    <Typography sx={{ width: 1 }}>Customer email:</Typography>
+                    <Typography sx={{ width: 1 }} fontWeight="600">
+                      {order.user.email}
+                    </Typography>
+                  </Stack>
+                  <Divider />
+                  <Stack direction="row">
+                    <Typography sx={{ width: 1 }}>Customer address</Typography>
+                    <Typography
+                      fontWeight="600"
+                      sx={{ width: 1 }}
+                    >{`${order.shippingAddress.address} district ${order.shippingAddress.district} ${order.shippingAddress.city}`}</Typography>
+                  </Stack>
                 </Stack>
-                <Divider />
-                <Stack direction="row">
-                  <Typography sx={{ width: 1 }}>Customer email:</Typography>
-                  <Typography sx={{ width: 1 }} fontWeight="600">
-                    {order.user.email}
-                  </Typography>
-                </Stack>
-                <Divider />
-                <Stack direction="row">
-                  <Typography sx={{ width: 1 }}>Customer address</Typography>
-                  <Typography
-                    fontWeight="600"
-                    sx={{ width: 1 }}
-                  >{`${order.shippingAddress.address} district ${order.shippingAddress.district} ${order.shippingAddress.city}`}</Typography>
-                </Stack>
-              </Stack>
-            </Card>
+              </Card>
+            </Box>
           </Grid>
 
           <Grid item xs={12} md={4}>

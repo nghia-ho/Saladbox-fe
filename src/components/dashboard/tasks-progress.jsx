@@ -1,39 +1,42 @@
 import {
   Avatar,
+  Box,
   Card,
   CardContent,
-  Divider,
   Grid,
+  LinearProgress,
   Typography,
 } from "@mui/material";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import InsertChartIcon from "@mui/icons-material/InsertChartOutlined";
 
-export const TotalProfit = ({ totalOrders, sx }) => {
+export const TasksProgress = ({ progress, sx, value }) => {
   return (
     <Card sx={{ height: "100%" }} {...sx}>
       <CardContent>
-        <Grid container spacing={3} sx={{ justifyContent: "space-between" }}>
+        <Grid container spacing={1} sx={{ justifyContent: "space-between" }}>
           <Grid item>
             <Typography color="textSecondary" gutterBottom variant="overline">
-              TOTAL ORDERS
+              Tasks Progress
             </Typography>
             <Typography color="textPrimary" variant="h4">
-              {isNaN(totalOrders) ? 0 : totalOrders}
+              {isNaN(progress) ? 0 : progress}%
             </Typography>
           </Grid>
           <Grid item>
             <Avatar
               sx={{
-                backgroundColor: "success.darker",
+                backgroundColor: "secondary.darker",
                 height: 45,
                 width: 45,
               }}
             >
-              <AttachMoneyIcon />
+              <InsertChartIcon />
             </Avatar>
           </Grid>
         </Grid>
-        <Divider sx={{ mt: 5 }} />
+        <Box sx={{ pt: 3 }}>
+          <LinearProgress value={Number(value)} variant="determinate" />
+        </Box>
       </CardContent>
     </Card>
   );

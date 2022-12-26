@@ -24,7 +24,7 @@ const ShippingSchema = Yup.object().shape({
 const ShippingAddress = () => {
   // info input shipping from user's info
   const { shippingAddress } = useSelector((state) => state.cart);
-  console.log(shippingAddress);
+  // console.log(shippingAddress);
   const defaultValues = {
     address: shippingAddress.address || "",
     district: shippingAddress.district || "",

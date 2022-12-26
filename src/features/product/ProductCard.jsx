@@ -23,6 +23,8 @@ import useAuth from "../../hooks/useAuth";
 import { addToCard } from "../cart/cartSlice";
 import { isString } from "lodash";
 
+import { BASE_URL } from "../../app/config";
+
 const ProductCard = ({ product }) => {
   const dispatch = useDispatch();
   const auth = useAuth();
@@ -54,7 +56,7 @@ const ProductCard = ({ product }) => {
             <CardMedia
               sx={{ borderRadius: 2 }}
               component="img"
-              // image={`http://localhost:8000${
+              // image={`${BASE_URL}${
               //   product?.image || "/salads/1.png"
               // }`}
 
@@ -63,8 +65,8 @@ const ProductCard = ({ product }) => {
                 product?.image.includes("cloudinary")
                   ? product?.image
                   : product?.image
-                  ? `http://localhost:8000${product?.image}`
-                  : "/salads/1.png"
+                  ? `${BASE_URL}${product?.image}`
+                  : `${BASE_URL}/salads/1.png`
               }
               alt={product.name}
             />

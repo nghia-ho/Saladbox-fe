@@ -1,3 +1,5 @@
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 //mui
 import {
   Card,
@@ -6,38 +8,25 @@ import {
   Tabs,
   Tab,
   Divider,
+  Stack,
   Typography,
 } from "@mui/material";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import LocalDiningIcon from "@mui/icons-material/LocalDining";
-// framework
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-//component
 
 // feature
 import AdminOrderList from "../../features/order/AdminOrderList";
 import AdminOrderCustom from "../../features/order/AdminOrderCustom";
+import { saveTab } from "../../features/order/orderSlice";
 
-import OrderSearch from "../../features/order/OrderSearch";
-import { FormProvider } from "../../components/form";
-import { Stack } from "@mui/system";
 function AdminOrderPage() {
-  const [currentTab, setCurrentTab] = useState("order");
-  const [filterName, setFilterName] = useState("");
+  const { tab } = useSelector((state) => state.order);
+  const [currentTab, setCurrentTab] = useState(tab);
+
+  const dispatch = useDispatch();
   const handleChangeTab = (newValue) => {
     setCurrentTab(newValue);
-  };
-
-  const defaultValues = {
-    orderSearch: "",
-  };
-  const methods = useForm({
-    defaultValues,
-  });
-  const { handleSubmit } = methods;
-  const onSubmit = (data) => {
-    setFilterName(data.orderSearch);
+    dispatch(saveTab(newValue));
   };
 
   const VALUE_TABS = [
@@ -45,13 +34,13 @@ function AdminOrderPage() {
       value: "order",
       name: "Order",
       icon: <RestaurantIcon sx={{ fontSize: 24 }} />,
-      component: <AdminOrderList filterName={filterName} type={currentTab} />,
+      component: <AdminOrderList type={currentTab} />,
     },
     {
       value: "orderCustom",
       name: "Weekly Order",
       icon: <LocalDiningIcon sx={{ fontSize: 24 }} />,
-      component: <AdminOrderCustom filterName={filterName} type={currentTab} />,
+      component: <AdminOrderCustom type={currentTab} />,
     },
   ];
 
@@ -101,9 +90,6 @@ function AdminOrderPage() {
               />
             ))}
           </Tabs>
-          <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-            <OrderSearch />
-          </FormProvider>
         </Stack>
         <Divider sx={{ mx: 3, mb: 2 }} />
         {VALUE_TABS.map((tab) => {

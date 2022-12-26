@@ -39,7 +39,7 @@ function FAutocomplete({
             />
           )}
           onChange={(event, values) => onChange(values)}
-          sx={{ width: width }}
+          sx={{ width: width, my: 0.5 }}
         />
       )}
     />

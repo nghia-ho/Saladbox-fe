@@ -23,6 +23,8 @@ import { addToCartCustom } from "../../features/cart/cartSlice";
 import { useNavigate } from "react-router-dom";
 import { isString } from "lodash";
 
+import { BASE_URL } from "../../app/config";
+
 const drawerBleeding = 60;
 
 const Root = styled("div")(({ theme }) => ({
@@ -77,7 +79,7 @@ function SwipeableEdgeDrawer(props) {
                   isString(item.day?.image) &&
                   item.day?.image.includes("cloudinary")
                     ? item.day?.image
-                    : `http://localhost:8000${item.day?.image}`
+                    : `${BASE_URL}${item.day?.image}`
                 }
                 alt={item.day?.name}
               />

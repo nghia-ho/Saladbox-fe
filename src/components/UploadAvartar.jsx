@@ -6,6 +6,8 @@ import AddAPhotoRoundedIcon from "@mui/icons-material/AddAPhotoRounded";
 import { styled, alpha } from "@mui/material/styles";
 import RejectionFiles from "./RejectionFiles";
 
+import { BASE_URL } from "../app/config";
+
 const RootStyle = styled("div")(({ theme }) => ({
   width: 144,
   height: 144,
@@ -95,7 +97,7 @@ function UploadAvatar({ error, file, helperText, sx, product, ...other }) {
                     ? file
                     : file.preview
                     ? file.preview
-                    : `http://localhost:8000${product?.image}`
+                    : `${BASE_URL}${product?.image}`
                 }
               />
             </Box>

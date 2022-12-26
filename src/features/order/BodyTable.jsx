@@ -46,6 +46,8 @@ function BodyTable({ ordersList, handleOpenPopover }) {
                   <Chip label="Pending" color="info" variant="outlined" />
                 )}
               </TableCell>
+              <TableCell align="center">{row?.paymentMethod}</TableCell>
+
               <TableCell align="center">
                 <IconButton
                   size="large"

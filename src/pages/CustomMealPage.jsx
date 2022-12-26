@@ -1,7 +1,14 @@
 import React from "react";
 import { useEffect, useState } from "react";
 
-import { Card, ToggleButton, ToggleButtonGroup, useTheme } from "@mui/material";
+import {
+  Card,
+  Skeleton,
+  Stack,
+  ToggleButton,
+  ToggleButtonGroup,
+  useTheme,
+} from "@mui/material";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
@@ -66,7 +73,7 @@ export default function CustomMealPage() {
     dispatch(getIngredients({ limit: 1000 }));
   }, [dispatch]);
 
-  const { ingredients } = useSelector((state) => state.ingredient);
+  const { ingredients, isLoading } = useSelector((state) => state.ingredient);
   const ingredientList = ingredients?.filter(
     (data) => data.isDeleted === false
   );
@@ -230,41 +237,68 @@ export default function CustomMealPage() {
                 sx={{ p: 4, borderRadius: 1 }}
               />
             </Tabs>
-            <TabPanel value={value} index={0} dir={theme.direction} p={3}>
-              <IngredientList ingredients={ingredientStep1} />
-            </TabPanel>
-            <TabPanel value={value} index={1} dir={theme.direction} p={3}>
-              <StyledToggleButtonGroup
-                value={alignment}
-                exclusive
-                onChange={handleAlignment}
-                aria-label="text alignment"
-                sx={{
-                  display: {
-                    xs: "block",
-                    sm: "flex",
-                  },
-                }}
-              >
-                {stepTwoCate.map((item, i) => (
-                  <ToggleButton
-                    value={item}
-                    aria-label="left aligned"
-                    key={i}
-                    sx={{ border: "none" }}
+            {isLoading ? (
+              <TabPanel value={value} index={0} dir={theme.direction} p={3}>
+                <Stack spacing={3} direction="row">
+                  {[...Array(6).keys()].map((e) => (
+                    <Skeleton
+                      key={e}
+                      variant="rounded"
+                      width={120}
+                      height={120}
+                    />
+                  ))}
+                </Stack>
+                <Stack spacing={3} mt={3} direction="row">
+                  {[...Array(6).keys()].map((e) => (
+                    <Skeleton
+                      key={e}
+                      variant="rounded"
+                      width={120}
+                      height={120}
+                    />
+                  ))}
+                </Stack>
+              </TabPanel>
+            ) : (
+              <>
+                <TabPanel value={value} index={0} dir={theme.direction} p={3}>
+                  <IngredientList ingredients={ingredientStep1} />
+                </TabPanel>
+                <TabPanel value={value} index={1} dir={theme.direction} p={3}>
+                  <StyledToggleButtonGroup
+                    value={alignment}
+                    exclusive
+                    onChange={handleAlignment}
+                    aria-label="text alignment"
+                    sx={{
+                      display: {
+                        xs: "block",
+                        sm: "flex",
+                      },
+                    }}
                   >
-                    {item}
-                  </ToggleButton>
-                ))}
-              </StyledToggleButtonGroup>
+                    {stepTwoCate.map((item, i) => (
+                      <ToggleButton
+                        value={item}
+                        aria-label="left aligned"
+                        key={i}
+                        sx={{ border: "none" }}
+                      >
+                        {item}
+                      </ToggleButton>
+                    ))}
+                  </StyledToggleButtonGroup>
 
-              <Box sx={{ m: 2 }}>
-                <IngredientList ingredients={step2 || dabStep2} />
-              </Box>
-            </TabPanel>
-            <TabPanel value={value} index={2} dir={theme.direction} p={3}>
-              <IngredientList ingredients={ingredientStep3} />
-            </TabPanel>
+                  <Box sx={{ m: 2 }}>
+                    <IngredientList ingredients={step2 || dabStep2} />
+                  </Box>
+                </TabPanel>
+                <TabPanel value={value} index={2} dir={theme.direction} p={3}>
+                  <IngredientList ingredients={ingredientStep3} />
+                </TabPanel>
+              </>
+            )}
           </Box>
         </Grid>
         <Grid item xs={12} md={4}>

@@ -1,16 +1,26 @@
-import { Box, Card, Typography, Container, Grid, Button } from "@mui/material";
+import {
+  Box,
+  Card,
+  Typography,
+  Container,
+  Grid,
+  Button,
+  Skeleton,
+} from "@mui/material";
+import { Stack } from "@mui/system";
 
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import useAuth from "../hooks/useAuth";
+
 import {
   getfavoriteProduct,
   getProducts,
 } from "../features/product/productSlice";
 import ProductList from "../features/product/ProductList";
-import { Stack } from "@mui/system";
 import ProductCardCustom from "../features/product/ProductCardCustom";
+
 import SwipeableEdgeDrawer from "../components/dashboard/SwipeableEdgeDrawer";
-import useAuth from "../hooks/useAuth";
 
 export default function CustomMealsPage() {
   const [monday, setMonday] = useState(null);
@@ -53,7 +63,7 @@ export default function CustomMealsPage() {
     if (auth.user) dispatch(getfavoriteProduct({ limit: 100 }));
   }, [dispatch, auth.user]);
 
-  const { products } = useSelector((state) => state.products);
+  const { products, isLoading } = useSelector((state) => state.products);
 
   const autoSelect = (product) => {
     let items = product.slice(0);
@@ -148,7 +158,7 @@ export default function CustomMealsPage() {
             Select the Salad
           </Typography>
 
-          <Box mt={2}>
+          <Box my={2}>
             {auth.user && (
               <Button
                 variant="contained"
@@ -156,7 +166,7 @@ export default function CustomMealsPage() {
                 sx={{ mr: 3 }}
                 onClick={() => setView("customFav")}
               >
-                From Your Favorite List
+                Wish List
               </Button>
             )}
             <Button
@@ -167,10 +177,17 @@ export default function CustomMealsPage() {
               Avaiable
             </Button>
           </Box>
-
-          <Box sx={{ width: 1 }}>
-            <ProductList view={view} handleAdd={handleAdd} />
-          </Box>
+          {isLoading ? (
+            <Stack spacing={3} direction="row">
+              {[...Array(6).keys()].map((e) => (
+                <Skeleton key={e} variant="rounded" width={700} height={180} />
+              ))}
+            </Stack>
+          ) : (
+            <Box sx={{ width: 1 }}>
+              <ProductList view={view} handleAdd={handleAdd} />
+            </Box>
+          )}
         </Card>
       </Container>
     </>

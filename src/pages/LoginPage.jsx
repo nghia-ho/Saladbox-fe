@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
@@ -14,6 +13,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 
 import useAuth from "../hooks/useAuth";
+import { LoadingButton } from "@mui/lab";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid Email").required("Email is required"),
@@ -39,7 +39,7 @@ const LoginPage = () => {
     handleSubmit,
     reset,
     setError,
-    formState: { errors },
+    formState: { isSubmitting, errors },
   } = methods;
   const onSubmit = async (data) => {
     const { email, password } = data;
@@ -100,14 +100,14 @@ const LoginPage = () => {
             />
           </Stack>
 
-          <Button
-            type="submit"
-            fullWidth
+          <LoadingButton
             variant="contained"
-            sx={{ mt: 3, mb: 2 }}
+            type="submit"
+            sx={{ width: 1, mt: 3, backgroundColor: "primary.darker" }}
+            loading={isSubmitting}
           >
             Sign In
-          </Button>
+          </LoadingButton>
         </FormProvider>
       </Box>
     </Container>

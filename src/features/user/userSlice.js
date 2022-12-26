@@ -17,23 +17,28 @@ const userSlice = createSlice({
       state.isLoading = true;
     },
     hasError: (state, action) => {
-      state.isLoading = true;
+      state.isLoading = false;
       state.error = action.payload;
+      state.message = null;
     },
     getUserSuccess: (state, action) => {
       state.isLoading = false;
+      state.error = null;
       state.user = action.payload;
     },
     getUsersSuccess: (state, action) => {
       state.isLoading = false;
+      state.error = null;
       state.userList = action.payload;
     },
     updateUserSuccess: (state, action) => {
       state.isLoading = false;
-      state.updateProfile = action.payload;
+      state.updateProfile = action.payload.data;
+      state.error = null;
     },
     deleteMeSuccess: (state, action) => {
       state.isLoading = false;
+      state.error = null;
       state.user = action.payload;
     },
   },
@@ -46,7 +51,7 @@ export const getUser = () => async (dispatch) => {
     const response = await apiService.get("users/me");
     dispatch(userSlice.actions.getUserSuccess(response.data.data));
   } catch (error) {
-    dispatch(userSlice.actions.hasError(error.message));
+    dispatch(userSlice.actions.hasError(error));
   }
 };
 export const getUsers =
@@ -59,7 +64,7 @@ export const getUsers =
       const response = await apiService.get("users", { params });
       dispatch(userSlice.actions.getUsersSuccess(response.data.data));
     } catch (error) {
-      dispatch(userSlice.actions.hasError(error.message));
+      dispatch(userSlice.actions.hasError(error));
     }
   };
 export const updateUser =
@@ -92,9 +97,9 @@ export const updateUser =
         data.avatarURL = imageUrl;
       }
       const response = await apiService.put(`users/${userId}`, data);
-      dispatch(userSlice.actions.updateUserSuccess(response.data.data));
+      dispatch(userSlice.actions.updateUserSuccess(response.data));
     } catch (error) {
-      dispatch(userSlice.actions.hasError(error.message));
+      dispatch(userSlice.actions.hasError(error));
     }
   };
 export const deleteMe = () => async (dispatch) => {
@@ -103,7 +108,7 @@ export const deleteMe = () => async (dispatch) => {
     const response = await apiService.delete("users/me/delete");
     dispatch(userSlice.actions.deleteMeSuccess(response.data.data));
   } catch (error) {
-    dispatch(userSlice.actions.hasError(error.message));
+    dispatch(userSlice.actions.hasError(error));
   }
 };
 

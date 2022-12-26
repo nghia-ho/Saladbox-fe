@@ -1,22 +1,20 @@
 import React, { useEffect, useState } from "react";
 
-//mui
 import {
   Card,
   Container,
   TableContainer,
   Table,
   TableHead,
+  Box,
+  LinearProgress,
 } from "@mui/material";
 
 import { useDispatch, useSelector } from "react-redux";
-// framework
 
-//component
 import DeleteModal from "../../components/DeleteModal";
 import PopoverMenu from "../../components/Popover";
 
-// feature
 import { getOrdersCustom } from "../../features/order/orderSlice";
 import HeadTable from "../../components/HeadTable";
 import BodyTable from "./BodyTable";
@@ -29,14 +27,13 @@ const TABLE_HEAD = [
   { id: "isPaid", label: "Payment" },
   { id: "totalPrice", label: "Total" },
   { id: "isDeliverd", label: "Status" },
+  { id: "paymentMethod", label: "Payment Method" },
   { id: "more", label: "More" },
 ];
 
 function AdminOrderCustom({ filterName, type }) {
-  // open Modal Edit, delete,
   const [openPopover, setOpenPopover] = useState(null);
   const [openModalDelete, setopenModalDelete] = useState(false);
-  // const [openModal, setOpenModal] = useState(false);
   const [route, setRoute] = useState(null);
 
   const [selectedItem, setSelectedItem] = useState(null);
@@ -45,12 +42,7 @@ function AdminOrderCustom({ filterName, type }) {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(0);
-  // Close modal edit
-  // const handleCloseEdit = () => {
-  //   setOpenModal(false);
-  //   setRoute(null);
-  // };
-  // Close modal form confirm delete
+
   const handleCloseDelete = () => {
     setopenModalDelete(false);
     setRoute(null);
@@ -68,7 +60,9 @@ function AdminOrderCustom({ filterName, type }) {
     );
   }, [dispatch, filterName, orderBy, order, page, rowsPerPage]);
 
-  const { ordersCustomList, count } = useSelector((state) => state.order);
+  const { ordersCustomList, count, isLoading } = useSelector(
+    (state) => state.order
+  );
 
   // Open menu popover edit & delete
   const handleOpenPopover = (event, value) => {
@@ -105,6 +99,11 @@ function AdminOrderCustom({ filterName, type }) {
             borderRadius: 1,
           }}
         >
+          {isLoading && (
+            <Box sx={{ width: 1 }}>
+              <LinearProgress color="success" />
+            </Box>
+          )}
           <Table>
             <TableHead>
               <HeadTable

@@ -16,6 +16,8 @@ import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { useNavigate } from "react-router-dom";
 import { isString } from "lodash";
 
+import { BASE_URL } from "../../app/config";
+
 export const LatestProducts = ({ products }) => {
   const navigate = useNavigate();
   return (
@@ -39,7 +41,7 @@ export const LatestProducts = ({ products }) => {
                   isString(product.image) &&
                   product.image.includes("cloudinary")
                     ? product.image
-                    : `http://localhost:8000${product.image}`
+                    : `${BASE_URL}${product.image}`
                 }
               />
             </ListItemAvatar>

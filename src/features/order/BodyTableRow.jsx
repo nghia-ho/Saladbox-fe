@@ -12,6 +12,8 @@ import { isString } from "lodash";
 import React from "react";
 import { Link } from "react-router-dom";
 
+import { BASE_URL } from "../../app/config";
+
 function BodyTableRow({ rows }) {
   return (
     <TableBody>
@@ -36,7 +38,7 @@ function BodyTableRow({ rows }) {
                       isString(row?.image) && row?.image.includes("cloudinary")
                         ? row?.image
                         : row?.image
-                        ? `http://localhost:8000${row?.image}`
+                        ? `${BASE_URL}${row?.image}`
                         : "/custom.png"
                     }
                     alt={row.desc}

@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getOrders, getOrdersCustom } from "../../features/order/orderSlice";
 import { getUsers } from "../../features/user/userSlice";
-import { getProducts } from "../../features/product/productSlice";
+import { getProductsByAdmin } from "../../features/product/productSlice";
 
 const Page = () => {
   const dispatch = useDispatch();
@@ -19,7 +19,7 @@ const Page = () => {
     dispatch(getOrdersCustom({ limit: 1000 }));
     dispatch(getOrders({ limit: 1000 }));
     dispatch(getUsers({ limit: 1000 }));
-    dispatch(getProducts({ limit: 5 }));
+    dispatch(getProductsByAdmin({ limit: 5 }));
   }, [dispatch]);
 
   const { ordersCustomList, ordersList, totalSale, totalSaleCustom } =
@@ -41,11 +41,11 @@ const Page = () => {
   const totalOrders = ordersCustomList?.length + ordersList?.length;
 
   const progressDone =
-    ordersCustomList?.filter((e) => e.isDeliverd).length +
-    ordersList?.filter((e) => e.isDeliverd).length;
+    ordersCustomList?.filter((e) => e.isDeliverd || e.isDeleted).length +
+    ordersList?.filter((e) => e.isDeliverd || e.isDeleted).length;
   const notDeliver =
-    ordersCustomList?.filter((e) => !e.isDeliverd).length +
-    ordersList?.filter((e) => !e.isDeliverd).length;
+    ordersCustomList?.filter((e) => !e.isDeliverd && !e.isDeleted).length +
+    ordersList?.filter((e) => !e.isDeliverd && !e.isDeleted).length;
 
   function percentage(partialValue, totalValue) {
     return ((partialValue / (partialValue + totalValue)) * 100).toFixed(2);
@@ -89,7 +89,10 @@ const Page = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <LatestOrders orders={ordersList} />
+              <LatestOrders
+                orders={ordersList}
+                ordersCustomList={ordersCustomList}
+              />
             </Grid>
           </Grid>
         </Container>
