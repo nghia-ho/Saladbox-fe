@@ -200,7 +200,7 @@ function SwipeableEdgeDrawer(props) {
                   {calories} kcal / 7 days
                 </Typography>
               </Stack>
-              <Button variant="contained" onClick={handleAdd}>
+              <Button variant="outlined" onClick={handleAdd}>
                 Add to cart
               </Button>
             </Stack>

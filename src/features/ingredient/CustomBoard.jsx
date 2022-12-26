@@ -127,7 +127,6 @@ function CustomBoard({ setModal, setModalAdd }) {
 
             <Stack direction="row">
               <IconButton
-                color="error"
                 variant="outlined"
                 sx={{ p: 0 }}
                 onClick={() => dispatch(addIngredientsCustom(ingredientItem))}
@@ -241,8 +240,7 @@ function CustomBoard({ setModal, setModalAdd }) {
           </Typography>
         </Stack>
         <Button
-          variant="contained"
-          sx={{ bgcolor: "success.dark" }}
+          variant="outlined"
           onClick={() => handleCustom(ingredientsCustom, price, calories)}
         >
           Add to cart

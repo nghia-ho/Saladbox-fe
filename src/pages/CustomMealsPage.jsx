@@ -98,7 +98,7 @@ export default function CustomMealsPage() {
         >
           <Grid container spacing={1}>
             {day?.map((e, index) => (
-              <Grid key={index} item xs={4} sm={3} md={1.7}>
+              <Grid key={index} item xs={6} sm={4} md={3} lg={1.7}>
                 {!e.day ? (
                   <>
                     <Typography align="center" fontWeight={"600"}>
@@ -109,7 +109,6 @@ export default function CustomMealsPage() {
                         width: 1,
                         border: "1px solid white",
                         height: 230,
-                        m: 1,
                         borderRadius: 2,
                       }}
                     />
