@@ -54,7 +54,7 @@ const RegisterPage = () => {
 
     try {
       await auth.register({ name, email, password }, () =>
-        navigate("/", { replace: true })
+        navigate("/shop", { replace: true })
       );
     } catch (error) {
       reset();
