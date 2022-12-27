@@ -32,6 +32,7 @@ const ProductCard = ({ product }) => {
   const location = useLocation();
 
   const { favorite } = useSelector((state) => state.products);
+  console.log(favorite);
   const a = favorite?.favorite?.find((e) => e.product?._id === product?._id);
   const id = product._id;
   const wishList = !auth.user ? (

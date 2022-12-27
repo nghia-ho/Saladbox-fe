@@ -15,7 +15,7 @@ import { Stack } from "@mui/system";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createfavoriteProduct, removefavoriteProduct } from "./productSlice";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useLocation } from "react-router-dom";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import useAuth from "../../hooks/useAuth";
@@ -30,11 +30,17 @@ const ProductCard2 = ({ product }) => {
   if (count < 0) {
     setCount(0);
   }
+  const location = useLocation();
   const { favorite } = useSelector((state) => state.products);
   const a = favorite?.favorite?.find((e) => e.product?._id === product?._id);
   const id = product?._id;
   const wishList = !auth.user ? (
-    <IconButton to="/login" component={RouterLink}>
+    <IconButton
+      to="/login"
+      component={RouterLink}
+      state={{ from: location }}
+      replace
+    >
       <FavoriteBorderIcon fontSize="inherit" color="primary" />
     </IconButton>
   ) : a ? (
