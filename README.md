@@ -1,46 +1,67 @@
-# Getting Started with Create React App and Redux
+# Saladbox
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
+## ✨ The project description
+Saladbox can make both salad-addict and unexciting-salad people think salad is cool. Based on basic salad component including 3 parts, vegetables - topping - sauce. Choose your favorite ingredients, create your own salad recipes and take it in your weekly meal plan order. This service ecommerce application will makes people think more fascinating when they think about ordering salads. 
 
-## Available Scripts
+## ✨ User story
 
-In the project directory, you can run:
+### 1. Authentication
 
-### `npm start`
+- [x] - User can sign in with email and password
+- [x] - User can register for a new account by email and password
+- [x] - User can stay signed in with refreshing page
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 2. User
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- [x] - User can see their own infomation in profile page
+- [x] - User can edit some of their specific information
+- [x] - User can deative their account
 
-### `npm test`
+### 3. Product
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- [x] - User can see a list of product: by search, filter, pagination
+- [x] - User can see detail single product, in a seperate page
+- [x] - User can add product to favorite list or remove it
+- [x] - User can choose a weekly meal plan or custom it with all product, favorite list or from the custom single product
+- [x] - User can custom a product with three easy steps
+- [x] - As a Admin, i can create a new product
+- [x] - As a Admin, i can update a product
+- [x] - As a Admin, i can delete a product
 
-### `npm run build`
+### 4. Category
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- [x] - User can see list of category
+- [x] - User can see category and detailed sections
+- [x] - User can filter a product by category
+- [x] - As a Admin, i can create new category
+- [x] - As a Admin, i can update a category
+- [x] - As a Admin, i can deactive a category
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 5. Order
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- [x] - Authenticated user can create an order
+- [x] - Authenticated user can see detail infomation of the single order
+- [x] - Authenticated user can edit the order
+- [x] - Authenticated checking order with status
+- [x] - Authenticated user can delete the order
+- [x] - As a Admin, i can change status of order
+- [x] - As a Admin, i can cancel order of user
 
-### `npm run eject`
+### 6. Ingredient
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- [x] - Admin can create an ingredient
+- [x] - Admin can update an ingredient
+- [x] - Admin can edit the ingredient
+- [x] - Admin  can delete the ingredient
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Link to demo
+https://saladbox.netlify.app/
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Mock Paypal account
+email: buyer_saladbox@gmail.com
+password: buyer123
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Mock Admin account
+email: admin@gmail.com
+password: 123
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
