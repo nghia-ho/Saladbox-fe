@@ -57,11 +57,16 @@ Saladbox can make both salad-addict and unexciting-salad people think salad is c
 ## Link to demo
 https://saladbox.netlify.app/
 
-## Mock Paypal account
-email: buyer_saladbox@gmail.com
-password: buyer123
 
 ## Mock Admin account
 email: admin@gmail.com
 password: admin
+
+## Mock Paypal account
+email: buyer_saladbox@gmail.com
+password: buyer123
+
+https://user-images.githubusercontent.com/111189477/209695867-d23f52fb-f2b9-4a90-a70e-ece647d562b4.mp4
+
+
 
