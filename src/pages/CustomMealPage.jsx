@@ -18,7 +18,7 @@ import { Button, Container, Grid } from "@mui/material";
 
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import { getIngredients } from "../features/ingredient/ingredientSlice";
 import IngredientList from "../features/ingredient/IngredientList";
@@ -166,6 +166,7 @@ export default function CustomMealPage() {
 
   const handleClose = () => setModal(false);
   const handleCloseModalAdd = () => setModalAdd(false);
+  const location = useLocation();
 
   return (
     <Container maxWidth="lg">
@@ -185,6 +186,8 @@ export default function CustomMealPage() {
               sx={{ mt: 1, width: 1 }}
               to="/login"
               component={Link}
+              state={{ from: location }}
+              replace
             >
               Login
             </Button>
