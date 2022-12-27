@@ -209,7 +209,7 @@ function CartPage() {
             <Typography variant="h4" paragraph>
               Your Cart is empty
             </Typography>
-            <Button to="/menu" variant="contained" component={Link}>
+            <Button to="/shop" variant="contained" component={Link}>
               Go Back
             </Button>
           </Box>

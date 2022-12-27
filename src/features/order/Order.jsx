@@ -89,7 +89,7 @@ function Order({ isLoading, ordersList }) {
           <Typography variant="h4" paragraph>
             No Order
           </Typography>
-          <Button to="/menu" variant="contained" component={Link}>
+          <Button to="/shop" variant="contained" component={Link}>
             Go Shopping
           </Button>
         </Box>
