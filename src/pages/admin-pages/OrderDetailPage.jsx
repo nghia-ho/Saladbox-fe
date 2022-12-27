@@ -160,7 +160,7 @@ function OrderDeTailPage() {
 
                   {order.isDeleted ? (
                     <Chip color="error" label="Canceled" />
-                  ) : order?.isPaid ? (
+                  ) : order?.isPaid || order.paymentMethod === "cod" ? (
                     <Button onClick={handleNext}>
                       {activeStep === steps.length - 1 ? "Finish" : "Next"}
                     </Button>
