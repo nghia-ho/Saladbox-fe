@@ -63,5 +63,5 @@ password: buyer123
 
 ## Mock Admin account
 email: admin@gmail.com
-password: 123
+password: admin
 
